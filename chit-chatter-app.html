@@ -466,9 +466,30 @@
         .highlight-warn { color: #ff4757; font-weight: bold; }
         .highlight-good { color: #2ed573; font-weight: bold; }
 
+        /* --- Start Overlay --- */
+        #start-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.3s ease;
+        }
+        .start-btn {
+            background: #2ed573; color: white; border: 3px solid #218c53; padding: 2vh 8vw;
+            border-radius: 20px; font-size: 3vh; font-weight: 700; cursor: pointer;
+            box-shadow: 0 6px 0 #218c53; font-family: 'Fredoka', sans-serif;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .start-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #218c53; }
+
     </style>
 </head>
 <body>
+
+    <!-- Start Screen Overlay -->
+    <div id="start-overlay">
+        <h1 style="color: var(--main-teal); font-size: 4vh; margin-bottom: 4vh; text-align: center;">Daily English Chat</h1>
+        <button class="start-btn" onclick="startApp()">Start</button>
+    </div>
 
     <div id="header">
         <div class="header-title">
@@ -830,17 +851,32 @@
             renderVocab();
             checkDevice();
             
-            if (currentChallengeArray.length === 0) {
-                addBubble("No practice scheduled for today! Have a great day! 🎉", "sys-bubble");
-                return;
-            }
-
-            if (savedState.completed) {
-                showFinalScoreCard();
-            } else {
-                startNextQuestion();
-            }
+            // We no longer start the chat here, we wait for the user to click "Start"
         };
+
+        function startApp() {
+            // This initial user interaction unlocks the browser's audio engine!
+            playSound('tap'); 
+            
+            const overlay = document.getElementById('start-overlay');
+            overlay.style.opacity = '0';
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                
+                // Now we run the startup logic
+                if (currentChallengeArray.length === 0) {
+                    addBubble("No practice scheduled for today! Have a great day! 🎉", "sys-bubble");
+                    return;
+                }
+
+                if (savedState.completed) {
+                    showFinalScoreCard();
+                } else {
+                    startNextQuestion();
+                }
+            }, 300);
+        }
 
         window.addEventListener('resize', scrollToBottom);
 
