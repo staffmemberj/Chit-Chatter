@@ -559,6 +559,33 @@
 
     <script>
         /* ========================================================================
+        AUDIO CONFIGURATION
+        Update these URLs with the ones used in your previous Guess What game!
+        Currently pre-filled with high-quality free UI sounds.
+        ======================================================================== */
+        const soundMap = {
+            tap: 'sound/typing.mp3',
+            pop: 'sound/chat.mp3',
+            correct: 'sound/victory.mp3',
+            wrong: 'sound/wrong.mp3',
+            slide: 'sound/slide.mp3',
+            tada: 'sound/victory.mp3',
+            send: 'sound/send.mp3'
+        };
+
+        const audioObjects = {};
+        for (let key in soundMap) {
+            audioObjects[key] = new Audio(soundMap[key]);
+        }
+
+        function playSound(type) {
+            if (audioObjects[type]) {
+                audioObjects[type].currentTime = 0;
+                audioObjects[type].play().catch(e => console.log("Audio play prevented until user interacts with the page."));
+            }
+        }
+
+        /* ========================================================================
         TEACHER CONFIGURATION AREA - LESSON 11 & 12
         Vocab items now include detailed explanations and example sentences.
         ======================================================================== */
@@ -851,7 +878,10 @@
                 li.innerHTML = `<span class="vocab-en">${v.en}</span><span class="vocab-jp">${v.jp}</span>`;
                 
                 // Add click listener to open modal
-                li.onclick = () => openWordModal(v);
+                li.onclick = () => {
+                    playSound('tap');
+                    openWordModal(v);
+                };
                 ul.appendChild(li);
             });
         }
@@ -863,6 +893,7 @@
             let shouldOpen = action === 'open' ? true : (action === 'close' ? false : !isOpen);
 
             if (shouldOpen) {
+                playSound('slide');
                 drawer.classList.add('open');
                 overlay.style.display = 'block';
                 setTimeout(() => {
@@ -870,6 +901,7 @@
                     checkVocabScroll(); 
                 }, 300);
             } else {
+                playSound('tap');
                 drawer.classList.remove('open');
                 overlay.classList.remove('show');
                 setTimeout(() => overlay.style.display = 'none', 400);
@@ -905,6 +937,7 @@
         }
 
         function closeWordModal() {
+            playSound('tap');
             const modalOverlay = document.getElementById('word-modal-overlay');
             modalOverlay.classList.remove('show');
             setTimeout(() => {
@@ -974,12 +1007,14 @@
         }
 
         function resetDay() {
+            playSound('tap');
             savedState = { day: todayInt, qIndex: 0, completed: false, attempts: 0, score: 0, scrollDownSeen: false, scrollUpSeen: false, scrollHintsCompleted: false };
             saveProgress();
             location.reload(); 
         }
 
         function showFinalScoreCard() {
+            playSound('tada');
             const totalPossible = currentChallengeArray.length;
             let finalScore = (savedState.score || 0).toFixed(1);
             if (finalScore.endsWith('.0')) finalScore = parseInt(finalScore);
@@ -993,6 +1028,7 @@
                 <button class="replay-btn" onclick="resetDay()">🔄 Try Again</button>
             `;
             chat.appendChild(bubble);
+            playSound('pop');
             scrollToBottom();
         }
 
@@ -1005,6 +1041,7 @@
             typingDiv.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
             
             chat.appendChild(typingDiv);
+            playSound('pop');
             scrollToBottom();
 
             setTimeout(() => {
@@ -1068,11 +1105,12 @@
                 tile.onclick = () => moveToSentence(tile);
                 bank.appendChild(tile);
             });
-            clearSentence();
+            clearSentence(true);
         }
 
         function moveToSentence(tile) {
             if (tile.classList.contains('disabled-tile')) return;
+            playSound('tap');
             const builder = document.getElementById('sentence-builder');
             tile.onclick = () => moveToBank(tile);
             tile.classList.add('in-builder'); 
@@ -1081,6 +1119,8 @@
         }
 
         function moveToBank(tile) {
+            if (tile.classList.contains('disabled-tile')) return;
+            playSound('tap');
             const bank = document.getElementById('word-bank');
             tile.onclick = () => moveToSentence(tile);
             tile.classList.remove('in-builder'); 
@@ -1088,10 +1128,15 @@
             scrollToBottom(); 
         }
 
-        function clearSentence() {
+        function clearSentence(silent = false) {
+            if(!silent) playSound('tap');
             const builder = document.getElementById('sentence-builder');
             while (builder.firstChild) {
-                moveToBank(builder.firstChild);
+                const tile = builder.firstChild;
+                const bank = document.getElementById('word-bank');
+                tile.onclick = () => moveToSentence(tile);
+                tile.classList.remove('in-builder'); 
+                bank.appendChild(tile);
             }
         }
 
@@ -1101,6 +1146,9 @@
             bubble.className = `bubble ${className}`;
             bubble.innerHTML = text; 
             chat.appendChild(bubble);
+            
+            playSound('pop');
+            
             scrollToBottom();
         }
 
@@ -1135,6 +1183,8 @@
             const tiles = builder.querySelectorAll('.word-tile');
             if (tiles.length === 0) return;
 
+            playSound('send');
+
             let userSentence = Array.from(tiles).map(t => t.innerText).join(" ");
             const currentQ = currentChallengeArray[savedState.qIndex];
 
@@ -1143,7 +1193,8 @@
             let isCorrect = currentQ.validAnswers.includes(userSentence);
 
             if (isCorrect) {
-                clearSentence();
+                playSound('correct');
+                clearSentence(true);
                 hideInteraction();
                 
                 if (savedState.attempts === 0) savedState.score += 1;
@@ -1152,6 +1203,7 @@
                 
                 advanceToNextSequence("Spot on! Great job! 🌟");
             } else {
+                playSound('wrong');
                 let specificHint = null;
                 if (currentQ.hints) {
                     for (let h of currentQ.hints) {
@@ -1184,7 +1236,11 @@
                     let isDistractor = !currentQ.validAnswers.some(ans => ans.includes(t.innerText));
                     
                     if (i >= maxMatch) {
-                        moveToBank(t);
+                        // move directly to bank without sounds
+                        const bank = document.getElementById('word-bank');
+                        t.onclick = () => moveToSentence(t);
+                        t.classList.remove('in-builder'); 
+                        bank.appendChild(t);
                     }
 
                     if (isDistractor) {
