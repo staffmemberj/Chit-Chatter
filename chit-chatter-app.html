@@ -56,12 +56,19 @@
             font-weight: 500;
         }
 
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 2vw;
+        }
+
         #progress-badge {
             background: rgba(255,255,255,0.2);
             padding: 0.5vh 3vw;
             border-radius: 20px;
             font-size: 1.8vh;
             font-weight: 600;
+            color: white;
         }
 
         /* Chat Area */
@@ -88,7 +95,6 @@
             transform: scale(0.8) translateY(10px);
         }
 
-        /* Highlighted tense words */
         .bubble b {
             color: #ff4757;
             font-weight: 700;
@@ -126,7 +132,6 @@
             gap: 1vh;
         }
 
-        /* Typing Indicator */
         .typing-indicator {
             display: flex;
             gap: 0.5vw;
@@ -159,10 +164,10 @@
         #interaction-area {
             background: #f1f2f6;
             border-top: 2px solid #dfe4ea;
-            padding: 2vh 4vw calc(5vh + env(safe-area-inset-bottom)) 4vw;
+            padding: 2vh 4vw calc(3vh + env(safe-area-inset-bottom)) 4vw;
             display: flex;
             flex-direction: column;
-            gap: 2vh;
+            gap: 1.5vh;
             box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
             transition: transform 0.3s ease;
             flex-shrink: 0; 
@@ -196,7 +201,6 @@
             padding: 0.5vh 0;
         }
 
-        /* Inline Buttons */
         .icon-btn {
             background: none;
             border: none;
@@ -208,14 +212,8 @@
             transition: transform 0.1s;
         }
 
-        .clear-btn {
-            color: #a4b0be;
-            padding: 1vh 2vw;
-        }
-
-        .clear-btn:active {
-            transform: scale(0.8);
-        }
+        .clear-btn { color: #a4b0be; padding: 1vh 2vw; }
+        .clear-btn:active { transform: scale(0.8); }
 
         .send-btn {
             background: #2ed573;
@@ -226,18 +224,8 @@
             box-shadow: 0 3px 0 #218c53;
             margin-left: 0.5vw;
         }
-
-        .send-btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 0px 0 #218c53;
-        }
-
-        .send-btn svg {
-            width: 2.2vh;
-            height: 2.2vh;
-            margin-right: 0.2vw; 
-            margin-top: 0.2vh;
-        }
+        .send-btn:active { transform: translateY(3px); box-shadow: 0 0px 0 #218c53; }
+        .send-btn svg { width: 2.2vh; height: 2.2vh; margin-right: 0.2vw; margin-top: 0.2vh; }
 
         /* Word Bank */
         #word-bank {
@@ -246,16 +234,15 @@
             justify-content: center;
             align-content: flex-start;
             gap: 1.5vh;
-            min-height: 12vh;
-            max-height: 35dvh; 
+            min-height: 8vh;
+            max-height: 30dvh; 
             overflow-y: auto;
-            padding-bottom: 1vh; 
         }
 
         .word-tile {
             background: #ffffff;
             color: #2f3542;
-            padding: 1.2vh 3.5vw;
+            padding: 1vh 3vw;
             border-radius: 12px;
             font-size: 2.2vh;
             font-weight: 500;
@@ -265,60 +252,220 @@
             user-select: none;
             transition: all 0.1s;
         }
-
-        .word-tile:active {
-            transform: translateY(3px);
-            box-shadow: 0 0px 0 #ced6e0;
-        }
+        .word-tile:active { transform: translateY(3px); box-shadow: 0 0px 0 #ced6e0; }
 
         .word-tile.in-builder {
-            background: #1e90ff;
-            color: white;
-            box-shadow: 0 2px 0 #0984e3;
-            border: 1px solid #0984e3;
-            padding: 0.8vh 2.5vw;
-            border-radius: 8px;
+            background: #1e90ff; color: white; box-shadow: 0 2px 0 #0984e3;
+            border: 1px solid #0984e3; padding: 0.8vh 2.5vw; border-radius: 8px;
         }
-
-        .word-tile.in-builder:active {
-            transform: translateY(2px);
-            box-shadow: 0 0px 0 #0984e3;
-        }
+        .word-tile.in-builder:active { transform: translateY(2px); box-shadow: 0 0px 0 #0984e3; }
 
         .word-tile.disabled-tile {
-            background: #f1f2f6 !important;
-            color: #a4b0be !important;
-            border: 1px solid #dfe4ea !important;
-            box-shadow: none !important;
-            pointer-events: none;
-            transform: none !important;
+            background: #f1f2f6 !important; color: #a4b0be !important;
+            border: 1px solid #dfe4ea !important; box-shadow: none !important;
+            pointer-events: none; transform: none !important;
         }
 
-        #desktop-hint {
-            text-align: center;
-            font-size: 1.6vh;
-            color: #a4b0be;
-            margin-top: -1vh;
-            display: none; 
+        /* Action Row for Notes Button */
+        .action-row {
+            display: flex;
+            justify-content: center;
         }
-        
-        .replay-btn {
-            background: #1e90ff;
+
+        #notes-btn {
+            background: #ffa502;
             color: white;
-            border: 2px solid #0984e3;
+            border: 2px solid #e58e26;
             padding: 1vh 4vw;
-            border-radius: 10px;
-            font-family: 'Fredoka', sans-serif;
-            font-size: 2vh;
+            font-size: 1.8vh;
+            border-radius: 15px;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 3px 0 #0984e3;
-            margin-top: 1vh;
+            box-shadow: 0 3px 0 #e58e26;
+            transition: transform 0.1s;
+            font-family: 'Fredoka', sans-serif;
+            width: fit-content;
         }
-        .replay-btn:active {
+        #notes-btn:active {
             transform: translateY(3px);
-            box-shadow: 0 0px 0 #0984e3;
+            box-shadow: 0 0 0 #e58e26;
         }
+
+        #desktop-hint { text-align: center; font-size: 1.6vh; color: #a4b0be; display: none; margin-top: -0.5vh;}
+        
+        .replay-btn {
+            background: #1e90ff; color: white; border: 2px solid #0984e3; padding: 1vh 4vw;
+            border-radius: 10px; font-family: 'Fredoka', sans-serif; font-size: 2vh;
+            font-weight: 600; cursor: pointer; box-shadow: 0 3px 0 #0984e3; margin-top: 1vh;
+        }
+        .replay-btn:active { transform: translateY(3px); box-shadow: 0 0px 0 #0984e3; }
+
+        /* --- Vocab Drawer CSS --- */
+        #notes-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); 
+            backdrop-filter: blur(2px); z-index: 2000;
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        #notes-overlay.show { opacity: 1; }
+
+        #sidebar-content-container {
+            position: fixed; right: -100%; top: 0; width: 90vw; max-width: 500px; height: 100dvh;
+            background: white; z-index: 2001; transition: right 0.4s var(--bounce);
+            border-left: 6px solid var(--main-teal); 
+            box-shadow: -10px 0 20px rgba(0,0,0,0.15); 
+            display: flex; flex-direction: column;
+        }
+        #sidebar-content-container.open { right: 0; }
+
+        .drawer-header {
+            padding: 3vh 5vw 1vh 5vw;
+            flex-shrink: 0;
+            text-align: center;
+        }
+        .drawer-title { 
+            color: var(--main-teal); font-size: 2.5vh; text-transform: uppercase; 
+            margin: 0; 
+        }
+        .drawer-subtitle {
+            font-size: 1.5vh; color: #747d8c; margin-top: 0.5vh;
+        }
+
+        #vocab-container { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 1vh 5vw; 
+            position: relative;
+        }
+
+        .vocab-bottom-spacer { height: 12vh; width: 100%; }
+
+        /* Single Column Layout for Vocab - Enforced 1 Line */
+        .vocab-group-list { 
+            margin: 0; padding: 0; list-style-type: none; 
+            display: flex; flex-direction: column; gap: 1.2vh; 
+            width: 100%;
+        }
+        
+        .vocab-group-list li { 
+            background: #f1f2f6; padding: 1.5vh 3vw; border-radius: 12px; 
+            display: flex; flex-direction: column; align-items: center; gap: 0.5vh;
+            border: 2px solid #dfe4ea; cursor: pointer; text-align: center;
+            transition: transform 0.1s, border-color 0.1s;
+            width: 100%; box-sizing: border-box;
+        }
+        .vocab-group-list li:active {
+            transform: scale(0.98); background: #e0f7fa; border-color: var(--main-teal);
+        }
+        .vocab-en { 
+            font-weight: bold; color: var(--main-teal); 
+            font-size: clamp(16px, 2.2vh, 22px); 
+            white-space: nowrap; 
+        }
+        .vocab-jp { 
+            color: #2f3542; font-weight: 500;
+            font-size: clamp(12px, 1.6vh, 18px); 
+            white-space: nowrap; 
+        }
+
+        .drawer-footer {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 2vh 5vw calc(2vh + env(safe-area-inset-bottom)) 5vw;
+            box-sizing: border-box; background: linear-gradient(transparent, white 25%);
+            pointer-events: none; 
+        }
+
+        .close-drawer-btn {
+            background: #ff4757; color: white; border: 2px solid #d81b60; padding: 1.2vh;
+            border-radius: 12px; font-size: 2vh; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 0 #d81b60; width: 100%; 
+            font-family: 'Fredoka', sans-serif; margin: 0; pointer-events: auto; 
+        }
+        .close-drawer-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #d81b60; }
+
+        @media (max-width: 768px) {
+            #sidebar-content-container {
+                right: auto; left: 0; bottom: -100%; top: auto; width: 100%; 
+                height: 85dvh; max-width: none;
+                border-left: none; border-top: 6px solid var(--main-teal); border-radius: 30px 30px 0 0;
+                transition: bottom 0.4s var(--bounce); 
+            }
+            #sidebar-content-container.open { bottom: 0; }
+        }
+
+        /* Bubbly Scroll Indicators */
+        .scroll-indicator {
+            position: absolute; right: 4vw; background: rgba(255, 71, 87, 0.95); color: white;
+            border-radius: 50%; width: 4.5vh; height: 4.5vh; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 2002; pointer-events: none; 
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .scroll-indicator svg { width: 2.5vh; height: 2.5vh; }
+        .scroll-indicator.visible { opacity: 1; }
+
+        .indicator-down { bottom: calc(10vh + env(safe-area-inset-bottom)); animation: bounceDownSide 1.5s infinite var(--bounce); }
+        .indicator-up { top: 8vh; animation: bounceUpSide 1.5s infinite var(--bounce); }
+
+        @keyframes bounceDownSide {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
+        }
+        @keyframes bounceUpSide {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(8px); }
+            60% { transform: translateY(4px); }
+        }
+
+        /* --- Custom Word Detail Modal --- */
+        #word-modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 3000;
+            opacity: 0; transition: opacity 0.3s ease;
+            align-items: center; justify-content: center; padding: 4vw; box-sizing: border-box;
+        }
+        #word-modal-overlay.show { opacity: 1; }
+
+        .word-modal-card {
+            background: white; border-radius: 20px; width: 100%; max-width: 650px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden;
+            transform: scale(0.9) translateY(20px); transition: transform 0.3s var(--bounce);
+        }
+        #word-modal-overlay.show .word-modal-card { transform: scale(1) translateY(0); }
+
+        .wm-header {
+            background: var(--main-teal); color: white; padding: 2.5vh 5vw;
+            text-align: center; position: relative;
+        }
+        .wm-title { font-size: 3.5vh; font-weight: 700; margin: 0; letter-spacing: 1px;}
+        .wm-jp { font-size: 1.8vh; color: #e0f7fa; margin-top: 0.5vh; font-weight: 600;}
+
+        .wm-body { padding: 3vh 5vw; color: #2f3542; }
+        
+        .wm-section-title {
+            font-size: 1.8vh; color: #747d8c; text-transform: uppercase; font-weight: 700;
+            margin: 0 0 1vh 0; letter-spacing: 1px; border-bottom: 2px solid #f1f2f6; padding-bottom: 0.5vh;
+        }
+
+        .wm-explanation { font-size: 2vh; line-height: 1.5; margin-bottom: 2.5vh; }
+        
+        .wm-examples { list-style: none; padding: 0; margin: 0 0 2.5vh 0; }
+        .wm-examples li {
+            background: #f8f9fa; border-left: 4px solid #1e90ff; padding: 1.5vh 3vw;
+            margin-bottom: 1vh; border-radius: 0 8px 8px 0; font-size: 1.8vh; line-height: 1.4;
+        }
+
+        .wm-footer { padding: 0 5vw 3vh 5vw; }
+        .wm-close-btn {
+            background: #f1f2f6; color: #2f3542; border: 2px solid #dfe4ea; padding: 1.5vh;
+            border-radius: 12px; font-size: 2vh; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 0 #dfe4ea; width: 100%; font-family: 'Fredoka', sans-serif;
+        }
+        .wm-close-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #dfe4ea; }
+
+        .highlight-warn { color: #ff4757; font-weight: bold; }
+        .highlight-good { color: #2ed573; font-weight: bold; }
+
     </style>
 </head>
 <body>
@@ -328,11 +475,14 @@
             <span id="day-label">Tuesday</span>
             Chat Practice
         </div>
-        <div id="progress-badge">0/0</div>
+        <div class="header-controls">
+            <div id="progress-badge">0/0</div>
+        </div>
     </div>
 
     <div id="chat-window">
-        </div>
+        <!-- Chat bubbles inject here -->
+    </div>
 
     <div id="interaction-area" class="hidden">
         <div id="input-row">
@@ -345,88 +495,290 @@
                 </svg>
             </button>
         </div>
+        
         <div id="word-bank"></div>
+        
+        <div class="action-row">
+            <button id="notes-btn" onclick="toggleVocabDrawer('open')">📝 Notes</button>
+        </div>
+
         <div id="desktop-hint">Press <b>Enter</b> to send &nbsp;|&nbsp; <b>Backspace</b> to delete</div>
+    </div>
+
+    <!-- Vocab Drawer & Overlay -->
+    <div id="notes-overlay" onclick="toggleVocabDrawer('close')"></div>
+    <div id="sidebar-content-container">
+        
+        <div class="drawer-header">
+            <h3 class="drawer-title">📚 Vocabulary</h3>
+            <div class="drawer-subtitle">Click a word for details!</div>
+        </div>
+        
+        <!-- Scroll Indicators (Side) -->
+        <div id="scroll-up-indicator" class="scroll-indicator indicator-up">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </div>
+        
+        <div id="vocab-container" onscroll="checkVocabScroll()">
+            <ul class="vocab-group-list" id="vocab-list-ul">
+                <!-- Injected via JS -->
+            </ul>
+            <div class="vocab-bottom-spacer"></div>
+        </div>
+        
+        <div id="scroll-down-indicator" class="scroll-indicator indicator-down">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+
+        <div class="drawer-footer">
+            <button class="close-drawer-btn" onclick="toggleVocabDrawer('close')">✖️ Close Drawer</button>
+        </div>
+    </div>
+
+    <!-- Word Detail Modal -->
+    <div id="word-modal-overlay" onclick="handleModalOverlayClick(event)">
+        <div class="word-modal-card">
+            <div class="wm-header">
+                <h2 class="wm-title" id="wm-title">Word</h2>
+                <div class="wm-jp" id="wm-jp">~日本語~</div>
+            </div>
+            <div class="wm-body">
+                <h4 class="wm-section-title">📝 Explanation</h4>
+                <div class="wm-explanation" id="wm-explanation">Explanation text goes here.</div>
+                
+                <h4 class="wm-section-title">💡 Examples</h4>
+                <ul class="wm-examples" id="wm-examples">
+                    <!-- Injected via JS -->
+                </ul>
+            </div>
+            <div class="wm-footer">
+                <button class="wm-close-btn" onclick="closeWordModal()">Got it!</button>
+            </div>
+        </div>
     </div>
 
     <script>
         /* ========================================================================
         TEACHER CONFIGURATION AREA - LESSON 11 & 12
-        Tenses are now mixed into the word banks. Prompts use <b> tags to highlight time words.
+        Vocab items now include detailed explanations and example sentences.
         ======================================================================== */
         const weeklyLessonData = {
-            2: [ 
-                {
-                    prompt: "Hey! Do you have any <b>plans</b> for the summer? 🏖️",
-                    wordBank: ["I want to read", "I wanted to read", "a lot of books", "during", "while", "the summer vacation."],
-                    validAnswers: ["I want to read a lot of books during the summer vacation."],
-                    failReply: "No worries! Let's talk about something else. 😅"
-                },
-                {
-                    prompt: "Wow, your English is great! When <b>did</b> you move here? ✈️",
-                    wordBank: ["I came to Japan", "I come to Japan", "when I was ten.", "during I was ten."],
-                    validAnswers: ["I came to Japan when I was ten."],
-                    failReply: "Ah, I see! You must have been studying hard. 📚"
-                },
-                {
-                    prompt: "<b>Did</b> Jim go sightseeing at all <b>last week</b>? 📸",
-                    wordBank: ["Jim visited", "Jim visits", "some temples", "while", "during", "he was in Japan."],
-                    validAnswers: ["Jim visited some temples while he was in Japan."],
-                    failReply: "I guess he mostly just relaxed. That's nice too! 🍵"
-                },
-                {
-                    prompt: "Are you leaving <b>on Sunday</b>? 🎒",
-                    wordBank: ["No, I will stay", "No, I stayed", "here", "until Monday.", "since Monday."],
-                    validAnswers: ["No, I will stay here until Monday."],
-                    failReply: "Got it! Have a safe trip whenever you go! 🚆"
-                },
-                {
-                    prompt: "Wait, <b>did</b> she take the test without her bag? 🎒",
-                    wordBank: ["Yes, she took", "Yes, she takes", "the test", "without", "with", "a dictionary."],
-                    validAnswers: ["Yes, she took the test without a dictionary."],
-                    failReply: "She's brave! I always need my dictionary. 📖"
-                }
-            ],
-            3: [ 
-                {
-                    prompt: "Why <b>were</b> you late <b>this morning</b>? ⏰",
-                    wordBank: ["I met", "I meet", "my teacher", "on my way to", "at my way to", "school."],
-                    validAnswers: ["I met my teacher on my way to school."],
-                    failReply: "Ah well, at least you made it! 🏃‍♂️"
-                },
-                {
-                    prompt: "<b>Did</b> she do okay on the test <b>yesterday</b>? 📝",
-                    wordBank: ["No. She didn't study", "No. She doesn't study", "math", "at all.", "very much."],
-                    validAnswers: ["No. She didn't study math at all."],
-                    failReply: "Oh no... hopefully she does better next time! 😅"
-                },
-                {
-                    prompt: "Why <b>is</b> John sleeping in the living room <b>right now</b>? 🛋️",
-                    wordBank: ["He was", "He is", "so tired that", "too tired that", "he fell asleep", "on the sofa."],
-                    validAnswers: ["He was so tired that he fell asleep on the sofa."],
-                    failReply: "Let's just let him rest. He had a long day. 🤫"
-                },
-                {
-                    prompt: "Have you ever tried this food <b>before</b>? 🍣",
-                    wordBank: ["No. I ate", "No. I eat", "sushi", "for the first time", "yesterday.", "tomorrow."],
-                    validAnswers: ["No. I ate sushi for the first time yesterday."],
-                    failReply: "It's an acquired taste, right? 😋"
-                },
-                {
-                    prompt: "What <b>did</b> you buy at the mall <b>today</b>? 🛍️",
-                    wordBank: ["I bought", "I buy", "a pair of shoes.", "a glass of shoes."],
-                    validAnswers: ["I bought a pair of shoes."],
-                    failReply: "Nice! Shopping is always fun. 👟"
-                }
-            ]
+            2: { 
+                vocab: [
+                    { en: "after", jp: "~したあとで", 
+                      explanation: "文と文をつなぐ接続詞、または名詞の前に置く前置詞として使います。「〜の後で」と順番を表します。",
+                      examples: ["I will do my homework <span class='highlight-good'>after</span> dinner."] },
+                    { en: "when", jp: "~のとき", 
+                      explanation: "出来事が起こった時間・タイミングを表します。うしろには主語と動詞が続きます。",
+                      examples: ["I came to Japan <span class='highlight-good'>when</span> I was ten."] },
+                    { en: "until", jp: "~するまで(ずっと)", 
+                      explanation: "ある時点までずっと、その動作や状態が<span class='highlight-warn'>継続すること</span>を示します。（※期限を表すbyとは違うので注意！）",
+                      examples: ["I will stay here <span class='highlight-good'>until</span> Monday."] },
+                    { en: "while", jp: "~する間に", 
+                      explanation: "特定の期間や、別のことが起きている「最中」を表します。",
+                      examples: ["Jim visited some temples <span class='highlight-good'>while</span> he was in Japan."] },
+                    { en: "since", jp: "~以来(ずっと)", 
+                      explanation: "過去のある時点から現在まで、ずっと続いていることを表します。",
+                      examples: ["I have lived here <span class='highlight-good'>since</span> 2015."] },
+                    { en: "before", jp: "~する前に", 
+                      explanation: "出来事の順番を表します。afterの反対です。",
+                      examples: ["Wash your hands <span class='highlight-good'>before</span> dinner."] },
+                    { en: "around", jp: "~のまわりに", 
+                      explanation: "場所だけでなく、時間の「だいたい〜時ごろ」を表すときにも使います。",
+                      examples: ["They sat <span class='highlight-good'>around</span> the table.", "Let's meet <span class='highlight-good'>around</span> 3:00."] },
+                    { en: "during", jp: "~の間に", 
+                      explanation: "特定の期間を表す<span class='highlight-warn'>名詞の前</span>に置きます。（※whileはうしろに主語＋動詞が来ます！）",
+                      examples: ["I read a lot of books <span class='highlight-good'>during</span> the summer."] },
+                    { en: "among", jp: "(3つ以上)の間に", 
+                      explanation: "3人以上、または3つ以上のグループの中にいるイメージです。",
+                      examples: ["This song is popular <span class='highlight-good'>among</span> young people."] },
+                    { en: "between", jp: "(2つ)の間に", 
+                      explanation: "2つのものの間に使います。「between A and B」の形がテストでよく出ます！",
+                      examples: ["I sat <span class='highlight-good'>between</span> Yuki and Ken."] },
+                    { en: "beside", jp: "~のそばに", 
+                      explanation: "すぐ隣、横にあるイメージです。byと似ていますがより位置が明確です。",
+                      examples: ["My bag is <span class='highlight-good'>beside</span> the desk."] },
+                    { en: "across", jp: "~を横切って", 
+                      explanation: "道などを渡る、反対側へ行く動きを表します。",
+                      examples: ["She walked <span class='highlight-good'>across</span> the street."] },
+                    { en: "along", jp: "~に沿って", 
+                      explanation: "道や川などに沿って進むイメージです。",
+                      examples: ["We walked <span class='highlight-good'>along</span> the river."] },
+                    { en: "without", jp: "~なしで", 
+                      explanation: "「〜を持たずに」「〜なしで」という意味になります。withの反対です。",
+                      examples: ["She took the test <span class='highlight-good'>without</span> a dictionary."] },
+                    { en: "against", jp: "~に反対して", 
+                      explanation: "意見や計画に反対するときに使います。「賛成（for）」の反対です。",
+                      examples: ["He is <span class='highlight-warn'>against</span> the plan.", "I am <span class='highlight-good'>for</span> the plan. (賛成)"] }
+                ],
+                questions: [ 
+                    {
+                        prompt: "Hey! Do you have any <b>plans</b> for the summer? 🏖️",
+                        wordBank: ["I want to read", "I wanted to read", "a lot of books", "during", "while", "the summer vacation."],
+                        validAnswers: ["I want to read a lot of books during the summer vacation."],
+                        failReply: "No worries! Let's talk about something else. 😅",
+                        hints: [
+                            { wrongWord: "I wanted to read", triggerWord: "plans", hint: "Pay attention to '<b>plans</b>'. This is about the future, but 'wanted' is past tense." }
+                        ]
+                    },
+                    {
+                        prompt: "Wow, your English is great! When <b>did</b> you move here? ✈️",
+                        wordBank: ["I came to Japan", "I come to Japan", "when I was ten.", "during I was ten."],
+                        validAnswers: ["I came to Japan when I was ten."],
+                        failReply: "Ah, I see! You must have been studying hard. 📚",
+                        hints: [
+                            { wrongWord: "I come to Japan", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. This happened in the past, so we need the past tense of 'come'." },
+                            { wrongWord: "during I was ten.", triggerWord: "during", hint: "'<b>during</b>' is only used with nouns (like 'during the summer'). Use '<b>when</b>' before a subject and verb." }
+                        ]
+                    },
+                    {
+                        prompt: "<b>Did</b> Jim go sightseeing at all <b>last week</b>? 📸",
+                        wordBank: ["Jim visited", "Jim visits", "some temples", "while", "during", "he was in Japan."],
+                        validAnswers: ["Jim visited some temples while he was in Japan."],
+                        failReply: "I guess he mostly just relaxed. That's nice too! 🍵",
+                        hints: [
+                            { wrongWord: "Jim visits", triggerWord: "last week", hint: "Pay attention to '<b>last week</b>'. This is in the past, so use the past tense." },
+                            { wrongWord: "during", triggerWord: "during", hint: "'<b>during</b>' is only used with noun phrases. Use '<b>while</b>' before a subject and verb (like 'he was')." }
+                        ]
+                    },
+                    {
+                        prompt: "Are you leaving <b>on Sunday</b>? 🎒",
+                        wordBank: ["No, I will stay", "No, I stayed", "here", "until Monday.", "since Monday."],
+                        validAnswers: ["No, I will stay here until Monday."],
+                        failReply: "Got it! Have a safe trip whenever you go! 🚆",
+                        hints: [
+                            { wrongWord: "I stayed", triggerWord: "Are you leaving", hint: "The question asks about future plans ('Are you leaving'). Use 'will stay'." },
+                            { wrongWord: "since Monday", triggerWord: "since", hint: "You are talking about continuing an action up to a point in the future. Use '<b>until</b>'." }
+                        ]
+                    },
+                    {
+                        prompt: "Wait, <b>did</b> she take the test without her bag? 🎒",
+                        wordBank: ["Yes, she took", "Yes, she takes", "the test", "without", "with", "a dictionary."],
+                        validAnswers: ["Yes, she took the test without a dictionary."],
+                        failReply: "She's brave! I always need my dictionary. 📖",
+                        hints: [
+                            { wrongWord: "she takes", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense of 'take'." },
+                            { wrongWord: "with a dictionary", triggerWord: "without", hint: "The question asks if she took it '<b>without</b>' her bag, implying she didn't have her things with her." }
+                        ]
+                    }
+                ]
+            },
+            3: { 
+                vocab: [
+                    { en: "on my way to ~", jp: "~に行く途中で",
+                      explanation: "どこかへ向かっている最中であることを表します。「my」の部分は主語に合わせてyour, his, herなどに変えて使います。",
+                      examples: ["I met him <span class='highlight-good'>on my way to</span> school."] }, 
+                    { en: "both A and B", jp: "AとBの両方",
+                      explanation: "AとBの二つのものが両方とも〜だ、と言いたいときに使います。",
+                      examples: ["I like <span class='highlight-good'>both</span> dogs <span class='highlight-good'>and</span> cats."] },
+                    { en: "not ~ at all", jp: "まったく〜ない",
+                      explanation: "否定を強く強調する表現です。「not」と一緒に使って「全然〜ない」となります。",
+                      examples: ["She did <span class='highlight-warn'>not</span> study math <span class='highlight-warn'>at all</span>."] }, 
+                    { en: "so ~ that ...", jp: "とても〜なので",
+                      explanation: "原因（とても〜だ）と結果（だから...だ）をつなぐ超重要表現です！",
+                      examples: ["He was <span class='highlight-good'>so</span> tired <span class='highlight-good'>that</span> he fell asleep."] },
+                    { en: "all day", jp: "1日じゅう",
+                      explanation: "朝から晩まで、その日ずっと続いていたことを表します。",
+                      examples: ["It rained <span class='highlight-good'>all day</span> yesterday."] }, 
+                    { en: "in front of ~", jp: "~の前で",
+                      explanation: "場所や位置関係を表す表現です。「〜の後ろ」はbehindです。",
+                      examples: ["Let's meet <span class='highlight-good'>in front of</span> the station."] },
+                    { en: "for the first time", jp: "初めて",
+                      explanation: "これまでに経験がなく、1回目であることを表します。",
+                      examples: ["I ate sushi <span class='highlight-good'>for the first time</span>."] }, 
+                    { en: "at first", jp: "最初は",
+                      explanation: "あとで状況が変わったことと対比して、「最初は（違った）」と使うことが多いです。",
+                      examples: ["<span class='highlight-good'>At first</span>, I didn't like him. (今は好き)"] },
+                    { en: "at last", jp: "ついに",
+                      explanation: "長く待ったり苦労した結果、ようやく何かが起きたときに使います。",
+                      examples: ["<span class='highlight-good'>At last</span>, the train arrived."] }, 
+                    { en: "as usual", jp: "いつもどおりに",
+                      explanation: "普段と変わらない様子、いつもの習慣通りであることを表します。",
+                      examples: ["He got up early <span class='highlight-good'>as usual</span>."] },
+                    { en: "in the middle of ~", jp: "~の最中に",
+                      explanation: "場所の真ん中や、行動の最中を表します。",
+                      examples: ["I woke up <span class='highlight-good'>in the middle of</span> the night."] }, 
+                    { en: "each other", jp: "お互い",
+                      explanation: "2人またはそれ以上の人たちが、互いに何かをするときに使います。",
+                      examples: ["We always help <span class='highlight-good'>each other</span>."] },
+                    { en: "in my opinion", jp: "私の意見では",
+                      explanation: "自分の考えを主張する前に付け加える、便利な前置きフレーズです。",
+                      examples: ["<span class='highlight-good'>In my opinion</span>, this book is great."] }, 
+                    { en: "all the way", jp: "はるばる",
+                      explanation: "遠くから来たことや、ずっと続く道のりを強調します。",
+                      examples: ["He came <span class='highlight-good'>all the way</span> from Africa."] },
+                    { en: "a pair of ~", jp: "1組の~/1足の~",
+                      explanation: "靴(shoes)、手袋(gloves)、メガネ(glasses)など、2つで1セットのものに使います。",
+                      examples: ["I bought <span class='highlight-good'>a pair of</span> shoes."] }, 
+                    { en: "a glass of ~", jp: "1杯の~",
+                      explanation: "水(water)や牛乳(milk)など、冷たい飲み物を数えるときに使います。（温かいものはa cup of）",
+                      examples: ["I would like <span class='highlight-good'>a glass of</span> water."] },
+                    { en: "a slice of ~", jp: "1切れの~",
+                      explanation: "パンやピザなど、薄く切ったものを数えるときに使います。",
+                      examples: ["She ate <span class='highlight-good'>a slice of</span> toast."] }
+                ],
+                questions: [ 
+                    {
+                        prompt: "Why <b>were</b> you late <b>this morning</b>? ⏰",
+                        wordBank: ["I met", "I meet", "my teacher", "on my way to", "at my way to", "school."],
+                        validAnswers: ["I met my teacher on my way to school."],
+                        failReply: "Ah well, at least you made it! 🏃‍♂️",
+                        hints: [
+                            { wrongWord: "I meet", triggerWord: "were", hint: "Pay attention to '<b>were</b>' and '<b>this morning</b>'. Use the past tense of 'meet'." },
+                            { wrongWord: "at my way to", triggerWord: "on", hint: "The correct preposition for this phrase is '<b>on</b> my way to'." }
+                        ]
+                    },
+                    {
+                        prompt: "<b>Did</b> she do okay on the test <b>yesterday</b>? 📝",
+                        wordBank: ["No. She didn't study", "No. She doesn't study", "math", "at all.", "very much."],
+                        validAnswers: ["No. She didn't study math at all."],
+                        failReply: "Oh no... hopefully she does better next time! 😅",
+                        hints: [
+                            { wrongWord: "doesn't study", triggerWord: "yesterday", hint: "Pay attention to '<b>yesterday</b>'. Use the past tense 'didn't'." },
+                            { wrongWord: "very much.", triggerWord: "at all", hint: "To emphasize 'not' strongly (まったく〜ない), pair 'didn't' with '<b>at all</b>'." }
+                        ]
+                    },
+                    {
+                        prompt: "Why <b>is</b> John sleeping in the living room <b>right now</b>? 🛋️",
+                        wordBank: ["He was", "He is", "so tired that", "too tired that", "he fell asleep", "on the sofa."],
+                        validAnswers: ["He was so tired that he fell asleep on the sofa."],
+                        failReply: "Let's just let him rest. He had a long day. 🤫",
+                        hints: [
+                            { wrongWord: "He is", triggerWord: "fell asleep", hint: "Look at the end of the sentence: 'he fell asleep'. You are describing how he felt <i>before</i> falling asleep, so use past tense." },
+                            { wrongWord: "too tired that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'." }
+                        ]
+                    },
+                    {
+                        prompt: "Have you ever tried this food <b>before</b>? 🍣",
+                        wordBank: ["No. I ate", "No. I eat", "sushi", "for the first time", "yesterday.", "tomorrow."],
+                        validAnswers: ["No. I ate sushi for the first time yesterday."],
+                        failReply: "It's an acquired taste, right? 😋",
+                        hints: [
+                            { wrongWord: "I eat", triggerWord: "yesterday", hint: "You are talking about an experience in the past. Use the past tense of 'eat'." },
+                            { wrongWord: "tomorrow", triggerWord: "before", hint: "The question is about past experience. Use '<b>yesterday</b>'." }
+                        ]
+                    },
+                    {
+                        prompt: "What <b>did</b> you buy at the mall <b>today</b>? 🛍️",
+                        wordBank: ["I bought", "I buy", "a pair of shoes.", "a glass of shoes."],
+                        validAnswers: ["I bought a pair of shoes."],
+                        failReply: "Nice! Shopping is always fun. 👟",
+                        hints: [
+                            { wrongWord: "I buy", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense of 'buy'." },
+                            { wrongWord: "a glass of shoes.", triggerWord: "pair", hint: "Shoes come in twos! We use '<b>a pair of</b>' for shoes." }
+                        ]
+                    }
+                ]
+            }
         };
 
-        const emptyDayFallback = []; 
+        const emptyDayFallback = { vocab: [], questions: [] }; 
 
         // --- APP LOGIC ---
         const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         const todayInt = new Date().getDay();
-        const currentChallengeArray = weeklyLessonData[todayInt] || emptyDayFallback;
+        const currentDayData = weeklyLessonData[todayInt] || emptyDayFallback;
+        const currentChallengeArray = currentDayData.questions || [];
         
         const MAX_ATTEMPTS = 3;
         let isBotTyping = false;
@@ -435,13 +787,20 @@
         let savedState = JSON.parse(localStorage.getItem('dailyChatProgress')) || {};
         
         if (savedState.day !== todayInt) {
-            savedState = { day: todayInt, qIndex: 0, completed: false, attempts: 0, score: 0 };
+            savedState = { 
+                day: todayInt, qIndex: 0, completed: false, attempts: 0, score: 0, 
+                scrollDownSeen: false, scrollUpSeen: false, scrollHintsCompleted: false 
+            };
             saveProgress();
         }
+        
+        // Safety patch for existing users migrating formats
+        if (savedState.scrollHintsCompleted === undefined) { savedState.scrollHintsCompleted = false; savedState.scrollDownSeen = false; savedState.scrollUpSeen = false; saveProgress(); }
 
         window.onload = () => {
             document.getElementById('day-label').innerText = dayNames[todayInt];
             updateProgressUI();
+            renderVocab();
             checkDevice();
             
             if (currentChallengeArray.length === 0) {
@@ -455,6 +814,8 @@
                 startNextQuestion();
             }
         };
+
+        window.addEventListener('resize', scrollToBottom);
 
         function checkDevice() {
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -478,6 +839,129 @@
             }
         });
 
+        // --- VOCAB DRAWER LOGIC ---
+        function renderVocab() {
+            const ul = document.getElementById('vocab-list-ul');
+            ul.innerHTML = '';
+            
+            if(!currentDayData.vocab) return;
+
+            currentDayData.vocab.forEach(v => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="vocab-en">${v.en}</span><span class="vocab-jp">${v.jp}</span>`;
+                
+                // Add click listener to open modal
+                li.onclick = () => openWordModal(v);
+                ul.appendChild(li);
+            });
+        }
+
+        function toggleVocabDrawer(action) {
+            const drawer = document.getElementById('sidebar-content-container');
+            const overlay = document.getElementById('notes-overlay');
+            const isOpen = drawer.classList.contains('open');
+            let shouldOpen = action === 'open' ? true : (action === 'close' ? false : !isOpen);
+
+            if (shouldOpen) {
+                drawer.classList.add('open');
+                overlay.style.display = 'block';
+                setTimeout(() => {
+                    overlay.classList.add('show');
+                    checkVocabScroll(); 
+                }, 300);
+            } else {
+                drawer.classList.remove('open');
+                overlay.classList.remove('show');
+                setTimeout(() => overlay.style.display = 'none', 400);
+            }
+        }
+
+        // --- WORD DETAIL MODAL LOGIC ---
+        function openWordModal(wordObj) {
+            document.getElementById('wm-title').innerText = wordObj.en;
+            document.getElementById('wm-jp').innerText = wordObj.jp;
+            document.getElementById('wm-explanation').innerHTML = wordObj.explanation || "No details available.";
+            
+            const exUl = document.getElementById('wm-examples');
+            exUl.innerHTML = '';
+            
+            if (wordObj.examples && wordObj.examples.length > 0) {
+                wordObj.examples.forEach(ex => {
+                    let li = document.createElement('li');
+                    li.innerHTML = ex;
+                    exUl.appendChild(li);
+                });
+            } else {
+                let li = document.createElement('li');
+                li.innerText = "No examples provided.";
+                exUl.appendChild(li);
+            }
+
+            const modalOverlay = document.getElementById('word-modal-overlay');
+            modalOverlay.style.display = 'flex';
+            setTimeout(() => {
+                modalOverlay.classList.add('show');
+            }, 10);
+        }
+
+        function closeWordModal() {
+            const modalOverlay = document.getElementById('word-modal-overlay');
+            modalOverlay.classList.remove('show');
+            setTimeout(() => {
+                modalOverlay.style.display = 'none';
+            }, 300);
+        }
+
+        function handleModalOverlayClick(e) {
+            if (e.target.id === 'word-modal-overlay') {
+                closeWordModal();
+            }
+        }
+
+        // --- DYNAMIC SCROLL HINTS LOGIC ---
+        function checkVocabScroll() {
+            if (savedState.scrollHintsCompleted) return;
+
+            const container = document.getElementById('vocab-container');
+            const downInd = document.getElementById('scroll-down-indicator');
+            const upInd = document.getElementById('scroll-up-indicator');
+
+            // If the list naturally fits everything without a scrollbar, hide hints forever
+            if (container.scrollHeight <= container.clientHeight + 5) {
+                savedState.scrollHintsCompleted = true;
+                saveProgress();
+                downInd.classList.remove('visible');
+                upInd.classList.remove('visible');
+                return;
+            }
+
+            const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 15;
+            const isAtTop = container.scrollTop <= 15;
+
+            if (isAtBottom && !savedState.scrollDownSeen) {
+                savedState.scrollDownSeen = true;
+                saveProgress();
+            }
+
+            if (savedState.scrollDownSeen && isAtTop && !savedState.scrollUpSeen) {
+                savedState.scrollUpSeen = true;
+                savedState.scrollHintsCompleted = true; 
+                saveProgress();
+            }
+
+            if (!savedState.scrollDownSeen) {
+                downInd.classList.add('visible');
+                upInd.classList.remove('visible');
+            } else if (!savedState.scrollUpSeen) {
+                downInd.classList.remove('visible');
+                upInd.classList.add('visible');
+            } else {
+                downInd.classList.remove('visible');
+                upInd.classList.remove('visible');
+            }
+        }
+
+        // --- CORE GAME FUNCTIONS ---
         function saveProgress() {
             localStorage.setItem('dailyChatProgress', JSON.stringify(savedState));
             updateProgressUI();
@@ -490,7 +974,7 @@
         }
 
         function resetDay() {
-            savedState = { day: todayInt, qIndex: 0, completed: false, attempts: 0, score: 0 };
+            savedState = { day: todayInt, qIndex: 0, completed: false, attempts: 0, score: 0, scrollDownSeen: false, scrollUpSeen: false, scrollHintsCompleted: false };
             saveProgress();
             location.reload(); 
         }
@@ -564,6 +1048,7 @@
                     renderWordBank(questionData.wordBank);
                     document.getElementById('interaction-area').classList.remove('hidden');
                     document.getElementById('interaction-area').style.display = 'flex';
+                    scrollToBottom();
                 }, 500);
             } else {
                 advanceToNextSequence(questionData.failReply);
@@ -592,14 +1077,15 @@
             tile.onclick = () => moveToBank(tile);
             tile.classList.add('in-builder'); 
             builder.appendChild(tile);
+            scrollToBottom(); 
         }
 
         function moveToBank(tile) {
-            if (tile.classList.contains('disabled-tile')) return;
             const bank = document.getElementById('word-bank');
             tile.onclick = () => moveToSentence(tile);
             tile.classList.remove('in-builder'); 
             bank.appendChild(tile);
+            scrollToBottom(); 
         }
 
         function clearSentence() {
@@ -609,7 +1095,6 @@
             }
         }
 
-        // Changed innerText to innerHTML to allow the <b> tags to render correctly.
         function addBubble(text, className) {
             const chat = document.getElementById('chat-window');
             const bubble = document.createElement('div');
@@ -621,7 +1106,9 @@
 
         function scrollToBottom() {
             const chat = document.getElementById('chat-window');
-            setTimeout(() => { chat.scrollTop = chat.scrollHeight; }, 50);
+            setTimeout(() => { 
+                chat.scrollTop = chat.scrollHeight; 
+            }, 100);
         }
 
         function hideInteraction() {
@@ -641,22 +1128,6 @@
 
                 setTimeout(() => { startNextQuestion(); }, 2000);
             }, 1500);
-        }
-
-        function greyOutDistractor(currentQ) {
-            const bank = document.getElementById('word-bank');
-            const tiles = Array.from(bank.querySelectorAll('.word-tile:not(.disabled-tile)'));
-            
-            // Because tiles are now chunks, we check if the tile's exact text is found inside any of the valid answers.
-            const distractors = tiles.filter(t => {
-                return !currentQ.validAnswers.some(ans => ans.includes(t.innerText));
-            });
-
-            if (distractors.length > 0) {
-                const targetTile = distractors[Math.floor(Math.random() * distractors.length)];
-                targetTile.classList.add('disabled-tile');
-                targetTile.onclick = null; 
-            }
         }
 
         function checkAnswer() {
@@ -681,11 +1152,47 @@
                 
                 advanceToNextSequence("Spot on! Great job! 🌟");
             } else {
-                if (savedState.attempts === 0) {
-                    greyOutDistractor(currentQ);
+                let specificHint = null;
+                if (currentQ.hints) {
+                    for (let h of currentQ.hints) {
+                        if (userSentence.includes(h.wrongWord)) {
+                            specificHint = h.hint;
+                            break; 
+                        }
+                    }
                 }
 
-                clearSentence();
+                // Determine the longest correctly ordered prefix
+                let maxMatch = 0;
+                for (let valid of currentQ.validAnswers) {
+                    let currentMatch = 0;
+                    let builtString = "";
+                    for (let i = 0; i < tiles.length; i++) {
+                        builtString += (i > 0 ? " " : "") + tiles[i].innerText;
+                        if (valid === builtString || valid.startsWith(builtString + " ")) {
+                            currentMatch = i + 1;
+                        } else {
+                            break;
+                        }
+                    }
+                    if (currentMatch > maxMatch) maxMatch = currentMatch;
+                }
+
+                // Move incorrectly ordered tiles back, and grey out distractors
+                for (let i = 0; i < tiles.length; i++) {
+                    let t = tiles[i];
+                    let isDistractor = !currentQ.validAnswers.some(ans => ans.includes(t.innerText));
+                    
+                    if (i >= maxMatch) {
+                        moveToBank(t);
+                    }
+
+                    if (isDistractor) {
+                        t.classList.add('disabled-tile');
+                        t.onclick = null; 
+                    }
+                }
+
                 savedState.attempts++;
                 saveProgress();
 
@@ -696,11 +1203,18 @@
                     hideInteraction();
                     showTypingIndicator(() => {
                         let left = MAX_ATTEMPTS - savedState.attempts;
-                        addBubble(`Hmm, that doesn't sound quite right. Let's try again! (${left} tries left)`, "sys-bubble");
+                        let tryText = `<span style="display:block; margin-top:1vh; font-size: 0.8em; color: #a4b0be; text-align: right;">(${left} tries left)</span>`;
+                        
+                        let botMsg = specificHint 
+                            ? `Hmm... ${specificHint} ${tryText}` 
+                            : `Hmm, that doesn't sound quite right. Let's try again! ${tryText}`;
+                            
+                        addBubble(botMsg, "bot-bubble");
                         
                         setTimeout(() => {
                             document.getElementById('interaction-area').classList.remove('hidden');
                             document.getElementById('interaction-area').style.display = 'flex';
+                            scrollToBottom();
                         }, 500);
                     }, 800);
                 }
@@ -709,5 +1223,3 @@
     </script>
 </body>
 </html>
-
-
