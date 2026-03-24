@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily English Chat</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg-color: #e0f7fa;
+            --main-teal: #00838F;
+            --bot-bg: #ffffff;
+            --user-bg: #1e90ff;
+            --bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            color: #2f3542;
+            overflow: hidden;
+        }
+
+        /* Top Header */
+        #header {
+            background: var(--main-teal);
+            color: white;
+            padding: 1.5vh 5vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .header-title {
+            font-size: 2.5vh;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #day-label {
+            font-size: 1.5vh;
+            color: #b2ebf2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        #progress-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5vh 3vw;
+            border-radius: 20px;
+            font-size: 1.8vh;
+            font-weight: 600;
+        }
+
+        /* Chat Area */
+        #chat-window {
+            flex: 1;
+            padding: 3vh 4vw;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2vh;
+            scroll-behavior: smooth;
+        }
+
+        .bubble {
+            max-width: 80%;
+            padding: 1.5vh 4vw;
+            border-radius: 20px;
+            font-size: 2.2vh;
+            line-height: 1.4;
+            animation: popIn 0.4s var(--bounce) forwards;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.05);
+            opacity: 0;
+            transform: scale(0.8) translateY(10px);
+        }
+
+        .bot-bubble {
+            background: var(--bot-bg);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            border: 2px solid #dfe4ea;
+        }
+
+        .user-bubble {
+            background: var(--user-bg);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+            border: 2px solid #0984e3;
+        }
+
+        .sys-bubble {
+            background: #f1f2f6;
+            color: #747d8c;
+            align-self: center;
+            font-size: 1.8vh;
+            border: 2px dashed #ced6e0;
+            box-shadow: none;
+            text-align: center;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 0.5vw;
+            padding: 1vh 2vw;
+            align-items: center;
+            height: 2vh;
+        }
+
+        .dot {
+            width: 0.8vh;
+            height: 0.8vh;
+            background: #a4b0be;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        @keyframes popIn {
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        /* Interaction Area */
+        #interaction-area {
+            background: white;
+            border-top: 4px solid #dfe4ea;
+            padding: 2vh 4vw 4vh 4vw;
+            display: flex;
+            flex-direction: column;
+            gap: 2vh;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        #interaction-area.hidden {
+            transform: translateY(100%);
+            display: none;
+        }
+
+        /* Builder Box */
+        #sentence-builder {
+            min-height: 6vh;
+            background: #f8f9fa;
+            border: 3px dashed #a4b0be;
+            border-radius: 15px;
+            padding: 1.5vh;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1vh;
+            align-items: center;
+        }
+
+        /* Word Tiles */
+        .word-tile {
+            background: #ffa502;
+            color: white;
+            padding: 1vh 3vw;
+            border-radius: 10px;
+            font-size: 2.2vh;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #e58e26;
+            border: 2px solid #e58e26;
+            user-select: none;
+            transition: all 0.1s;
+        }
+
+        .word-tile:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 #e58e26;
+        }
+
+        #word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5vh;
+            min-height: 12vh;
+            align-items: flex-start;
+        }
+
+        /* Controls */
+        #controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 2vw;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1.5vh;
+            border-radius: 15px;
+            font-size: 2vh;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+            font-family: 'Fredoka', sans-serif;
+            transition: transform 0.1s;
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 rgba(0,0,0,0.2);
+        }
+
+        .btn-clear { background: #ff4757; color: white; border: 2px solid #d81b60; }
+        .btn-send { background: #2ed573; color: white; border: 2px solid #218c53; }
+        
+    </style>
+</head>
+<body>
+
+    <div id="header">
+        <div class="header-title">
+            <span id="day-label">Tuesday</span>
+            Chat Practice
+        </div>
+        <div id="progress-badge">0/0</div>
+    </div>
+
+    <div id="chat-window">
+        <!-- Chat bubbles inject here -->
+    </div>
+
+    <div id="interaction-area" class="hidden">
+        <div id="sentence-builder"></div>
+        <div id="word-bank"></div>
+        
+        <div id="controls">
+            <button class="btn btn-clear" onclick="clearSentence()">✖ Clear</button>
+            <button class="btn btn-send" onclick="checkAnswer()">➤ Send</button>
+        </div>
+    </div>
+
+    <script>
+        /* ========================================================================
+        TEACHER CONFIGURATION AREA - LESSON 11 & 12
+        Each day now takes an ARRAY of question objects. 
+        ======================================================================== */
+        const weeklyLessonData = {
+            2: [ // TUESDAY: Conjunctions & Prepositions (Lesson 11)
+                {
+                    prompt: "Hey! Do you have any big plans for the summer? 🏖️",
+                    wordBank: ["I", "want", "to", "read", "a", "lot", "of", "books", "during", "the", "summer", "vacation.", "while", "until"],
+                    validAnswers: ["I want to read a lot of books during the summer vacation."],
+                    failReply: "No worries! Let's talk about something else. 😅"
+                },
+                {
+                    prompt: "Wow, your English is great! When did you move here? ✈️",
+                    wordBank: ["I", "came", "to", "Japan", "when", "I", "was", "ten.", "during", "after"],
+                    validAnswers: ["I came to Japan when I was ten."],
+                    failReply: "Ah, I see! You must have been studying hard. 📚"
+                },
+                {
+                    prompt: "Did Jim go sightseeing at all? 📸",
+                    wordBank: ["Jim", "visited", "some", "temples", "while", "he", "was", "in", "Japan.", "during", "before"],
+                    validAnswers: ["Jim visited some temples while he was in Japan."],
+                    failReply: "I guess he mostly just relaxed. That's nice too! 🍵"
+                },
+                {
+                    prompt: "Are you leaving on Sunday? 🎒",
+                    wordBank: ["No,", "I", "will", "stay", "here", "until", "Monday.", "since", "while"],
+                    validAnswers: ["No, I will stay here until Monday."],
+                    failReply: "Got it! Have a safe trip whenever you go! 🚆"
+                },
+                {
+                    prompt: "Wait, did she take the test without her bag? 🎒",
+                    wordBank: ["Yes,", "she", "took", "the", "test", "without", "a", "dictionary.", "with", "around"],
+                    validAnswers: ["Yes, she took the test without a dictionary."],
+                    failReply: "She's brave! I always need my dictionary. 📖"
+                }
+            ],
+            3: [ // WEDNESDAY: Idioms & Expressions (Lesson 12)
+                {
+                    prompt: "Why were you late this morning? ⏰",
+                    wordBank: ["I", "met", "my", "teacher", "on", "my", "way", "to", "school.", "at", "in"],
+                    validAnswers: ["I met my teacher on my way to school."],
+                    failReply: "Ah well, at least you made it! 🏃‍♂️"
+                },
+                {
+                    prompt: "Did she do okay on the test yesterday? 📝",
+                    wordBank: ["No.", "She", "didn't", "study", "math", "at", "all.", "very", "much"],
+                    validAnswers: ["No. She didn't study math at all."],
+                    failReply: "Oh no... hopefully she does better next time! 😅"
+                },
+                {
+                    prompt: "Why is John sleeping in the living room? 🛋️",
+                    wordBank: ["He", "was", "so", "tired", "that", "he", "fell", "asleep", "on", "the", "sofa.", "very", "too"],
+                    validAnswers: ["He was so tired that he fell asleep on the sofa."],
+                    failReply: "Let's just let him rest. He had a long day. 🤫"
+                },
+                {
+                    prompt: "Have you ever tried this food before? 🍣",
+                    wordBank: ["No.", "I", "ate", "sushi", "for", "the", "first", "time", "yesterday.", "at", "last"],
+                    validAnswers: ["No. I ate sushi for the first time yesterday."],
+                    failReply: "It's an acquired taste, right? 😋"
+                },
+                {
+                    prompt: "What did you buy at the mall today? 🛍️",
+                    wordBank: ["I", "bought", "a", "pair", "of", "shoes.", "glass", "slice"],
+                    validAnswers: ["I bought a pair of shoes."],
+                    failReply: "Nice! Shopping is always fun. 👟"
+                }
+            ]
+        };
+
+        // Fallback for days with no data
+        const emptyDayFallback = []; 
+
+        // --- APP LOGIC ---
+        const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const todayInt = new Date().getDay();
+        const currentChallengeArray = weeklyLessonData[todayInt] || emptyDayFallback;
+        
+        const MAX_ATTEMPTS = 3;
+        let isBotTyping = false;
+
+        // Load State
+        let savedState = JSON.parse(localStorage.getItem('dailyChatProgress')) || {};
+        
+        // Reset state if it's a new day
+        if (savedState.day !== todayInt) {
+            savedState = { day: todayInt, qIndex: 0, completed: false, attempts: 0 };
+            saveProgress();
+        }
+
+        window.onload = () => {
+            document.getElementById('day-label').innerText = dayNames[todayInt];
+            updateProgressUI();
+            
+            if (currentChallengeArray.length === 0) {
+                addBubble("No practice scheduled for today! Have a great day! 🎉", "sys-bubble");
+                return;
+            }
+
+            if (savedState.completed) {
+                addBubble("✅ You already completed all of today's chats! Awesome job.", "sys-bubble");
+            } else {
+                startNextQuestion();
+            }
+        };
+
+        function saveProgress() {
+            localStorage.setItem('dailyChatProgress', JSON.stringify(savedState));
+            updateProgressUI();
+        }
+
+        function updateProgressUI() {
+            const total = currentChallengeArray.length;
+            const current = savedState.completed ? total : savedState.qIndex;
+            document.getElementById('progress-badge').innerText = `${current}/${total}`;
+        }
+
+        function showTypingIndicator(callback, duration = 1200) {
+            isBotTyping = true;
+            const chat = document.getElementById('chat-window');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'bubble bot-bubble typing-indicator';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+            
+            chat.appendChild(typingDiv);
+            scrollToBottom();
+
+            setTimeout(() => {
+                const indicator = document.getElementById('typing-indicator');
+                if (indicator) indicator.remove();
+                isBotTyping = false;
+                callback();
+            }, duration);
+        }
+
+        function startNextQuestion() {
+            if (savedState.qIndex >= currentChallengeArray.length) {
+                savedState.completed = true;
+                saveProgress();
+                showTypingIndicator(() => {
+                    addBubble("🎉 You finished all the chat practice for today! See you tomorrow!", "sys-bubble");
+                }, 1000);
+                return;
+            }
+
+            const isLastQuestion = (savedState.qIndex === currentChallengeArray.length - 1);
+            const questionData = currentChallengeArray[savedState.qIndex];
+
+            // If it's the very last question and they haven't attempted it yet
+            if (isLastQuestion && savedState.attempts === 0) {
+                showTypingIndicator(() => {
+                    addBubble("Okay, last question for today! You've got this! 🔥", "bot-bubble");
+                    
+                    setTimeout(() => {
+                        showTypingIndicator(() => {
+                            presentPrompt(questionData);
+                        }, 1500);
+                    }, 1000);
+
+                }, 1000);
+            } else {
+                showTypingIndicator(() => {
+                    presentPrompt(questionData);
+                }, 1200);
+            }
+        }
+
+        function presentPrompt(questionData) {
+            addBubble(questionData.prompt, "bot-bubble");
+            
+            // Only show word bank if they haven't maxed out attempts
+            if (savedState.attempts < MAX_ATTEMPTS) {
+                setTimeout(() => {
+                    renderWordBank(questionData.wordBank);
+                    document.getElementById('interaction-area').classList.remove('hidden');
+                    document.getElementById('interaction-area').style.display = 'flex';
+                }, 500);
+            } else {
+                // If they reload on a failed state, just skip to next
+                advanceToNextSequence(questionData.failReply);
+            }
+        }
+
+        function renderWordBank(words) {
+            const bank = document.getElementById('word-bank');
+            bank.innerHTML = '';
+            
+            // Shuffle
+            let shuffled = [...words].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(word => {
+                let tile = document.createElement('div');
+                tile.className = 'word-tile';
+                tile.innerText = word;
+                tile.onclick = () => moveToSentence(tile);
+                bank.appendChild(tile);
+            });
+            clearSentence();
+        }
+
+        function moveToSentence(tile) {
+            const builder = document.getElementById('sentence-builder');
+            tile.onclick = () => moveToBank(tile);
+            builder.appendChild(tile);
+        }
+
+        function moveToBank(tile) {
+            const bank = document.getElementById('word-bank');
+            tile.onclick = () => moveToSentence(tile);
+            bank.appendChild(tile);
+        }
+
+        function clearSentence() {
+            const builder = document.getElementById('sentence-builder');
+            while (builder.firstChild) {
+                moveToBank(builder.firstChild);
+            }
+        }
+
+        function addBubble(text, className) {
+            const chat = document.getElementById('chat-window');
+            const bubble = document.createElement('div');
+            bubble.className = `bubble ${className}`;
+            bubble.innerText = text;
+            chat.appendChild(bubble);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            const chat = document.getElementById('chat-window');
+            setTimeout(() => { chat.scrollTop = chat.scrollHeight; }, 50);
+        }
+
+        function hideInteraction() {
+            const area = document.getElementById('interaction-area');
+            area.classList.add('hidden');
+            setTimeout(() => { area.style.display = 'none'; }, 300); // Wait for transition
+        }
+
+        function advanceToNextSequence(botReplyText) {
+            hideInteraction();
+            showTypingIndicator(() => {
+                addBubble(botReplyText, "bot-bubble");
+                
+                // Advance the state
+                savedState.qIndex++;
+                savedState.attempts = 0;
+                saveProgress();
+
+                // Wait a moment, then start next question
+                setTimeout(() => {
+                    startNextQuestion();
+                }, 2000);
+            }, 1500);
+        }
+
+        function checkAnswer() {
+            const builder = document.getElementById('sentence-builder');
+            const tiles = builder.querySelectorAll('.word-tile');
+            if (tiles.length === 0) return;
+
+            let userSentence = Array.from(tiles).map(t => t.innerText).join(" ");
+            const currentQ = currentChallengeArray[savedState.qIndex];
+
+            // Show user text
+            addBubble(userSentence, "user-bubble");
+            clearSentence();
+            hideInteraction();
+
+            let isCorrect = currentQ.validAnswers.includes(userSentence);
+
+            if (isCorrect) {
+                advanceToNextSequence("Spot on! Great job! 🌟");
+            } else {
+                savedState.attempts++;
+                saveProgress();
+
+                if (savedState.attempts >= MAX_ATTEMPTS) {
+                    advanceToNextSequence(currentQ.failReply);
+                } else {
+                    showTypingIndicator(() => {
+                        let left = MAX_ATTEMPTS - savedState.attempts;
+                        addBubble(`Hmm, that doesn't sound quite right. Let's try again! (${left} tries left)`, "sys-bubble");
+                        
+                        setTimeout(() => {
+                            document.getElementById('interaction-area').classList.remove('hidden');
+                            document.getElementById('interaction-area').style.display = 'flex';
+                        }, 500);
+                    }, 800);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+
