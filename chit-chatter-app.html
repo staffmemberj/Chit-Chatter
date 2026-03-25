@@ -46,6 +46,12 @@
             font-weight: 700;
             display: flex;
             flex-direction: column;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        
+        .header-title:active {
+            transform: scale(0.95);
         }
 
         #day-label {
@@ -238,6 +244,7 @@
             min-height: 8vh;
             max-height: 40vh; 
             overflow-y: auto;
+            padding-bottom: 1vh;
         }
 
         .word-tile {
@@ -314,7 +321,8 @@
                 font-size: 2.2vh;
             }
             #word-bank {
-                max-height: 28dvh; 
+                max-height: 35dvh; 
+                margin-bottom: 1vh;
             }
             .quick-review-box {
                 max-height: 30vh; 
@@ -350,7 +358,7 @@
         #notes-overlay.show { opacity: 1; }
 
         #sidebar-content-container {
-            position: fixed; right: -100%; top: 0; width: 90vw; max-width: 500px; height: 100dvh;
+            position: fixed; right: -100%; top: 0; width: 95vw; max-width: 600px; height: 100dvh;
             background: white; z-index: 10001; transition: right 0.4s var(--bounce);
             border-left: 6px solid var(--main-teal); 
             box-shadow: -10px 0 20px rgba(0,0,0,0.15); 
@@ -398,19 +406,15 @@
         }
         .vocab-en { 
             font-weight: bold; color: var(--main-teal); 
-            font-size: clamp(16px, 2.2vh, 22px); 
-            white-space: nowrap; 
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: clamp(15px, 2.2vh, 22px); 
             width: 100%;
+            text-align: center;
         }
         .vocab-jp { 
             color: #2f3542; font-weight: 500;
-            font-size: clamp(12px, 1.6vh, 18px); 
-            white-space: nowrap; 
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: clamp(13px, 1.6vh, 18px); 
             width: 100%;
+            text-align: center;
         }
 
         .drawer-footer {
@@ -533,7 +537,7 @@
     </div>
 
     <div id="header">
-        <div class="header-title">
+        <div class="header-title" onclick="returnToMenu()">
             <span id="day-label">Tuesday</span>
             Chit Chatter
         </div>
@@ -1502,6 +1506,23 @@
             }
         }
 
+        function restartLearnMode() {
+            playSound('tap');
+            document.getElementById('chat-window').innerHTML = '';
+            appMode = 'learn';
+            savedState.learnIndex = 0;
+            savedState.learnCompleted = false;
+            savedState.learnPhase = 'ask_knowledge';
+            savedState.knewVocab = false;
+            saveProgress();
+            
+            if (currentLearnArray.length === 0) {
+                addBubble("No practice scheduled for today! Have a great day! 🎉", "sys-bubble");
+                return;
+            }
+            startNextQuestion();
+        }
+
         function showFinalScoreCard() {
             playSound('tada');
             const chat = document.getElementById('chat-window');
@@ -1530,6 +1551,7 @@
                     Great job reviewing the vocabulary.
                     ${vocabReviewHtml}
                     <div style="display:flex; flex-direction: column; gap: 1vh; width: 100%;">
+                        <button class="replay-btn" style="background: #a29bfe; border-color: #6c5ce7; box-shadow: 0 3px 0 #6c5ce7; margin: 0; width: 100%; box-sizing: border-box;" onclick="restartLearnMode()">🔄 Start Over</button>
                         <button class="replay-btn" style="background: #2ed573; border-color: #218c53; box-shadow: 0 3px 0 #218c53; margin: 0; width: 100%; box-sizing: border-box;" onclick="returnToMenu()">🏠 Main Menu</button>
                         <button class="replay-btn" style="margin: 0; width: 100%; box-sizing: border-box;" onclick="switchToChat()">🤖 Chat</button>
                         <button class="replay-btn" style="background: #ffa502; border-color: #e58e26; box-shadow: 0 3px 0 #e58e26; margin: 0; width: 100%; box-sizing: border-box;" onclick="toggleVocabDrawer('open')">📝 Notes</button>
