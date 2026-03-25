@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Daily English Chat</title>
+    <!-- Added html2canvas for saving results -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
 
@@ -513,15 +515,66 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.3s ease;
         }
+        
         .start-btn {
+            position: relative;
             background: #2ed573; color: white; border: 3px solid #218c53; padding: 2vh 2vw;
             border-radius: 20px; font-size: 3vh; font-weight: 700; cursor: pointer;
             box-shadow: 0 6px 0 #218c53; font-family: 'Fredoka', sans-serif;
             transition: transform 0.1s, box-shadow 0.1s;
             width: 80%; max-width: 300px;
             white-space: nowrap; box-sizing: border-box; margin-top: 2vh;
+            display: flex; align-items: center; justify-content: center;
         }
         .start-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #218c53; }
+
+        /* Checklist Squares */
+        .mode-check {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2.5vh;
+            height: 2.5vh;
+            background: rgba(0,0,0,0.1);
+            border: 3px solid rgba(255,255,255,0.6);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .mode-check.done {
+            background: white;
+            border-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .mode-check.done::after {
+            content: '✔';
+            color: #2f3542;
+            font-size: 2.2vh;
+            font-weight: 900;
+        }
+
+        /* Congrats Modal */
+        #congrats-modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 10005;
+            opacity: 0; transition: opacity 0.3s ease;
+            align-items: center; justify-content: center; padding: 4vw; box-sizing: border-box;
+        }
+        #congrats-modal-overlay.show { opacity: 1; }
+
+        .congrats-card {
+            background: white; border-radius: 30px; width: 100%; max-width: 450px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2); padding: 4vh 5vw;
+            transform: scale(0.9) translateY(20px); transition: transform 0.3s var(--bounce);
+            text-align: center; border: 6px solid #ffffff;
+        }
+        #congrats-modal-overlay.show .congrats-card { transform: scale(1) translateY(0); }
 
     </style>
 </head>
@@ -531,9 +584,22 @@
     <div id="start-overlay">
         <h1 style="color: var(--main-teal); font-size: 5vh; margin-bottom: 0.5vh; text-align: center;">Chit Chatter</h1>
         <div id="start-lesson-title" style="color: #747d8c; font-size: 2.5vh; margin-top: 0; margin-bottom: 3vh; text-align: center; font-weight: 600;"></div>
-        <button class="start-btn" style="background: #1e90ff; border-color: #0984e3; box-shadow: 0 6px 0 #0984e3;" onclick="startApp('learn')">👨‍🏫 Learn</button>
-        <button class="start-btn" onclick="startApp('chat')">🤖 Chat</button>
-        <button class="start-btn" style="background: #ffa502; border-color: #e58e26; box-shadow: 0 6px 0 #e58e26; font-size: 2.8vh;" onclick="toggleVocabDrawer('open')">📝 Notes</button>
+        
+        <button class="start-btn" style="background: #1e90ff; border-color: #0984e3; box-shadow: 0 6px 0 #0984e3;" onclick="startApp('learn')">
+            <div class="mode-check" id="check-learn"></div>
+            👨‍🏫 Learn
+        </button>
+        <button class="start-btn" onclick="startApp('chat')">
+            <div class="mode-check" id="check-chat"></div>
+            🤖 Chat
+        </button>
+        <button class="start-btn" style="background: #ffa502; border-color: #e58e26; box-shadow: 0 6px 0 #e58e26; font-size: 2.8vh;" onclick="toggleVocabDrawer('open')">
+            <div class="mode-check" id="check-notes"></div>
+            📝 Notes
+        </button>
+        <button class="start-btn" id="results-btn" style="background: #a29bfe; border-color: #6c5ce7; box-shadow: 0 6px 0 #6c5ce7; font-size: 2.8vh; display: none;" onclick="showCongratsModal()">
+            🏆 Results
+        </button>
     </div>
 
     <div id="header">
@@ -623,6 +689,28 @@
         </div>
     </div>
 
+    <!-- Congratulations Modal -->
+    <div id="congrats-modal-overlay">
+        <div class="congrats-card" id="congrats-card">
+            <h2 style="color: #2ed573; font-size: clamp(22px, 4vh, 40px); margin: 0 0 1vh 0; text-transform: uppercase; white-space: nowrap;">🎉 All Done! 🎉</h2>
+            <div style="font-size: 2vh; color: #747d8c; margin-bottom: 2.5vh; font-weight: 600;">You finished today's lesson!</div>
+
+            <div style="display: flex; justify-content: center; gap: 2vw; margin: 2.5vh 0; width: 100%;">
+                <div style="background: white; border: 4px solid #f1f2f6; border-radius: 15px; padding: 2vh; width: 60%; border-color: #ffa502;">
+                    <div style="font-size: 1.8vh; color: #ffa502; font-weight: bold; text-transform: uppercase; margin-bottom: 0.5vh;">Final Score</div>
+                    <div id="congrats-score" style="font-size: 5vh; color: #ffa502; font-weight: bold; line-height: 1;">0</div>
+                </div>
+            </div>
+
+            <p style="font-size: 2.2vh; font-weight: bold; color: #2f3542; margin: 2.5vh 0;">Great job! Come back tomorrow for more practice. 🌟</p>
+
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 1.5vh; margin-top: 3vh;">
+                <button class="start-btn" id="save-results-btn" style="margin: 0; width: 80%; max-width: 250px; font-size: 2.2vh; padding: 1.5vh; background: #1e90ff; border-color: #0984e3; box-shadow: 0 4px 0 #0984e3;" onclick="downloadScreenshot()">💾 Save Results</button>
+                <button class="start-btn" id="close-congrats-btn" style="margin: 0; width: 80%; max-width: 250px; font-size: 2.2vh; padding: 1.5vh; background: #f1f2f6; color: #2f3542; border-color: #dfe4ea; box-shadow: 0 4px 0 #dfe4ea;" onclick="closeCongratsModal()">✖️ Close</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         /* ========================================================================
         AUDIO CONFIGURATION
@@ -649,29 +737,29 @@
             }
         }
 
-        /* ========================================================================
+/* ========================================================================
         TEACHER CONFIGURATION AREA - LESSON 12 ONLY
         ======================================================================== */
         const lessonTitle = "Lesson 12"; 
         const MAX_ATTEMPTS = 3;
         
         const lesson12Vocab = [
-            { en: "on my way to ~", jp: "~に行く途中で", explanation: "どこかへ向かっている最中であることを表します。「my」の部分は主語に合わせてyour, his, herなどに変えて使います。", examples: ["I met him <span class='highlight-good'>on my way to</span> school."] }, 
+            { en: "on my way to ~", jp: "~に行く途中で", explanation: "どこかへ向かっている最中であることを表します。「my」の部分は主語に合わせてyour, his, herなどに変えて使います。", examples: ["I met him <span class='highlight-good'>on my way to</span> school."] },
             { en: "both A and B", jp: "AとBの両方", explanation: "AとBの二つのものが両方とも〜だ、と言いたいときに使います。", examples: ["I like <span class='highlight-good'>both</span> dogs <span class='highlight-good'>and</span> cats."] },
-            { en: "not ~ at all", jp: "まったく〜ない", explanation: "否定を強く強調する表現です。「not」と一緒に使って「全然〜ない」となります。", examples: ["She did <span class='highlight-warn'>not</span> study math <span class='highlight-warn'>at all</span>."] }, 
-            { en: "so ~ that ...", jp: "とても〜なので", explanation: "原因（とても〜だ）と結果（だから...だ）をつなぐ超重要表現です！", examples: ["He was <span class='highlight-good'>so</span> tired <span class='highlight-good'>that</span> he fell asleep."] },
-            { en: "all day", jp: "1日じゅう", explanation: "朝から晩まで、その日ずっと続いていたことを表します。", examples: ["It rained <span class='highlight-good'>all day</span> yesterday."] }, 
-            { en: "in front of ~", jp: "~の前で", explanation: "場所や位置関係を表す表現です。「〜の後ろ」はbehindです。", examples: ["Let's meet <span class='highlight-good'>in front of</span> the station."] },
-            { en: "for the first time", jp: "初めて", explanation: "これまでに経験がなく、1回目であることを表します。", examples: ["I ate sushi <span class='highlight-good'>for the first time</span>."] }, 
-            { en: "at first", jp: "最初は", explanation: "あとで状況が変わったことと対比して、「最初は（違った）」と使うことが多いです。", examples: ["<span class='highlight-good'>At first</span>, I didn't like him. (今は好き)"] },
-            { en: "at last", jp: "ついに", explanation: "長く待ったり苦労した結果、ようやく何かが起きたときに使います。", examples: ["<span class='highlight-good'>At last</span>, the train arrived."] }, 
+            { en: "not ~ at all", jp: "まったく〜ない", explanation: "否定を強く強調する表現です。「not」と一緒に使って「全然〜ない」となります。", examples: ["She did <span class='highlight-warn'>not</span> study math <span class='highlight-warn'>at all</span>."] },
+            { en: "so ~ that ...", jp: "とても〜なので", explanation: "原因（とても〜だ）と結果（だから...だ）をつなぐ超重要表現です！", examples: ["He was <span class='highlight-good'>so</span> tired <span class='highlight-good'>that</span> he fell asleep on the sofa."] },
+            { en: "all day", jp: "1日じゅう", explanation: "朝から晩まで、その日ずっと続いていたことを表します。", examples: ["It rained <span class='highlight-good'>all day</span> yesterday."] },
+            { en: "in front of ~", jp: "~の前で", explanation: "場所や位置関係を表す表現です。「〜の後ろ」はbehindです。", examples: ["Let's meet <span class='highlight-good'>in front of</span> the library."] },
+            { en: "for the first time", jp: "初めて", explanation: "これまでに経験がなく、1回目であることを表します。", examples: ["I met Taro's sister <span class='highlight-good'>for the first time</span> yesterday."] },
+            { en: "at first", jp: "最初は", explanation: "あとで状況が変わったことと対比して、「最初は（違った）」と使うことが多いです。", examples: ["<span class='highlight-good'>At first</span>, I didn't like him."] },
+            { en: "at last", jp: "ついに", explanation: "長く待ったり苦労した結果、ようやく何かが起きたときに使います。", examples: ["<span class='highlight-good'>At last</span>, the train arrived."] },
             { en: "as usual", jp: "いつもどおりに", explanation: "普段と変わらない様子、いつもの習慣通りであることを表します。", examples: ["He got up early <span class='highlight-good'>as usual</span>."] },
-            { en: "in the middle of ~", jp: "~の最中に", explanation: "場所の真ん中や、行動の最中を表します。", examples: ["I woke up <span class='highlight-good'>in the middle of</span> the night."] }, 
+            { en: "in the middle of ~", jp: "~の最中に", explanation: "場所の真ん中や、行動の最中を表します。", examples: ["I woke up <span class='highlight-good'>in the middle of</span> the night."] },
             { en: "each other", jp: "お互い", explanation: "2人またはそれ以上の人たちが、互いに何かをするときに使います。", examples: ["We always help <span class='highlight-good'>each other</span>."] },
-            { en: "in my opinion", jp: "私の意見では", explanation: "自分の考えを主張する前に付け加える、便利な前置きフレーズです。", examples: ["<span class='highlight-good'>In my opinion</span>, this book is great."] }, 
+            { en: "in my opinion", jp: "私の意見では", explanation: "自分の考えを主張する前に付け加える、便利な前置きフレーズです。", examples: ["<span class='highlight-good'>In my opinion</span>, this book is great."] },
             { en: "all the way", jp: "はるばる", explanation: "遠くから来たことや、ずっと続く道のりを強調します。", examples: ["He came <span class='highlight-good'>all the way</span> from Africa."] },
-            { en: "a pair of ~", jp: "1組の~/1足の~", explanation: "靴(shoes)、手袋(gloves)、メガネ(glasses)など、2つで1セットのものに使います。", examples: ["I bought <span class='highlight-good'>a pair of</span> shoes."] }, 
-            { en: "a glass of ~", jp: "1杯の~", explanation: "水(water)や牛乳(milk)など、冷たい飲み物を数えるときに使います。（温かいものはa cup of）", examples: ["I would like <span class='highlight-good'>a glass of</span> water."] },
+            { en: "a pair of ~", jp: "1組の~/1足の~", explanation: "靴や手袋など、2つで1セットのものに使います。", examples: ["I bought <span class='highlight-good'>a pair of</span> shoes."] },
+            { en: "a glass of ~", jp: "1杯の~", explanation: "水や牛乳など、冷たい飲み物を数えるときに使います。", examples: ["I would like <span class='highlight-good'>a glass of</span> water."] },
             { en: "a slice of ~", jp: "1切れの~", explanation: "パンやピザなど、薄く切ったものを数えるときに使います。", examples: ["She ate <span class='highlight-good'>a slice of</span> toast."] }
         ];
 
@@ -681,93 +769,55 @@
                 learn: [
                     {
                         vocabEn: "on my way to ~",
-                        prompt: "Did anything happen on your walk? 🐕",
-                        wordBank: ["I saw", "a cute dog", "on my way to", "at my way to", "the park."],
-                        validAnswers: ["I saw a cute dog on my way to the park."],
+                        prompt: "Did you run into anyone this morning? 🚶",
+                        wordBank: ["I met him", "on my way to", "at my way to", "school."],
+                        validAnswers: ["I met him on my way to school."],
                         hints: [{wrongWord: "at my way to", triggerWord: "on", hint: "The correct preposition is '<b>on</b> my way to'."}]
                     },
                     {
                         vocabEn: "both A and B",
-                        prompt: "What instruments can she play? 🎵",
-                        wordBank: ["She can play", "both", "the piano", "and", "the guitar.", "either"],
-                        validAnswers: ["She can play both the piano and the guitar."],
-                        hints: [{wrongWord: "either", triggerWord: "both", hint: "When doing two things together, use '<b>both A and B</b>'."}]
+                        prompt: "Which animals are your favorite? 🐾",
+                        wordBank: ["I like", "both", "dogs", "and", "cats.", "either"],
+                        validAnswers: ["I like both dogs and cats.", "I like both cats and dogs."],
+                        hints: [{wrongWord: "either", triggerWord: "both", hint: "When talking about two things together, use '<b>both</b> A and B'."}]
                     },
                     {
                         vocabEn: "not ~ at all",
-                        prompt: "Are you feeling sleepy? 🔋",
-                        wordBank: ["I am not", "I am", "tired", "at all", "very much", "today."],
-                        validAnswers: ["I am not tired at all today."],
-                        hints: [{wrongWord: "I am", triggerWord: "not", hint: "You need the negative 'not' to use 'at all'."}]
-                    },
-                    {
-                        vocabEn: "so ~ that ...",
-                        prompt: "Why are you so sleepy <b>today</b>? 📖",
-                        wordBank: ["The book was", "so interesting that", "too interesting that", "I read it", "all night."],
-                        validAnswers: ["The book was so interesting that I read it all night."],
-                        hints: [{wrongWord: "too interesting that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'."}]
-                    },
-                    {
-                        vocabEn: "all day",
-                        prompt: "What <b>did</b> you guys do <b>yesterday</b>? 🎮",
-                        wordBank: ["We played", "We play", "video games", "all day.", "all the day."],
-                        validAnswers: ["We played video games all day."],
-                        hints: [{wrongWord: "all the day.", triggerWord: "all day", hint: "The correct phrase is just '<b>all day</b>'."}]
+                        prompt: "Did she review her notes for the test? 📚",
+                        wordBank: ["She did", "not study", "math", "at all.", "very much."],
+                        validAnswers: ["She did not study math at all."],
+                        hints: [{wrongWord: "very much.", triggerWord: "at all", hint: "To strongly emphasize a negative, use '<b>at all</b>'."}]
                     }
                 ],
                 questions: [ 
                     {
-                        prompt: "Why <b>were</b> you late <b>this morning</b>? ⏰",
-                        wordBank: ["I met", "I meet", "my teacher", "on my way to", "at my way to", "school."],
+                        prompt: "Why were you late to class? ⏰",
+                        wordBank: ["I met", "my teacher", "on my way to", "at my way to", "school."],
                         validAnswers: ["I met my teacher on my way to school."],
-                        successReply: "Oh, I see! That explains it. 🏃‍♂️",
-                        failReply: "Ah well, at least you made it safely! 😅",
+                        successReply: "Ah, that explains it! 🏫",
+                        failReply: "No worries, at least you made it safely! 😊",
                         hints: [
-                            { wrongWord: "I meet", triggerWord: "were", hint: "Pay attention to '<b>were</b>' and '<b>this morning</b>'. Use the past tense of 'meet'." },
-                            { wrongWord: "at my way to", triggerWord: "on", hint: "The correct preposition for this phrase is '<b>on</b> my way to'." }
+                            { wrongWord: "at my way to", triggerWord: "on", hint: "The correct phrase uses '<b>on</b> my way to'." }
                         ]
                     },
                     {
-                        prompt: "Do you prefer dogs or cats? 🐾",
-                        wordBank: ["I like", "both", "dogs", "and", "cats.", "either"],
-                        validAnswers: ["I like both dogs and cats.", "I like both cats and dogs."],
-                        successReply: "Me too! They are so cute. 🐕",
-                        failReply: "Well, animals are great anyway! 🐾",
+                        prompt: "What kind of pets do you want to have? 🐕",
+                        wordBank: ["I want", "both", "dogs", "and", "cats.", "either"],
+                        validAnswers: ["I want both dogs and cats.", "I want both cats and dogs."],
+                        successReply: "That sounds like a fun and busy house! 🐾",
+                        failReply: "Animals are wonderful companions! 🐱",
                         hints: [
-                            { wrongWord: "either", triggerWord: "both", hint: "When you like two things together, use '<b>both A and B</b>'." }
+                            { wrongWord: "either", triggerWord: "both", hint: "If you want the two of them together, use '<b>both A and B</b>'." }
                         ]
                     },
                     {
-                        prompt: "<b>Did</b> she do okay on the test <b>yesterday</b>? 📝",
-                        wordBank: ["No. She didn't study", "No. She doesn't study", "math", "at all.", "very much."],
-                        validAnswers: ["No. She didn't study math at all."],
-                        successReply: "Oh no... I hope she does better next time! 😅",
-                        failReply: "Well, hopefully the next test is easier! 📝",
+                        prompt: "Did you enjoy the spicy food yesterday? 🌶️",
+                        wordBank: ["I did", "not like it", "at all.", "very much."],
+                        validAnswers: ["I did not like it at all."],
+                        successReply: "Oh no! Next time we can get something mild. 🍜",
+                        failReply: "I see! Spicy food isn't for everyone. 😅",
                         hints: [
-                            { wrongWord: "doesn't study", triggerWord: "yesterday", hint: "Pay attention to '<b>yesterday</b>'. Use the past tense 'didn't'." },
-                            { wrongWord: "very much.", triggerWord: "at all", hint: "To emphasize 'not' strongly, pair 'didn't' with '<b>at all</b>'." }
-                        ]
-                    },
-                    {
-                        prompt: "Why <b>is</b> John sleeping on the sofa <b>right now</b>? 🛋️",
-                        wordBank: ["He was", "He is", "so tired that", "too tired that", "he fell asleep", "on the sofa."],
-                        validAnswers: ["He was so tired that he fell asleep on the sofa."],
-                        successReply: "Makes sense. Let's just let him rest. 🤫",
-                        failReply: "Hmm, he must have had a long day. 🤫",
-                        hints: [
-                            { wrongWord: "He is", triggerWord: "fell asleep", hint: "Look at the end of the sentence: 'he fell asleep'. You are describing how he felt <i>before</i> falling asleep, so use past tense." },
-                            { wrongWord: "too tired that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'." }
-                        ]
-                    },
-                    {
-                        prompt: "How <b>was</b> the weather <b>yesterday</b>? 🌧️",
-                        wordBank: ["It rained", "It rains", "all day", "yesterday.", "all the day"],
-                        validAnswers: ["It rained all day yesterday."],
-                        successReply: "Oh, I see. That's a good day to stay inside! 🏠",
-                        failReply: "I see! Well, I hope the weather is better today. ☀️",
-                        hints: [
-                            { wrongWord: "It rains", triggerWord: "yesterday", hint: "Pay attention to '<b>yesterday</b>'. Use the past tense of 'rain'." },
-                            { wrongWord: "all the day", triggerWord: "all day", hint: "The correct phrase is just '<b>all day</b>'." }
+                            { wrongWord: "very much.", triggerWord: "at all", hint: "To emphasize strongly that you didn't like it, use '<b>at all</b>'." }
                         ]
                     }
                 ]
@@ -776,93 +826,56 @@
                 vocab: lesson12Vocab,
                 learn: [
                     {
+                        vocabEn: "so ~ that ...",
+                        prompt: "Why did he go to bed so early? 🥱",
+                        wordBank: ["He was", "so tired that", "too tired that", "he fell asleep."],
+                        validAnswers: ["He was so tired that he fell asleep."],
+                        hints: [{wrongWord: "too tired that", triggerWord: "so", hint: "The correct idiom is '<b>so</b> ~ <b>that</b> ...'."}]
+                    },
+                    {
+                        vocabEn: "all day",
+                        prompt: "How was the weather yesterday? 🌧️",
+                        wordBank: ["It rained", "all day", "all the day", "yesterday."],
+                        validAnswers: ["It rained all day yesterday."],
+                        hints: [{wrongWord: "all the day", triggerWord: "all day", hint: "The phrase does not need 'the'. Use '<b>all day</b>'."}]
+                    },
+                    {
                         vocabEn: "in front of ~",
-                        prompt: "Where should I park my car? 🌳",
-                        wordBank: ["There is", "a large tree", "in front of", "at front of", "my house."],
-                        validAnswers: ["There is a large tree in front of my house."],
-                        hints: [{wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> front of'."}]
-                    },
-                    {
-                        vocabEn: "for the first time",
-                        prompt: "Has he ever been to Kyoto <b>before</b>? ⛩️",
-                        wordBank: ["He visited", "Kyoto", "for the first time", "at first", "last week."],
-                        validAnswers: ["He visited Kyoto for the first time last week."],
-                        hints: [{wrongWord: "at first", triggerWord: "first time", hint: "To say you experienced something for the 1st time, use '<b>for the first time</b>'."}]
-                    },
-                    {
-                        vocabEn: "at first",
-                        prompt: "How was the math homework? 🧮",
-                        wordBank: ["At first,", "For the first time,", "the math problem", "looked", "very difficult."],
-                        validAnswers: ["At first, the math problem looked very difficult."],
-                        hints: [{wrongWord: "For the first time,", triggerWord: "At first", hint: "To say 'in the beginning', use '<b>At first,</b>'."}]
-                    },
-                    {
-                        vocabEn: "at last",
-                        prompt: "Is it still raining outside? 🌤️",
-                        wordBank: ["At last,", "At least,", "the rain", "stopped."],
-                        validAnswers: ["At last, the rain stopped."],
-                        hints: [{wrongWord: "At least,", triggerWord: "last", hint: "To say 'finally', use '<b>At last</b>'."}]
-                    },
-                    {
-                        vocabEn: "as usual",
-                        prompt: "What time <b>did</b> she get to school <b>today</b>? 🏫",
-                        wordBank: ["She arrived", "at school", "at 8:00", "as usual.", "as always."],
-                        validAnswers: ["She arrived at school at 8:00 as usual."],
-                        hints: [{wrongWord: "as always.", triggerWord: "usual", hint: "To say 'like normal', use the phrase '<b>as usual</b>'."}]
+                        prompt: "Where should we meet tomorrow? 📍",
+                        wordBank: ["Let's meet", "in front of", "at front of", "the library."],
+                        validAnswers: ["Let's meet in front of the library."],
+                        hints: [{wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase starts with '<b>in</b> front of'."}]
                     }
                 ],
                 questions: [ 
                     {
-                        prompt: "Where should we meet <b>tomorrow</b>? 📍",
-                        wordBank: ["Let's meet", "in front of", "at front of", "the library."],
-                        validAnswers: ["Let's meet in front of the library."],
-                        successReply: "Perfect! I'll see you there. 📚",
-                        failReply: "Okay, I'll text you when I get there! 📱",
+                        prompt: "Why did she miss the end of the movie? 🎬",
+                        wordBank: ["She was", "so sleepy that", "too sleepy that", "she fell asleep."],
+                        validAnswers: ["She was so sleepy that she fell asleep."],
+                        successReply: "It happens to the best of us! 😴",
+                        failReply: "Well, hopefully she can watch the ending later! 📺",
                         hints: [
-                            { wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> front of'." }
+                            { wrongWord: "too sleepy that", triggerWord: "so", hint: "The correct idiom is '<b>so</b> ~ <b>that</b> ...'." }
                         ]
                     },
                     {
-                        prompt: "When <b>did</b> you meet Taro's sister? 👋",
-                        wordBank: ["I met", "I meet", "Taro's sister", "for the first time", "yesterday.", "at first"],
-                        validAnswers: ["I met Taro's sister for the first time yesterday."],
-                        successReply: "Oh, cool! Is she nice? 😊",
-                        failReply: "I see, she's very nice! 👍",
+                        prompt: "What did you do on your day off? 🎮",
+                        wordBank: ["I played", "video games", "all day.", "all the day."],
+                        validAnswers: ["I played video games all day."],
+                        successReply: "That sounds like a relaxing day! 🛋️",
+                        failReply: "It's good to take a break sometimes! 🌟",
                         hints: [
-                            { wrongWord: "I meet", triggerWord: "yesterday", hint: "Pay attention to '<b>yesterday</b>'. Use the past tense of 'meet'." },
-                            { wrongWord: "at first", triggerWord: "first time", hint: "To say you experienced something for the 1st time, use '<b>for the first time</b>'." }
+                            { wrongWord: "all the day.", triggerWord: "all day", hint: "The phrase is just '<b>all day</b>'." }
                         ]
                     },
                     {
-                        prompt: "How was the movie? 🎬",
-                        wordBank: ["At first,", "For the first time,", "I didn't like it.", "I don't like it."],
-                        validAnswers: ["At first, I didn't like it."],
-                        successReply: "I see, but did it get better later? 🍿",
-                        failReply: "Yeah, movies can be like that. 🎥",
+                        prompt: "Where did you park your bicycle? 🚲",
+                        wordBank: ["I parked it", "in front of", "at front of", "the store."],
+                        validAnswers: ["I parked it in front of the store."],
+                        successReply: "Ah, I see it! Thanks. 🏪",
+                        failReply: "Make sure you lock it up safely! 🔒",
                         hints: [
-                            { wrongWord: "For the first time,", triggerWord: "At first", hint: "To say 'in the beginning (but it changed later)', use '<b>At first,</b>'." },
-                            { wrongWord: "I don't like it.", triggerWord: "Did", hint: "The question asks 'Did you like...'. Use the past tense 'didn't'." }
-                        ]
-                    },
-                    {
-                        prompt: "Is her dream finally coming true? 🌟",
-                        wordBank: ["This year,", "her dream", "will come true", "at last.", "at least."],
-                        validAnswers: ["This year, her dream will come true at last."],
-                        successReply: "Wow, that is amazing news! 🎉",
-                        failReply: "That's good to hear! 👏",
-                        hints: [
-                            { wrongWord: "at least.", triggerWord: "last", hint: "To say 'finally', use '<b>at last</b>'." }
-                        ]
-                    },
-                    {
-                        prompt: "What time <b>did</b> he get up <b>today</b>? 🛏️",
-                        wordBank: ["He got up", "He gets up", "early", "as usual.", "as always."],
-                        validAnswers: ["He got up early as usual."],
-                        successReply: "Wow, he is a morning person! 🌅",
-                        failReply: "Got it, he is very consistent. ⏰",
-                        hints: [
-                            { wrongWord: "He gets up", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense of 'get'." },
-                            { wrongWord: "as always.", triggerWord: "usual", hint: "To say 'like normal', use the phrase '<b>as usual</b>'." }
+                            { wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase starts with '<b>in</b> front of'." }
                         ]
                     }
                 ]
@@ -871,83 +884,59 @@
                 vocab: lesson12Vocab,
                 learn: [
                     {
-                        vocabEn: "in the middle of ~",
-                        prompt: "What happened <b>this afternoon</b>? 📱",
-                        wordBank: ["The phone rang", "in the middle of", "at the middle of", "the meeting."],
-                        validAnswers: ["The phone rang in the middle of the meeting."],
-                        hints: [{wrongWord: "at the middle of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> the middle of'."}]
+                        vocabEn: "for the first time",
+                        prompt: "Did you enjoy your trip to Tokyo? 🍣",
+                        wordBank: ["I ate sushi", "for the first time.", "at first."],
+                        validAnswers: ["I ate sushi for the first time."],
+                        hints: [{wrongWord: "at first.", triggerWord: "first time", hint: "When doing an action you have never done before, use '<b>for the first time</b>'."}]
                     },
                     {
-                        vocabEn: "each other",
-                        prompt: "Are they good friends? 🧒",
-                        wordBank: ["They have known", "each other", "each others", "since childhood."],
-                        validAnswers: ["They have known each other since childhood."],
-                        hints: [{wrongWord: "each others", triggerWord: "other", hint: "There is no 's' at the end. Use '<b>each other</b>'."}]
+                        vocabEn: "at first",
+                        prompt: "What were your thoughts on the new teacher? 👨‍🏫",
+                        wordBank: ["At first,", "For the first time,", "I didn't like him."],
+                        validAnswers: ["At first, I didn't like him."],
+                        hints: [{wrongWord: "For the first time,", triggerWord: "At first", hint: "To describe an initial situation that later changed, use '<b>At first,</b>'."}]
                     },
                     {
-                        vocabEn: "in my opinion",
-                        prompt: "What is your favorite season? ⛄",
-                        wordBank: ["In my opinion,", "At my opinion,", "winter is", "the best season."],
-                        validAnswers: ["In my opinion, winter is the best season."],
-                        hints: [{wrongWord: "At my opinion,", triggerWord: "In", hint: "The correct phrase is '<b>In</b> my opinion'."}]
-                    },
-                    {
-                        vocabEn: "all the way",
-                        prompt: "Why are you breathing so hard? 🏃",
-                        wordBank: ["I ran", "I run", "all the way", "all the ways", "to the station."],
-                        validAnswers: ["I ran all the way to the station."],
-                        hints: [{wrongWord: "all the ways", triggerWord: "way", hint: "The phrase does not take an 's'. Use '<b>all the way</b>'."}]
-                    },
-                    {
-                        vocabEn: "a pair of ~",
-                        prompt: "Why are you going to the store? 👓",
-                        wordBank: ["I need", "a new", "pair of", "glass of", "glasses."],
-                        validAnswers: ["I need a new pair of glasses."],
-                        hints: [{wrongWord: "glass of", triggerWord: "pair", hint: "Glasses come in twos! We use '<b>pair of</b>'."}]
+                        vocabEn: "at last",
+                        prompt: "Did the bus finally come? 🚌",
+                        wordBank: ["At last,", "At least,", "the train arrived.", "the bus arrived."],
+                        validAnswers: ["At last, the bus arrived."],
+                        hints: [
+                            {wrongWord: "At least,", triggerWord: "last", hint: "To express that something finally happened, use '<b>At last,</b>'."},
+                            {wrongWord: "the train arrived.", triggerWord: "bus", hint: "Make sure you match the vehicle from the prompt!"}
+                        ]
                     }
                 ],
                 questions: [ 
                     {
-                        prompt: "Did you hear the phone ring <b>last night</b>? 📞",
-                        wordBank: ["I woke up", "I wake up", "in the middle of", "at the middle of", "the night."],
-                        validAnswers: ["I woke up in the middle of the night."],
-                        successReply: "Oh no! Did it scare you? 😲",
-                        failReply: "Sorry to hear you had a bad night's sleep. 😴",
+                        prompt: "Did you like snowboarding? 🏂",
+                        wordBank: ["I tried it", "for the first time", "at first", "yesterday."],
+                        validAnswers: ["I tried it for the first time yesterday."],
+                        successReply: "That is so cool! Was it difficult? ❄️",
+                        failReply: "Snowboarding is a great winter sport! 🏔️",
                         hints: [
-                            { wrongWord: "I wake up", triggerWord: "last night", hint: "Pay attention to '<b>last night</b>'. Use the past tense of 'wake'." },
-                            { wrongWord: "at the middle of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> the middle of'." }
+                            { wrongWord: "at first", triggerWord: "first time", hint: "If it was a brand new experience, use '<b>for the first time</b>'." }
                         ]
                     },
                     {
-                        prompt: "Do you and your brother get along? 👦",
-                        wordBank: ["We always help", "each other.", "each others.", "us."],
-                        validAnswers: ["We always help each other."],
-                        successReply: "That is so sweet to hear! 🤝",
-                        failReply: "It's good to have family to rely on. 👨‍👩‍👦",
+                        prompt: "Is your new part-time job difficult? 💼",
+                        wordBank: ["At first,", "For the first time,", "it was", "very hard."],
+                        validAnswers: ["At first, it was very hard."],
+                        successReply: "I'm glad it's getting easier for you now! 📈",
+                        failReply: "Starting a new job always takes some time! 🌟",
                         hints: [
-                            { wrongWord: "each others.", triggerWord: "other", hint: "There is no 's' at the end. Use '<b>each other</b>'." },
-                            { wrongWord: "us.", triggerWord: "each", hint: "When two people do something mutually, use '<b>each other</b>'." }
+                            { wrongWord: "For the first time,", triggerWord: "At first", hint: "To mean 'In the beginning', use '<b>At first,</b>'." }
                         ]
                     },
                     {
-                        prompt: "What do you think about this book? 📖",
-                        wordBank: ["In my opinion,", "At my opinion,", "this book", "is great."],
-                        validAnswers: ["In my opinion, this book is great."],
-                        successReply: "I agree! I couldn't put it down. 📚",
-                        failReply: "That's fair. Everyone has their own taste! 🤷",
+                        prompt: "Are you still waiting for your food? 🍽️",
+                        wordBank: ["At last,", "At least,", "my meal", "is here."],
+                        validAnswers: ["At last, my meal is here."],
+                        successReply: "Finally! Enjoy your lunch! 😋",
+                        failReply: "Bon appétit! 🍕",
                         hints: [
-                            { wrongWord: "At my opinion,", triggerWord: "In", hint: "The correct phrase is '<b>In</b> my opinion'." }
-                        ]
-                    },
-                    {
-                        prompt: "Wow, he looks exhausted! Where <b>did</b> he travel from? 🎒",
-                        wordBank: ["He came", "He comes", "all the way", "all the ways", "from Africa."],
-                        validAnswers: ["He came all the way from Africa."],
-                        successReply: "Wow, that is a very long trip! 🌍",
-                        failReply: "He must be exhausted! ✈️",
-                        hints: [
-                            { wrongWord: "He comes", triggerWord: "came", hint: "His trip is already finished. Use the past tense '<b>came</b>'." },
-                            { wrongWord: "all the ways", triggerWord: "way", hint: "The phrase does not take an 's'. Use '<b>all the way</b>'." }
+                            { wrongWord: "At least,", triggerWord: "last", hint: "To say 'finally', use '<b>At last,</b>'." }
                         ]
                     }
                 ]
@@ -956,94 +945,56 @@
                 vocab: lesson12Vocab,
                 learn: [
                     {
-                        vocabEn: "a glass of ~",
-                        prompt: "What does he usually have with breakfast? 🥛",
-                        wordBank: ["He drinks", "a glass of", "a slice of", "milk", "every morning."],
-                        validAnswers: ["He drinks a glass of milk every morning."],
-                        hints: [{wrongWord: "a slice of", triggerWord: "glass", hint: "Milk is a liquid! We use '<b>a glass of</b>'."}]
+                        vocabEn: "as usual",
+                        prompt: "What time does he start his day? 🌅",
+                        wordBank: ["He got up", "early", "as usual.", "as always."],
+                        validAnswers: ["He got up early as usual."],
+                        hints: [{wrongWord: "as always.", triggerWord: "usual", hint: "The common set phrase here is '<b>as usual</b>'."}]
                     },
                     {
-                        vocabEn: "a slice of ~",
-                        prompt: "What would you like to eat? 🍕",
-                        wordBank: ["Can I have", "a slice of", "a pair of", "pizza?"],
-                        validAnswers: ["Can I have a slice of pizza?"],
-                        hints: [{wrongWord: "a pair of", triggerWord: "slice", hint: "For pizza or bread, we use '<b>a slice of</b>'."}]
+                        vocabEn: "in the middle of ~",
+                        prompt: "Why did you wake up so suddenly? 🌙",
+                        wordBank: ["I woke up", "in the middle of", "at the middle of", "the night."],
+                        validAnswers: ["I woke up in the middle of the night."],
+                        hints: [{wrongWord: "at the middle of", triggerWord: "in", hint: "The correct phrase uses '<b>in</b> the middle of'."}]
                     },
                     {
-                        vocabEn: "so ~ that ...",
-                        prompt: "Why are you so hungry? 🥪",
-                        wordBank: ["I was", "so busy that", "too busy that", "I couldn't", "eat lunch."],
-                        validAnswers: ["I was so busy that I couldn't eat lunch."],
-                        hints: [{wrongWord: "too busy that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'."}]
-                    },
-                    {
-                        vocabEn: "on my way to ~",
-                        prompt: "Why are you looking around the street? 🔑",
-                        wordBank: ["I dropped", "my keys", "on my way to", "at my way to", "the store."],
-                        validAnswers: ["I dropped my keys on my way to the store."],
-                        hints: [{wrongWord: "at my way to", triggerWord: "on", hint: "The correct preposition is '<b>on</b> my way to'."}]
-                    },
-                    {
-                        vocabEn: "not ~ at all",
-                        prompt: "Is he fluent in English? 🗣️",
-                        wordBank: ["He doesn't speak", "He speaks", "English", "at all.", "very much."],
-                        validAnswers: ["He doesn't speak English at all."],
-                        hints: [{wrongWord: "very much.", triggerWord: "at all", hint: "To emphasize 'not' strongly, use '<b>at all</b>'."}]
+                        vocabEn: "each other",
+                        prompt: "How do you and your sister get along? 👧",
+                        wordBank: ["We always", "help", "each other.", "each others."],
+                        validAnswers: ["We always help each other."],
+                        hints: [{wrongWord: "each others.", triggerWord: "other", hint: "There is no 's' at the end. Use '<b>each other</b>'."}]
                     }
                 ],
                 questions: [ 
                     {
-                        prompt: "Can I get you something to drink? 💧",
-                        wordBank: ["I would like", "a glass of", "a slice of", "water."],
-                        validAnswers: ["I would like a glass of water."],
-                        successReply: "Sure thing! Coming right up. 🚰",
-                        failReply: "Okay, I will grab that for you! 🧊",
+                        prompt: "Did she take the train today? 🚌",
+                        wordBank: ["She took", "the bus", "as usual.", "as always."],
+                        validAnswers: ["She took the bus as usual."],
+                        successReply: "Ah, she is very consistent! 🚍",
+                        failReply: "Good to know her routine! 📋",
                         hints: [
-                            { wrongWord: "a slice of", triggerWord: "glass", hint: "Water is a liquid! We use '<b>a glass of</b>'." }
+                            { wrongWord: "as always.", triggerWord: "usual", hint: "The set phrase is '<b>as usual</b>'." }
                         ]
                     },
                     {
-                        prompt: "What <b>did</b> she eat for breakfast? 🍳",
-                        wordBank: ["She ate", "She eats", "a slice of", "a pair of", "toast."],
-                        validAnswers: ["She ate a slice of toast."],
-                        successReply: "That sounds like a light breakfast! 🍞",
-                        failReply: "I see, breakfast is the most important meal! 🌞",
+                        prompt: "Why did the phone ring? 📱",
+                        wordBank: ["It rang", "in the middle of", "at the middle of", "the meeting."],
+                        validAnswers: ["It rang in the middle of the meeting."],
+                        successReply: "Oh no! That is bad timing. 😅",
+                        failReply: "I hope it wasn't an emergency! 📞",
                         hints: [
-                            { wrongWord: "She eats", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense of 'eat'." },
-                            { wrongWord: "a pair of", triggerWord: "slice", hint: "For bread or toast, we use '<b>a slice of</b>'." }
+                            { wrongWord: "at the middle of", triggerWord: "in", hint: "The phrase starts with '<b>in</b> the middle of'." }
                         ]
                     },
                     {
-                        prompt: "Why <b>did</b> you watch the movie twice? 🍿",
-                        wordBank: ["The movie was", "The movie is", "so good that", "too good that", "I watched it twice."],
-                        validAnswers: ["The movie was so good that I watched it twice."],
-                        successReply: "Wow, I will have to watch it too! 🎬",
-                        failReply: "It must have been really entertaining! 🤩",
+                        prompt: "Are they good friends? 🤝",
+                        wordBank: ["They always", "talk to", "each other.", "each others."],
+                        validAnswers: ["They always talk to each other."],
+                        successReply: "That's wonderful! Communication is key. 🗣️",
+                        failReply: "Having a good friend is really special. 🌟",
                         hints: [
-                            { wrongWord: "The movie is", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense '<b>was</b>'." },
-                            { wrongWord: "too good that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'." }
-                        ]
-                    },
-                    {
-                        prompt: "Where <b>did</b> she eat today? 🍝",
-                        wordBank: ["She found", "She finds", "a new restaurant", "on her way to", "at her way to", "work."],
-                        validAnswers: ["She found a new restaurant on her way to work."],
-                        successReply: "Oh, that is very lucky! 🍽️",
-                        failReply: "Nice, I hope the food is good there. 😋",
-                        hints: [
-                            { wrongWord: "She finds", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense of 'find'." },
-                            { wrongWord: "at her way to", triggerWord: "on", hint: "The correct preposition is '<b>on</b> her way to'." }
-                        ]
-                    },
-                    {
-                        prompt: "<b>Did</b> you enjoy the concert? 🎸",
-                        wordBank: ["I didn't like", "I don't like", "the music", "at all.", "very much."],
-                        validAnswers: ["I didn't like the music at all."],
-                        successReply: "Oh no... that is disappointing. 😞",
-                        failReply: "That's a shame! Better luck next time. 🤷",
-                        hints: [
-                            { wrongWord: "I don't like", triggerWord: "Did", hint: "Pay attention to '<b>Did</b>'. Use the past tense 'didn't'." },
-                            { wrongWord: "very much.", triggerWord: "at all", hint: "To emphasize 'not' strongly, pair 'didn't' with '<b>at all</b>'." }
+                            { wrongWord: "each others.", triggerWord: "other", hint: "Do not add an 's'. Use '<b>each other</b>'." }
                         ]
                     }
                 ]
@@ -1052,93 +1003,56 @@
                 vocab: lesson12Vocab,
                 learn: [
                     {
-                        vocabEn: "both A and B",
-                        prompt: "What do I need to bake this cake? 🥚",
-                        wordBank: ["You need", "both eggs", "and milk.", "either eggs"],
-                        validAnswers: ["You need both eggs and milk."],
-                        hints: [{wrongWord: "either eggs", triggerWord: "both", hint: "When you need two things together, use '<b>both A and B</b>'."}]
+                        vocabEn: "in my opinion",
+                        prompt: "What do you think of this novel? 📖",
+                        wordBank: ["In my opinion,", "At my opinion,", "this book", "is great."],
+                        validAnswers: ["In my opinion, this book is great."],
+                        hints: [{wrongWord: "At my opinion,", triggerWord: "In", hint: "To state your view, start with '<b>In</b> my opinion'."}]
                     },
                     {
-                        vocabEn: "in front of ~",
-                        prompt: "Where should I meet you? 🚪",
-                        wordBank: ["Please wait", "in front of", "at front of", "the gate."],
-                        validAnswers: ["Please wait in front of the gate."],
-                        hints: [{wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> front of'."}]
+                        vocabEn: "all the way",
+                        prompt: "Wow, did he travel far? ✈️",
+                        wordBank: ["He came", "all the way", "all the ways", "from Africa."],
+                        validAnswers: ["He came all the way from Africa."],
+                        hints: [{wrongWord: "all the ways", triggerWord: "way", hint: "The idiom does not take an 's'. Use '<b>all the way</b>'."}]
                     },
                     {
-                        vocabEn: "for the first time",
-                        prompt: "Did she like her trip to Hokkaido? ❄️",
-                        wordBank: ["She saw", "snow", "for the first time.", "at first."],
-                        validAnswers: ["She saw snow for the first time."],
-                        hints: [{wrongWord: "at first.", triggerWord: "first time", hint: "To say you experienced something for the 1st time ever, use '<b>for the first time</b>'."}]
-                    },
-                    {
-                        vocabEn: "at last",
-                        prompt: "Are you still working on the assignment? 📋",
-                        wordBank: ["At last,", "At first,", "we finished", "the project."],
-                        validAnswers: ["At last, we finished the project."],
-                        hints: [{wrongWord: "At first,", triggerWord: "last", hint: "To say 'finally', use '<b>At last</b>'."}]
-                    },
-                    {
-                        vocabEn: "all day",
-                        prompt: "What <b>did</b> your puppy do <b>today</b>? 🐕",
-                        wordBank: ["My dog", "slept", "all day.", "every day."],
-                        validAnswers: ["My dog slept all day."],
-                        hints: [{wrongWord: "every day.", triggerWord: "all day", hint: "To say 'from morning to night', use '<b>all day</b>'."}]
+                        vocabEn: "a pair of ~",
+                        prompt: "What did you buy at the mall? 👟",
+                        wordBank: ["I bought", "a pair of", "a glass of", "shoes."],
+                        validAnswers: ["I bought a pair of shoes."],
+                        hints: [{wrongWord: "a glass of", triggerWord: "pair", hint: "For items that come in twos, use '<b>a pair of</b>'."}]
                     }
                 ],
                 questions: [ 
                     {
-                        prompt: "What sports do you play? 🏀",
-                        wordBank: ["I play", "both", "soccer", "and", "tennis.", "either"],
-                        validAnswers: ["I play both soccer and tennis.", "I play both tennis and soccer."],
-                        successReply: "Wow, you are very athletic! 🏃",
-                        failReply: "That's great! Staying active is important. 💪",
+                        prompt: "What do you think of the new movie? 🎬",
+                        wordBank: ["In my opinion,", "At my opinion,", "it is", "boring."],
+                        validAnswers: ["In my opinion, it is boring."],
+                        successReply: "Really? I guess I won't watch it then! 🍿",
+                        failReply: "Everyone has different tastes in movies! 🎥",
                         hints: [
-                            { wrongWord: "either", triggerWord: "both", hint: "When you play two things together, use '<b>both A and B</b>'." }
+                            { wrongWord: "At my opinion,", triggerWord: "In", hint: "To state your view, start with '<b>In</b> my opinion'." }
                         ]
                     },
                     {
-                        prompt: "Where is your bike? 🚲",
-                        wordBank: ["I left it", "I leave it", "in front of", "at front of", "the station."],
-                        validAnswers: ["I left it in front of the station."],
-                        successReply: "Oh, I see! I hope it is locked. 🔒",
-                        failReply: "Got it! Be careful of theft! 👮",
+                        prompt: "Why are you so tired? 🏃",
+                        wordBank: ["I walked", "all the way", "all the ways", "home."],
+                        validAnswers: ["I walked all the way home."],
+                        successReply: "Wow, you should get some rest! 🛏️",
+                        failReply: "Make sure you drink some water! 💧",
                         hints: [
-                            { wrongWord: "I leave it", triggerWord: "left", hint: "You already put it there. Use the past tense '<b>left</b>'." },
-                            { wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> front of'." }
+                            { wrongWord: "all the ways", triggerWord: "way", hint: "The idiom is singular. Use '<b>all the way</b>'." }
                         ]
                     },
                     {
-                        prompt: "Did you enjoy the sushi? 🍣",
-                        wordBank: ["I ate", "I eat", "sushi", "for the first time.", "at first."],
-                        validAnswers: ["I ate sushi for the first time."],
-                        successReply: "I hope it was delicious! 😋",
-                        failReply: "Sushi is great! I'm glad you tried it. 🥢",
+                        prompt: "What do you need for the cold weather? ❄️",
+                        wordBank: ["I need", "a pair of", "a slice of", "gloves."],
+                        validAnswers: ["I need a pair of gloves."],
+                        successReply: "Definitely! Keep those hands warm. 🧤",
+                        failReply: "Winter clothing is very important! 🧥",
                         hints: [
-                            { wrongWord: "I eat", triggerWord: "Did", hint: "The question uses 'Did'. Use the past tense '<b>ate</b>'." },
-                            { wrongWord: "at first.", triggerWord: "first time", hint: "To say you experienced something for the 1st time ever, use '<b>for the first time</b>'." }
-                        ]
-                    },
-                    {
-                        prompt: "Did the train finally arrive? 🚆",
-                        wordBank: ["At last,", "At first,", "the train", "arrived."],
-                        validAnswers: ["At last, the train arrived."],
-                        successReply: "Finally! Have a safe trip. 👋",
-                        failReply: "That's a relief! Enjoy your ride. 🚂",
-                        hints: [
-                            { wrongWord: "At first,", triggerWord: "last", hint: "To say 'finally', use '<b>At last</b>'." }
-                        ]
-                    },
-                    {
-                        prompt: "Why are you so tired? 🥱",
-                        wordBank: ["I worked", "I work", "all day", "today.", "every day"],
-                        validAnswers: ["I worked all day today."],
-                        successReply: "You should get some rest! 🛏️",
-                        failReply: "That sounds exhausting. Take a break! 🛋️",
-                        hints: [
-                            { wrongWord: "I work", triggerWord: "worked", hint: "Your work is finished for the day. Use the past tense '<b>worked</b>'." },
-                            { wrongWord: "every day", triggerWord: "all day", hint: "To say 'from morning to night', use '<b>all day</b>'." }
+                            { wrongWord: "a slice of", triggerWord: "pair", hint: "Gloves come in sets of two. Use '<b>a pair of</b>'." }
                         ]
                     }
                 ]
@@ -1147,99 +1061,44 @@
                 vocab: lesson12Vocab,
                 learn: [
                     {
-                        vocabEn: "as usual",
-                        prompt: "What time <b>did</b> he arrive <b>today</b>? ⏰",
-                        wordBank: ["He was", "late again", "as usual.", "as always."],
-                        validAnswers: ["He was late again as usual."],
-                        hints: [{wrongWord: "as always.", triggerWord: "usual", hint: "To say 'like normal', use the phrase '<b>as usual</b>'."}]
-                    },
-                    {
-                        vocabEn: "each other",
-                        prompt: "Do they get along well? 😠",
-                        wordBank: ["The two brothers", "don't like", "each other.", "each others."],
-                        validAnswers: ["The two brothers don't like each other."],
-                        hints: [{wrongWord: "each others.", triggerWord: "other", hint: "There is no 's' at the end. Use '<b>each other</b>'."}]
-                    },
-                    {
-                        vocabEn: "all the way",
-                        prompt: "Why are your legs so tired? 🚶",
-                        wordBank: ["I walked", "all the way", "all the ways", "home."],
-                        validAnswers: ["I walked all the way home."],
-                        hints: [{wrongWord: "all the ways", triggerWord: "way", hint: "The phrase does not take an 's'. Use '<b>all the way</b>'."}]
-                    },
-                    {
                         vocabEn: "a glass of ~",
-                        prompt: "What <b>did</b> she give the kids for breakfast? 🍊",
-                        wordBank: ["She poured", "a glass of", "a slice of", "orange juice."],
-                        validAnswers: ["She poured a glass of orange juice."],
-                        hints: [{wrongWord: "a slice of", triggerWord: "glass", hint: "Orange juice is a liquid! We use '<b>a glass of</b>'."}]
+                        prompt: "What can I get you to drink? 🚰",
+                        wordBank: ["I would like", "a glass of", "a slice of", "water."],
+                        validAnswers: ["I would like a glass of water."],
+                        hints: [{wrongWord: "a slice of", triggerWord: "glass", hint: "Water is a liquid! Use '<b>a glass of</b>'."}]
                     },
                     {
-                        vocabEn: "a pair of ~",
-                        prompt: "What <b>did</b> he get at the clothing store? 👖",
-                        wordBank: ["He bought", "a pair of", "a glass of", "jeans."],
-                        validAnswers: ["He bought a pair of jeans."],
-                        hints: [{wrongWord: "a glass of", triggerWord: "pair", hint: "Pants and jeans come in twos! We use '<b>a pair of</b>'."}]
+                        vocabEn: "a slice of ~",
+                        prompt: "What did she have for breakfast? 🍞",
+                        wordBank: ["She ate", "a slice of", "a pair of", "toast."],
+                        validAnswers: ["She ate a slice of toast."],
+                        hints: [{wrongWord: "a pair of", triggerWord: "slice", hint: "For pieces of bread or pizza, use '<b>a slice of</b>'."}]
                     }
                 ],
                 questions: [ 
                     {
-                        prompt: "<b>Did</b> you do anything special <b>this morning</b>? 🌅",
-                        wordBank: ["I ate", "I eat", "breakfast", "as usual.", "as always."],
-                        validAnswers: ["I ate breakfast as usual."],
-                        successReply: "Sometimes a normal morning is the best! 🍳",
-                        failReply: "A regular routine is important. ☕",
+                        prompt: "Are you thirsty? 🥛",
+                        wordBank: ["Can I have", "a glass of", "a pair of", "milk?"],
+                        validAnswers: ["Can I have a glass of milk?"],
+                        successReply: "Sure! Coming right up. 🐄",
+                        failReply: "Okay, I will grab that for you! 🧊",
                         hints: [
-                            { wrongWord: "I eat", triggerWord: "this morning", hint: "Pay attention to '<b>this morning</b>'. Use the past tense '<b>ate</b>'." },
-                            { wrongWord: "as always.", triggerWord: "usual", hint: "To say 'like normal', use the phrase '<b>as usual</b>'." }
+                            { wrongWord: "a pair of", triggerWord: "glass", hint: "For cold drinks, use '<b>a glass of</b>'." }
                         ]
                     },
                     {
-                        prompt: "How long have they known each other? 👫",
-                        wordBank: ["They have known", "They know", "each other", "for a long time."],
-                        validAnswers: ["They have known each other for a long time."],
-                        successReply: "That's wonderful to hear! 🤝",
-                        failReply: "Long friendships are very special. 🌟",
+                        prompt: "Are you hungry? 🍕",
+                        wordBank: ["I want", "a slice of", "a glass of", "pizza."],
+                        validAnswers: ["I want a slice of pizza."],
+                        successReply: "Me too! Let's order some. 😋",
+                        failReply: "Pizza sounds great right now! 🍽️",
                         hints: [
-                            { wrongWord: "They know", triggerWord: "have known", hint: "The question asks 'How long have...'. Answer with the present perfect '<b>have known</b>'." }
-                        ]
-                    },
-                    {
-                        prompt: "How <b>did</b> she get to Tokyo? 🚗",
-                        wordBank: ["She drove", "She drives", "all the way", "all the ways", "to Tokyo."],
-                        validAnswers: ["She drove all the way to Tokyo."],
-                        successReply: "Wow, that must have taken hours! 🛣️",
-                        failReply: "She must be a very good driver. ⛽",
-                        hints: [
-                            { wrongWord: "She drives", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense '<b>drove</b>'." },
-                            { wrongWord: "all the ways", triggerWord: "way", hint: "The phrase does not take an 's'. Use '<b>all the way</b>'." }
-                        ]
-                    },
-                    {
-                        prompt: "What would you like to drink? 🥛",
-                        wordBank: ["I want", "a glass of", "a pair of", "milk."],
-                        validAnswers: ["I want a glass of milk."],
-                        successReply: "Sure! I will pour that for you. 🐄",
-                        failReply: "Coming right up! 🧊",
-                        hints: [
-                            { wrongWord: "a pair of", triggerWord: "glass", hint: "Milk is a liquid! We use '<b>a glass of</b>'." }
-                        ]
-                    },
-                    {
-                        prompt: "What <b>did</b> you get for your birthday? 🎁",
-                        wordBank: ["I got", "I get", "a pair of", "a slice of", "gloves."],
-                        validAnswers: ["I got a pair of gloves."],
-                        successReply: "Oh, that is perfect for winter! ❄️",
-                        failReply: "That's a very nice gift! 🎈",
-                        hints: [
-                            { wrongWord: "I get", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense '<b>got</b>'." },
-                            { wrongWord: "a slice of", triggerWord: "pair", hint: "Gloves come in twos! We use '<b>a pair of</b>'." }
+                            { wrongWord: "a glass of", triggerWord: "slice", hint: "Pizza is cut into pieces. Use '<b>a slice of</b>'." }
                         ]
                     }
                 ]
             }
         };
-
         const emptyDayFallback = { vocab: [], questions: [], learn: [] }; 
 
         // --- APP LOGIC ---
@@ -1251,15 +1110,17 @@
         // Mode States
         let appMode = 'chat'; // default
 
-        // Load State 
-        let savedState = JSON.parse(sessionStorage.getItem('dailyChatProgress_L12')) || {};
+        // Dynamic storage key based on lesson title to reset state automatically for new lessons
+        const storageKey = 'dailyChatProgress_' + lessonTitle.replace(/\s+/g, '');
+        let savedState = JSON.parse(sessionStorage.getItem(storageKey)) || {};
         
         if (savedState.day !== todayInt) {
             savedState = { 
                 day: todayInt, qIndex: 0, completed: false, attempts: 0, score: 0, 
                 learnIndex: 0, learnCompleted: false,
                 scrollDownSeen: false, scrollUpSeen: false, scrollHintsCompleted: false,
-                learnPhase: 'ask_knowledge', knewVocab: false
+                learnPhase: 'ask_knowledge', knewVocab: false, notesOpened: false,
+                congratsShown: false
             };
             saveProgress();
         }
@@ -1267,6 +1128,8 @@
         // Catch missing defaults for existing session storage logic
         if (savedState.learnPhase === undefined) savedState.learnPhase = 'ask_knowledge';
         if (savedState.knewVocab === undefined) savedState.knewVocab = false;
+        if (savedState.notesOpened === undefined) savedState.notesOpened = false;
+        if (savedState.congratsShown === undefined) savedState.congratsShown = false;
         
         if (savedState.scrollHintsCompleted === undefined) { 
             savedState.scrollHintsCompleted = false; 
@@ -1365,6 +1228,10 @@
             let shouldOpen = action === 'open' ? true : (action === 'close' ? false : !isOpen);
 
             if (shouldOpen) {
+                if (!savedState.notesOpened) {
+                    savedState.notesOpened = true;
+                    saveProgress();
+                }
                 playSound('slide');
                 drawer.classList.add('open');
                 overlay.style.display = 'block';
@@ -1465,7 +1332,7 @@
 
         // --- CORE GAME FUNCTIONS ---
         function saveProgress() {
-            sessionStorage.setItem('dailyChatProgress_L12', JSON.stringify(savedState));
+            sessionStorage.setItem(storageKey, JSON.stringify(savedState));
             updateProgressUI();
         }
 
@@ -1481,6 +1348,101 @@
                 icon = '💬';
             }
             document.getElementById('progress-badge').innerText = `${icon} ${current}/${total}`;
+
+            // Update Start Menu Checkmarks
+            const learnCheck = document.getElementById('check-learn');
+            if (learnCheck) {
+                if (savedState.learnCompleted) learnCheck.classList.add('done');
+                else learnCheck.classList.remove('done');
+            }
+            
+            const chatCheck = document.getElementById('check-chat');
+            if (chatCheck) {
+                if (savedState.completed) chatCheck.classList.add('done');
+                else chatCheck.classList.remove('done');
+            }
+            
+            const notesCheck = document.getElementById('check-notes');
+            if (notesCheck) {
+                if (savedState.notesOpened) notesCheck.classList.add('done');
+                else notesCheck.classList.remove('done');
+            }
+
+            const isAllDone = savedState.learnCompleted && savedState.completed && savedState.notesOpened;
+            const resultsBtn = document.getElementById('results-btn');
+            
+            if (resultsBtn) {
+                resultsBtn.style.display = isAllDone ? 'flex' : 'none';
+            }
+
+            // Trigger Congratulations Modal if all are ticked
+            if (!isAllDone) {
+                // If a state becomes unticked (e.g. they hit "Start Over"), reset the congrats flag silently
+                if (savedState.congratsShown) {
+                    savedState.congratsShown = false;
+                    sessionStorage.setItem(storageKey, JSON.stringify(savedState)); 
+                }
+            } else if (!savedState.congratsShown) {
+                // They just finished the last requirement! Trigger the modal
+                savedState.congratsShown = true;
+                sessionStorage.setItem(storageKey, JSON.stringify(savedState)); 
+                
+                setTimeout(() => {
+                    showCongratsModal();
+                }, 800);
+            }
+        }
+
+        // --- CONGRATS MODAL LOGIC ---
+        function showCongratsModal() {
+            playSound('tada');
+            const modal = document.getElementById('congrats-modal-overlay');
+            const scoreDisplay = document.getElementById('congrats-score');
+
+            // Format score
+            const totalPossible = currentChallengeArray.length;
+            let finalScore = (savedState.score || 0).toFixed(1);
+            if (finalScore.endsWith('.0')) finalScore = parseInt(finalScore);
+
+            scoreDisplay.innerText = `${finalScore} / ${totalPossible}`;
+
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeCongratsModal() {
+            playSound('tap');
+            const modal = document.getElementById('congrats-modal-overlay');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        function downloadScreenshot() {
+            playSound('tap');
+            const card = document.getElementById('congrats-card');
+            const saveBtn = document.getElementById('save-results-btn');
+            const closeBtn = document.getElementById('close-congrats-btn');
+            
+            // Temporarily hide buttons for a clean snapshot
+            saveBtn.style.display = 'none';
+            closeBtn.style.display = 'none';
+
+            html2canvas(card, {
+                backgroundColor: '#ffffff',
+                scale: 2,
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `ChitChatter-${lessonTitle.replace(/\s+/g, '')}-Results.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.9);
+                link.click();
+                // Restore buttons
+                saveBtn.style.display = 'block';
+                closeBtn.style.display = 'block';
+            });
         }
 
         function returnToMenu() {
@@ -1505,7 +1467,7 @@
                 startNextQuestion();
             }
         }
-
+        
         function restartLearnMode() {
             playSound('tap');
             document.getElementById('chat-window').innerHTML = '';
