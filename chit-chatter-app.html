@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Chit Chatter</title>
+    <title>Daily English Chat</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
 
@@ -236,7 +236,7 @@
             align-content: flex-start;
             gap: 1.5vh;
             min-height: 8vh;
-            max-height: 40vh; /* Expanded for desktop so it rarely scrolls */
+            max-height: 40vh; 
             overflow-y: auto;
         }
 
@@ -276,7 +276,7 @@
             width: 100%; 
             box-sizing: border-box; 
             text-align: center; 
-            max-height: 50vh; /* Allowed to grow large on desktop */
+            max-height: 50vh; 
             overflow-y: auto;
         }
 
@@ -284,7 +284,6 @@
         .action-row {
             display: flex;
             justify-content: center;
-            padding: 0 4vw;
         }
 
         #notes-btn {
@@ -315,10 +314,10 @@
                 font-size: 2.2vh;
             }
             #word-bank {
-                max-height: 28dvh; /* Enforce scroll on mobile */
+                max-height: 28dvh; 
             }
             .quick-review-box {
-                max-height: 30vh; /* Enforce scroll on mobile */
+                max-height: 30vh; 
             }
         }
 
@@ -337,7 +336,7 @@
         #notes-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); 
-            backdrop-filter: blur(2px); z-index: 10000; /* Float over Start Screen */
+            backdrop-filter: blur(2px); z-index: 10000;
             opacity: 0; transition: opacity 0.4s ease;
         }
         #notes-overlay.show { opacity: 1; }
@@ -373,7 +372,6 @@
 
         .vocab-bottom-spacer { height: 12vh; width: 100%; }
 
-        /* Single Column Layout for Vocab - Enforced 1 Line */
         .vocab-group-list { 
             margin: 0; padding: 0; list-style-type: none; 
             display: flex; flex-direction: column; gap: 1.2vh; 
@@ -422,16 +420,6 @@
             white-space: nowrap;
         }
         .close-drawer-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #d81b60; }
-
-        @media (max-width: 768px) {
-            #sidebar-content-container {
-                right: auto; left: 0; bottom: -100%; top: auto; width: 100%; 
-                height: 85dvh; max-width: none;
-                border-left: none; border-top: 6px solid var(--main-teal); border-radius: 30px 30px 0 0;
-                transition: bottom 0.4s var(--bounce); 
-            }
-            #sidebar-content-container.open { bottom: 0; }
-        }
 
         /* Bubbly Scroll Indicators */
         .scroll-indicator {
@@ -530,7 +518,7 @@
     <!-- Start Screen Overlay -->
     <div id="start-overlay">
         <h1 style="color: var(--main-teal); font-size: 5vh; margin-bottom: 0.5vh; text-align: center;">Chit Chatter</h1>
-        <div id="start-lesson-title" style="color: #747d8c; font-size: 2.5vh; margin-top: 0; margin-bottom: 3vh; text-align: center; font-weight: 600;">Lesson Title</div>
+        <div id="start-lesson-title" style="color: #747d8c; font-size: 2.5vh; margin-top: 0; margin-bottom: 3vh; text-align: center; font-weight: 600;"></div>
         <button class="start-btn" style="background: #1e90ff; border-color: #0984e3; box-shadow: 0 6px 0 #0984e3;" onclick="startApp('learn')">👨‍🏫 Learn</button>
         <button class="start-btn" onclick="startApp('chat')">🤖 Chat</button>
         <button class="start-btn" style="background: #ffa502; border-color: #e58e26; box-shadow: 0 6px 0 #e58e26; font-size: 2.8vh;" onclick="toggleVocabDrawer('open')">📝 Notes</button>
@@ -683,35 +671,35 @@
                         prompt: "Did anything happen on your walk? 🐕",
                         wordBank: ["I saw", "a cute dog", "on my way to", "at my way to", "the park."],
                         validAnswers: ["I saw a cute dog on my way to the park."],
-                        hints: [{wrongWord: "at my way to", triggerWord: "on", hint: "The correct preposition is '<b>on</b> my way to'.<br><span class='hint-jp'>（「〜へ行く途中で」は on my way to と言います。）</span>"}]
+                        hints: [{wrongWord: "at my way to", triggerWord: "on", hint: "The correct preposition is '<b>on</b> my way to'."}]
                     },
                     {
                         vocabEn: "both A and B",
                         prompt: "What instruments can she play? 🎵",
                         wordBank: ["She can play", "both", "the piano", "and", "the guitar.", "either"],
                         validAnswers: ["She can play both the piano and the guitar."],
-                        hints: [{wrongWord: "either", triggerWord: "both", hint: "When doing two things together, use '<b>both A and B</b>'.<br><span class='hint-jp'>（「AとBの両方」は both A and B を使います。）</span>"}]
+                        hints: [{wrongWord: "either", triggerWord: "both", hint: "When doing two things together, use '<b>both A and B</b>'."}]
                     },
                     {
                         vocabEn: "not ~ at all",
                         prompt: "Are you feeling sleepy? 🔋",
                         wordBank: ["I am not", "I am", "tired", "at all", "very much", "today."],
                         validAnswers: ["I am not tired at all today."],
-                        hints: [{wrongWord: "I am", triggerWord: "not", hint: "You need the negative 'not' to use 'at all'.<br><span class='hint-jp'>（「まったく〜ない」は not と at all をセットで使います。）</span>"}]
+                        hints: [{wrongWord: "I am", triggerWord: "not", hint: "You need the negative 'not' to use 'at all'."}]
                     },
                     {
                         vocabEn: "so ~ that ...",
                         prompt: "Why are you so sleepy <b>today</b>? 📖",
                         wordBank: ["The book was", "so interesting that", "too interesting that", "I read it", "all night."],
                         validAnswers: ["The book was so interesting that I read it all night."],
-                        hints: [{wrongWord: "too interesting that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'.<br><span class='hint-jp'>（「とても〜なので…だ」は so ~ that ... を使います。）</span>"}]
+                        hints: [{wrongWord: "too interesting that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'."}]
                     },
                     {
                         vocabEn: "all day",
                         prompt: "What <b>did</b> you guys do <b>yesterday</b>? 🎮",
                         wordBank: ["We played", "We play", "video games", "all day.", "all the day."],
                         validAnswers: ["We played video games all day."],
-                        hints: [{wrongWord: "all the day.", triggerWord: "all day", hint: "The correct phrase is just '<b>all day</b>'.<br><span class='hint-jp'>（「1日じゅう」は all day と言います。）</span>"}]
+                        hints: [{wrongWord: "all the day.", triggerWord: "all day", hint: "The correct phrase is just '<b>all day</b>'."}]
                     }
                 ],
                 questions: [ 
@@ -722,8 +710,8 @@
                         successReply: "Oh, I see! That explains it. 🏃‍♂️",
                         failReply: "Ah well, at least you made it safely! 😅",
                         hints: [
-                            { wrongWord: "I meet", triggerWord: "were", hint: "Pay attention to '<b>were</b>' and '<b>this morning</b>'. Use the past tense of 'meet'.<br><span class='hint-jp'>（「今朝」の出来事なので、過去形の met を使いましょう。）</span>" },
-                            { wrongWord: "at my way to", triggerWord: "on", hint: "The correct preposition for this phrase is '<b>on</b> my way to'.<br><span class='hint-jp'>（「〜へ行く途中で」は on my way to と言います。）</span>" }
+                            { wrongWord: "I meet", triggerWord: "were", hint: "Pay attention to '<b>were</b>' and '<b>this morning</b>'. Use the past tense of 'meet'." },
+                            { wrongWord: "at my way to", triggerWord: "on", hint: "The correct preposition for this phrase is '<b>on</b> my way to'." }
                         ]
                     },
                     {
@@ -733,7 +721,7 @@
                         successReply: "Me too! They are so cute. 🐕",
                         failReply: "Well, animals are great anyway! 🐾",
                         hints: [
-                            { wrongWord: "either", triggerWord: "both", hint: "When you like two things together, use '<b>both A and B</b>'.<br><span class='hint-jp'>（「AとBの両方」と言いたい時は both A and B を使います。）</span>" }
+                            { wrongWord: "either", triggerWord: "both", hint: "When you like two things together, use '<b>both A and B</b>'." }
                         ]
                     },
                     {
@@ -743,8 +731,8 @@
                         successReply: "Oh no... I hope she does better next time! 😅",
                         failReply: "Well, hopefully the next test is easier! 📝",
                         hints: [
-                            { wrongWord: "doesn't study", triggerWord: "yesterday", hint: "Pay attention to '<b>yesterday</b>'. Use the past tense 'didn't'.<br><span class='hint-jp'>（「昨日」のことなので、過去形の didn't を使いましょう。）</span>" },
-                            { wrongWord: "very much.", triggerWord: "at all", hint: "To emphasize 'not' strongly, pair 'didn't' with '<b>at all</b>'.<br><span class='hint-jp'>（not ~ at all で「まったく〜ない」という意味になります。）</span>" }
+                            { wrongWord: "doesn't study", triggerWord: "yesterday", hint: "Pay attention to '<b>yesterday</b>'. Use the past tense 'didn't'." },
+                            { wrongWord: "very much.", triggerWord: "at all", hint: "To emphasize 'not' strongly, pair 'didn't' with '<b>at all</b>'." }
                         ]
                     },
                     {
@@ -754,8 +742,8 @@
                         successReply: "Makes sense. Let's just let him rest. 🤫",
                         failReply: "Hmm, he must have had a long day. 🤫",
                         hints: [
-                            { wrongWord: "He is", triggerWord: "fell asleep", hint: "Look at the end of the sentence: 'he fell asleep'. You are describing how he felt <i>before</i> falling asleep, so use past tense.<br><span class='hint-jp'>（「眠ってしまった」のは過去なので、その時の状態も過去形(was)にします。）</span>" },
-                            { wrongWord: "too tired that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'.<br><span class='hint-jp'>（「とても〜なので…だ」は so ~ that ... を使います。）</span>" }
+                            { wrongWord: "He is", triggerWord: "fell asleep", hint: "Look at the end of the sentence: 'he fell asleep'. You are describing how he felt <i>before</i> falling asleep, so use past tense." },
+                            { wrongWord: "too tired that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'." }
                         ]
                     },
                     {
@@ -765,8 +753,8 @@
                         successReply: "Oh, I see. That's a good day to stay inside! 🏠",
                         failReply: "I see! Well, I hope the weather is better today. ☀️",
                         hints: [
-                            { wrongWord: "It rains", triggerWord: "yesterday", hint: "Pay attention to '<b>yesterday</b>'. Use the past tense of 'rain'.<br><span class='hint-jp'>（「昨日」のことなので、過去形の rained を使いましょう。）</span>" },
-                            { wrongWord: "all the day", triggerWord: "all day", hint: "The correct phrase is just '<b>all day</b>'.<br><span class='hint-jp'>（「1日じゅう」は all day と言います。）</span>" }
+                            { wrongWord: "It rains", triggerWord: "yesterday", hint: "Pay attention to '<b>yesterday</b>'. Use the past tense of 'rain'." },
+                            { wrongWord: "all the day", triggerWord: "all day", hint: "The correct phrase is just '<b>all day</b>'." }
                         ]
                     }
                 ]
@@ -779,35 +767,35 @@
                         prompt: "Where should I park my car? 🌳",
                         wordBank: ["There is", "a large tree", "in front of", "at front of", "my house."],
                         validAnswers: ["There is a large tree in front of my house."],
-                        hints: [{wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> front of'.<br><span class='hint-jp'>（「〜の前で」は in front of と言います。）</span>"}]
+                        hints: [{wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> front of'."}]
                     },
                     {
                         vocabEn: "for the first time",
                         prompt: "Has he ever been to Kyoto <b>before</b>? ⛩️",
                         wordBank: ["He visited", "Kyoto", "for the first time", "at first", "last week."],
                         validAnswers: ["He visited Kyoto for the first time last week."],
-                        hints: [{wrongWord: "at first", triggerWord: "first time", hint: "To say you experienced something for the 1st time, use '<b>for the first time</b>'.<br><span class='hint-jp'>（「初めて」は for the first time と言います。）</span>"}]
+                        hints: [{wrongWord: "at first", triggerWord: "first time", hint: "To say you experienced something for the 1st time, use '<b>for the first time</b>'."}]
                     },
                     {
                         vocabEn: "at first",
                         prompt: "How was the math homework? 🧮",
                         wordBank: ["At first,", "For the first time,", "the math problem", "looked", "very difficult."],
                         validAnswers: ["At first, the math problem looked very difficult."],
-                        hints: [{wrongWord: "For the first time,", triggerWord: "At first", hint: "To say 'in the beginning', use '<b>At first,</b>'.<br><span class='hint-jp'>（「最初は」と言いたい時は At first を使います。）</span>"}]
+                        hints: [{wrongWord: "For the first time,", triggerWord: "At first", hint: "To say 'in the beginning', use '<b>At first,</b>'."}]
                     },
                     {
                         vocabEn: "at last",
                         prompt: "Is it still raining outside? 🌤️",
                         wordBank: ["At last,", "At least,", "the rain", "stopped."],
                         validAnswers: ["At last, the rain stopped."],
-                        hints: [{wrongWord: "At least,", triggerWord: "last", hint: "To say 'finally', use '<b>At last</b>'.<br><span class='hint-jp'>（「ついに」「ようやく」は At last と言います。）</span>"}]
+                        hints: [{wrongWord: "At least,", triggerWord: "last", hint: "To say 'finally', use '<b>At last</b>'."}]
                     },
                     {
                         vocabEn: "as usual",
                         prompt: "What time <b>did</b> she get to school <b>today</b>? 🏫",
                         wordBank: ["She arrived", "at school", "at 8:00", "as usual.", "as always."],
                         validAnswers: ["She arrived at school at 8:00 as usual."],
-                        hints: [{wrongWord: "as always.", triggerWord: "usual", hint: "To say 'like normal', use the phrase '<b>as usual</b>'.<br><span class='hint-jp'>（「いつもどおりに」は as usual と言います。）</span>"}]
+                        hints: [{wrongWord: "as always.", triggerWord: "usual", hint: "To say 'like normal', use the phrase '<b>as usual</b>'."}]
                     }
                 ],
                 questions: [ 
@@ -818,7 +806,7 @@
                         successReply: "Perfect! I'll see you there. 📚",
                         failReply: "Okay, I'll text you when I get there! 📱",
                         hints: [
-                            { wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> front of'.<br><span class='hint-jp'>（「〜の前で」は in front of と言います。）</span>" }
+                            { wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> front of'." }
                         ]
                     },
                     {
@@ -828,8 +816,8 @@
                         successReply: "Oh, cool! Is she nice? 😊",
                         failReply: "I see, she's very nice! 👍",
                         hints: [
-                            { wrongWord: "I meet", triggerWord: "yesterday", hint: "Pay attention to '<b>yesterday</b>'. Use the past tense of 'meet'.<br><span class='hint-jp'>（「昨日」のことなので、過去形の met を使いましょう。）</span>" },
-                            { wrongWord: "at first", triggerWord: "first time", hint: "To say you experienced something for the 1st time, use '<b>for the first time</b>'.<br><span class='hint-jp'>（「初めて」経験したことは for the first time と言います。）</span>" }
+                            { wrongWord: "I meet", triggerWord: "yesterday", hint: "Pay attention to '<b>yesterday</b>'. Use the past tense of 'meet'." },
+                            { wrongWord: "at first", triggerWord: "first time", hint: "To say you experienced something for the 1st time, use '<b>for the first time</b>'." }
                         ]
                     },
                     {
@@ -839,8 +827,8 @@
                         successReply: "I see, but did it get better later? 🍿",
                         failReply: "Yeah, movies can be like that. 🎥",
                         hints: [
-                            { wrongWord: "For the first time,", triggerWord: "At first", hint: "To say 'in the beginning (but it changed later)', use '<b>At first,</b>'.<br><span class='hint-jp'>（「最初は（〜だった）」と言いたい時は At first, を使います。）</span>" },
-                            { wrongWord: "I don't like it.", triggerWord: "Did", hint: "The question asks 'Did you like...'. Use the past tense 'didn't'.<br><span class='hint-jp'>（過去のことについて聞かれているので didn't を使いましょう。）</span>" }
+                            { wrongWord: "For the first time,", triggerWord: "At first", hint: "To say 'in the beginning (but it changed later)', use '<b>At first,</b>'." },
+                            { wrongWord: "I don't like it.", triggerWord: "Did", hint: "The question asks 'Did you like...'. Use the past tense 'didn't'." }
                         ]
                     },
                     {
@@ -850,7 +838,7 @@
                         successReply: "Wow, that is amazing news! 🎉",
                         failReply: "That's good to hear! 👏",
                         hints: [
-                            { wrongWord: "at least.", triggerWord: "last", hint: "To say 'finally', use '<b>at last</b>'.<br><span class='hint-jp'>（「ついに」「ようやく」は at last と言います。）</span>" }
+                            { wrongWord: "at least.", triggerWord: "last", hint: "To say 'finally', use '<b>at last</b>'." }
                         ]
                     },
                     {
@@ -860,8 +848,8 @@
                         successReply: "Wow, he is a morning person! 🌅",
                         failReply: "Got it, he is very consistent. ⏰",
                         hints: [
-                            { wrongWord: "He gets up", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense of 'get'.<br><span class='hint-jp'>（過去の出来事なので、過去形の got up を使いましょう。）</span>" },
-                            { wrongWord: "as always.", triggerWord: "usual", hint: "To say 'like normal', use the phrase '<b>as usual</b>'.<br><span class='hint-jp'>（「いつもどおりに」は as usual と言います。）</span>" }
+                            { wrongWord: "He gets up", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense of 'get'." },
+                            { wrongWord: "as always.", triggerWord: "usual", hint: "To say 'like normal', use the phrase '<b>as usual</b>'." }
                         ]
                     }
                 ]
@@ -874,35 +862,35 @@
                         prompt: "What happened <b>this afternoon</b>? 📱",
                         wordBank: ["The phone rang", "in the middle of", "at the middle of", "the meeting."],
                         validAnswers: ["The phone rang in the middle of the meeting."],
-                        hints: [{wrongWord: "at the middle of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> the middle of'.<br><span class='hint-jp'>（「〜の最中に」は in the middle of と言います。）</span>"}]
+                        hints: [{wrongWord: "at the middle of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> the middle of'."}]
                     },
                     {
                         vocabEn: "each other",
                         prompt: "Are they good friends? 🧒",
                         wordBank: ["They have known", "each other", "each others", "since childhood."],
                         validAnswers: ["They have known each other since childhood."],
-                        hints: [{wrongWord: "each others", triggerWord: "other", hint: "There is no 's' at the end. Use '<b>each other</b>'.<br><span class='hint-jp'>（each other に s はつきません。）</span>"}]
+                        hints: [{wrongWord: "each others", triggerWord: "other", hint: "There is no 's' at the end. Use '<b>each other</b>'."}]
                     },
                     {
                         vocabEn: "in my opinion",
                         prompt: "What is your favorite season? ⛄",
                         wordBank: ["In my opinion,", "At my opinion,", "winter is", "the best season."],
                         validAnswers: ["In my opinion, winter is the best season."],
-                        hints: [{wrongWord: "At my opinion,", triggerWord: "In", hint: "The correct phrase is '<b>In</b> my opinion'.<br><span class='hint-jp'>（「私の意見では」は In my opinion と言います。）</span>"}]
+                        hints: [{wrongWord: "At my opinion,", triggerWord: "In", hint: "The correct phrase is '<b>In</b> my opinion'."}]
                     },
                     {
                         vocabEn: "all the way",
                         prompt: "Why are you breathing so hard? 🏃",
                         wordBank: ["I ran", "I run", "all the way", "all the ways", "to the station."],
                         validAnswers: ["I ran all the way to the station."],
-                        hints: [{wrongWord: "all the ways", triggerWord: "way", hint: "The phrase does not take an 's'. Use '<b>all the way</b>'.<br><span class='hint-jp'>（「はるばる」は all the way と言います。s はつきません。）</span>"}]
+                        hints: [{wrongWord: "all the ways", triggerWord: "way", hint: "The phrase does not take an 's'. Use '<b>all the way</b>'."}]
                     },
                     {
                         vocabEn: "a pair of ~",
                         prompt: "Why are you going to the store? 👓",
                         wordBank: ["I need", "a new", "pair of", "glass of", "glasses."],
                         validAnswers: ["I need a new pair of glasses."],
-                        hints: [{wrongWord: "glass of", triggerWord: "pair", hint: "Glasses come in twos! We use '<b>pair of</b>'.<br><span class='hint-jp'>（メガネなど「1組」には a pair of を使います。）</span>"}]
+                        hints: [{wrongWord: "glass of", triggerWord: "pair", hint: "Glasses come in twos! We use '<b>pair of</b>'."}]
                     }
                 ],
                 questions: [ 
@@ -913,8 +901,8 @@
                         successReply: "Oh no! Did it scare you? 😲",
                         failReply: "Sorry to hear you had a bad night's sleep. 😴",
                         hints: [
-                            { wrongWord: "I wake up", triggerWord: "last night", hint: "Pay attention to '<b>last night</b>'. Use the past tense of 'wake'.<br><span class='hint-jp'>（「昨夜」のことなので、過去形の woke up を使いましょう。）</span>" },
-                            { wrongWord: "at the middle of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> the middle of'.<br><span class='hint-jp'>（「〜の最中に」は in the middle of と言います。）</span>" }
+                            { wrongWord: "I wake up", triggerWord: "last night", hint: "Pay attention to '<b>last night</b>'. Use the past tense of 'wake'." },
+                            { wrongWord: "at the middle of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> the middle of'." }
                         ]
                     },
                     {
@@ -924,8 +912,8 @@
                         successReply: "That is so sweet to hear! 🤝",
                         failReply: "It's good to have family to rely on. 👨‍👩‍👦",
                         hints: [
-                            { wrongWord: "each others.", triggerWord: "other", hint: "There is no 's' at the end. Use '<b>each other</b>'.<br><span class='hint-jp'>（each other に s はつきません。）</span>" },
-                            { wrongWord: "us.", triggerWord: "each", hint: "When two people do something mutually, use '<b>each other</b>'.<br><span class='hint-jp'>（「お互い」と言いたい時は each other を使います。）</span>" }
+                            { wrongWord: "each others.", triggerWord: "other", hint: "There is no 's' at the end. Use '<b>each other</b>'." },
+                            { wrongWord: "us.", triggerWord: "each", hint: "When two people do something mutually, use '<b>each other</b>'." }
                         ]
                     },
                     {
@@ -935,7 +923,7 @@
                         successReply: "I agree! I couldn't put it down. 📚",
                         failReply: "That's fair. Everyone has their own taste! 🤷",
                         hints: [
-                            { wrongWord: "At my opinion,", triggerWord: "In", hint: "The correct phrase is '<b>In</b> my opinion'.<br><span class='hint-jp'>（「私の意見では」は In my opinion と言います。）</span>" }
+                            { wrongWord: "At my opinion,", triggerWord: "In", hint: "The correct phrase is '<b>In</b> my opinion'." }
                         ]
                     },
                     {
@@ -945,19 +933,8 @@
                         successReply: "Wow, that is a very long trip! 🌍",
                         failReply: "He must be exhausted! ✈️",
                         hints: [
-                            { wrongWord: "He comes", triggerWord: "came", hint: "His trip is already finished. Use the past tense '<b>came</b>'.<br><span class='hint-jp'>（すでに到着しているので過去形の came を使いましょう。）</span>" },
-                            { wrongWord: "all the ways", triggerWord: "way", hint: "The phrase does not take an 's'. Use '<b>all the way</b>'.<br><span class='hint-jp'>（「はるばる」は all the way と言います。s はつきません。）</span>" }
-                        ]
-                    },
-                    {
-                        prompt: "What <b>did</b> you buy at the mall <b>today</b>? 🛍️",
-                        wordBank: ["I bought", "I buy", "a pair of shoes.", "a glass of shoes."],
-                        validAnswers: ["I bought a pair of shoes."],
-                        successReply: "Nice! I bet they look great. 👟",
-                        failReply: "Sounds fun! Shopping is always a good time. 🛍️",
-                        hints: [
-                            { wrongWord: "I buy", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense of 'buy'.<br><span class='hint-jp'>（過去の出来事なので、過去形の bought を使いましょう。）</span>" },
-                            { wrongWord: "a glass of shoes.", triggerWord: "pair", hint: "Shoes come in twos! We use '<b>a pair of</b>' for shoes.<br><span class='hint-jp'>（靴などの「1足、1組」には a pair of を使います。）</span>" }
+                            { wrongWord: "He comes", triggerWord: "came", hint: "His trip is already finished. Use the past tense '<b>came</b>'." },
+                            { wrongWord: "all the ways", triggerWord: "way", hint: "The phrase does not take an 's'. Use '<b>all the way</b>'." }
                         ]
                     }
                 ]
@@ -970,35 +947,35 @@
                         prompt: "What does he usually have with breakfast? 🥛",
                         wordBank: ["He drinks", "a glass of", "a slice of", "milk", "every morning."],
                         validAnswers: ["He drinks a glass of milk every morning."],
-                        hints: [{wrongWord: "a slice of", triggerWord: "glass", hint: "Milk is a liquid! We use '<b>a glass of</b>'.<br><span class='hint-jp'>（冷たい飲み物「1杯」には a glass of を使います。）</span>"}]
+                        hints: [{wrongWord: "a slice of", triggerWord: "glass", hint: "Milk is a liquid! We use '<b>a glass of</b>'."}]
                     },
                     {
                         vocabEn: "a slice of ~",
                         prompt: "What would you like to eat? 🍕",
                         wordBank: ["Can I have", "a slice of", "a pair of", "pizza?"],
                         validAnswers: ["Can I have a slice of pizza?"],
-                        hints: [{wrongWord: "a pair of", triggerWord: "slice", hint: "For pizza or bread, we use '<b>a slice of</b>'.<br><span class='hint-jp'>（ピザやパンの「1切れ」には a slice of を使います。）</span>"}]
+                        hints: [{wrongWord: "a pair of", triggerWord: "slice", hint: "For pizza or bread, we use '<b>a slice of</b>'."}]
                     },
                     {
                         vocabEn: "so ~ that ...",
                         prompt: "Why are you so hungry? 🥪",
                         wordBank: ["I was", "so busy that", "too busy that", "I couldn't", "eat lunch."],
                         validAnswers: ["I was so busy that I couldn't eat lunch."],
-                        hints: [{wrongWord: "too busy that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'.<br><span class='hint-jp'>（「とても〜なので…だ」は so ~ that ... を使います。）</span>"}]
+                        hints: [{wrongWord: "too busy that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'."}]
                     },
                     {
                         vocabEn: "on my way to ~",
                         prompt: "Why are you looking around the street? 🔑",
                         wordBank: ["I dropped", "my keys", "on my way to", "at my way to", "the store."],
                         validAnswers: ["I dropped my keys on my way to the store."],
-                        hints: [{wrongWord: "at my way to", triggerWord: "on", hint: "The correct preposition is '<b>on</b> my way to'.<br><span class='hint-jp'>（「〜へ行く途中で」は on my way to と言います。）</span>"}]
+                        hints: [{wrongWord: "at my way to", triggerWord: "on", hint: "The correct preposition is '<b>on</b> my way to'."}]
                     },
                     {
                         vocabEn: "not ~ at all",
                         prompt: "Is he fluent in English? 🗣️",
                         wordBank: ["He doesn't speak", "He speaks", "English", "at all.", "very much."],
                         validAnswers: ["He doesn't speak English at all."],
-                        hints: [{wrongWord: "very much.", triggerWord: "at all", hint: "To emphasize 'not' strongly, use '<b>at all</b>'.<br><span class='hint-jp'>（not ~ at all で「まったく〜ない」という意味になります。）</span>"}]
+                        hints: [{wrongWord: "very much.", triggerWord: "at all", hint: "To emphasize 'not' strongly, use '<b>at all</b>'."}]
                     }
                 ],
                 questions: [ 
@@ -1009,7 +986,7 @@
                         successReply: "Sure thing! Coming right up. 🚰",
                         failReply: "Okay, I will grab that for you! 🧊",
                         hints: [
-                            { wrongWord: "a slice of", triggerWord: "glass", hint: "Water is a liquid! We use '<b>a glass of</b>'.<br><span class='hint-jp'>（水などの冷たい飲み物「1杯」には a glass of を使います。）</span>" }
+                            { wrongWord: "a slice of", triggerWord: "glass", hint: "Water is a liquid! We use '<b>a glass of</b>'." }
                         ]
                     },
                     {
@@ -1019,8 +996,8 @@
                         successReply: "That sounds like a light breakfast! 🍞",
                         failReply: "I see, breakfast is the most important meal! 🌞",
                         hints: [
-                            { wrongWord: "She eats", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense of 'eat'.<br><span class='hint-jp'>（過去の出来事なので、過去形の ate を使いましょう。）</span>" },
-                            { wrongWord: "a pair of", triggerWord: "slice", hint: "For bread or toast, we use '<b>a slice of</b>'.<br><span class='hint-jp'>（トースト「1切れ」には a slice of を使います。）</span>" }
+                            { wrongWord: "She eats", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense of 'eat'." },
+                            { wrongWord: "a pair of", triggerWord: "slice", hint: "For bread or toast, we use '<b>a slice of</b>'." }
                         ]
                     },
                     {
@@ -1030,8 +1007,8 @@
                         successReply: "Wow, I will have to watch it too! 🎬",
                         failReply: "It must have been really entertaining! 🤩",
                         hints: [
-                            { wrongWord: "The movie is", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense '<b>was</b>'.<br><span class='hint-jp'>（過去のことなので was を使いましょう。）</span>" },
-                            { wrongWord: "too good that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'.<br><span class='hint-jp'>（「とても〜なので…だ」は so ~ that ... を使います。）</span>" }
+                            { wrongWord: "The movie is", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense '<b>was</b>'." },
+                            { wrongWord: "too good that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'." }
                         ]
                     },
                     {
@@ -1041,8 +1018,8 @@
                         successReply: "Oh, that is very lucky! 🍽️",
                         failReply: "Nice, I hope the food is good there. 😋",
                         hints: [
-                            { wrongWord: "She finds", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense of 'find'.<br><span class='hint-jp'>（過去の出来事なので、過去形の found を使いましょう。）</span>" },
-                            { wrongWord: "at her way to", triggerWord: "on", hint: "The correct preposition is '<b>on</b> her way to'.<br><span class='hint-jp'>（「〜へ行く途中で」は on her way to と言います。）</span>" }
+                            { wrongWord: "She finds", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense of 'find'." },
+                            { wrongWord: "at her way to", triggerWord: "on", hint: "The correct preposition is '<b>on</b> her way to'." }
                         ]
                     },
                     {
@@ -1052,8 +1029,8 @@
                         successReply: "Oh no... that is disappointing. 😞",
                         failReply: "That's a shame! Better luck next time. 🤷",
                         hints: [
-                            { wrongWord: "I don't like", triggerWord: "Did", hint: "Pay attention to '<b>Did</b>'. Use the past tense 'didn't'.<br><span class='hint-jp'>（過去について聞かれているので didn't を使いましょう。）</span>" },
-                            { wrongWord: "very much.", triggerWord: "at all", hint: "To emphasize 'not' strongly, pair 'didn't' with '<b>at all</b>'.<br><span class='hint-jp'>（not ~ at all で「まったく〜ない」という意味になります。）</span>" }
+                            { wrongWord: "I don't like", triggerWord: "Did", hint: "Pay attention to '<b>Did</b>'. Use the past tense 'didn't'." },
+                            { wrongWord: "very much.", triggerWord: "at all", hint: "To emphasize 'not' strongly, pair 'didn't' with '<b>at all</b>'." }
                         ]
                     }
                 ]
@@ -1066,35 +1043,35 @@
                         prompt: "What do I need to bake this cake? 🥚",
                         wordBank: ["You need", "both eggs", "and milk.", "either eggs"],
                         validAnswers: ["You need both eggs and milk."],
-                        hints: [{wrongWord: "either eggs", triggerWord: "both", hint: "When you need two things together, use '<b>both A and B</b>'.<br><span class='hint-jp'>（「AとBの両方」と言いたい時は both A and B を使います。）</span>"}]
+                        hints: [{wrongWord: "either eggs", triggerWord: "both", hint: "When you need two things together, use '<b>both A and B</b>'."}]
                     },
                     {
                         vocabEn: "in front of ~",
                         prompt: "Where should I meet you? 🚪",
                         wordBank: ["Please wait", "in front of", "at front of", "the gate."],
                         validAnswers: ["Please wait in front of the gate."],
-                        hints: [{wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> front of'.<br><span class='hint-jp'>（「〜の前で」は in front of と言います。）</span>"}]
+                        hints: [{wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> front of'."}]
                     },
                     {
                         vocabEn: "for the first time",
                         prompt: "Did she like her trip to Hokkaido? ❄️",
                         wordBank: ["She saw", "snow", "for the first time.", "at first."],
                         validAnswers: ["She saw snow for the first time."],
-                        hints: [{wrongWord: "at first.", triggerWord: "first time", hint: "To say you experienced something for the 1st time ever, use '<b>for the first time</b>'.<br><span class='hint-jp'>（「初めて」は for the first time と言います。）</span>"}]
+                        hints: [{wrongWord: "at first.", triggerWord: "first time", hint: "To say you experienced something for the 1st time ever, use '<b>for the first time</b>'."}]
                     },
                     {
                         vocabEn: "at last",
                         prompt: "Are you still working on the assignment? 📋",
                         wordBank: ["At last,", "At first,", "we finished", "the project."],
                         validAnswers: ["At last, we finished the project."],
-                        hints: [{wrongWord: "At first,", triggerWord: "last", hint: "To say 'finally', use '<b>At last</b>'.<br><span class='hint-jp'>（「ついに」「ようやく」は At last と言います。）</span>"}]
+                        hints: [{wrongWord: "At first,", triggerWord: "last", hint: "To say 'finally', use '<b>At last</b>'."}]
                     },
                     {
                         vocabEn: "all day",
                         prompt: "What <b>did</b> your puppy do <b>today</b>? 🐕",
                         wordBank: ["My dog", "slept", "all day.", "every day."],
                         validAnswers: ["My dog slept all day."],
-                        hints: [{wrongWord: "every day.", triggerWord: "all day", hint: "To say 'from morning to night', use '<b>all day</b>'.<br><span class='hint-jp'>（「1日じゅう」は all day と言います。）</span>"}]
+                        hints: [{wrongWord: "every day.", triggerWord: "all day", hint: "To say 'from morning to night', use '<b>all day</b>'."}]
                     }
                 ],
                 questions: [ 
@@ -1105,7 +1082,7 @@
                         successReply: "Wow, you are very athletic! 🏃",
                         failReply: "That's great! Staying active is important. 💪",
                         hints: [
-                            { wrongWord: "either", triggerWord: "both", hint: "When you play two things together, use '<b>both A and B</b>'.<br><span class='hint-jp'>（「AとBの両方」と言いたい時は both A and B を使います。）</span>" }
+                            { wrongWord: "either", triggerWord: "both", hint: "When you play two things together, use '<b>both A and B</b>'." }
                         ]
                     },
                     {
@@ -1115,8 +1092,8 @@
                         successReply: "Oh, I see! I hope it is locked. 🔒",
                         failReply: "Got it! Be careful of theft! 👮",
                         hints: [
-                            { wrongWord: "I leave it", triggerWord: "left", hint: "You already put it there. Use the past tense '<b>left</b>'.<br><span class='hint-jp'>（すでに置いてあるので、過去形の left を使いましょう。）</span>" },
-                            { wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> front of'.<br><span class='hint-jp'>（「〜の前で」は in front of と言います。）</span>" }
+                            { wrongWord: "I leave it", triggerWord: "left", hint: "You already put it there. Use the past tense '<b>left</b>'." },
+                            { wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> front of'." }
                         ]
                     },
                     {
@@ -1126,8 +1103,8 @@
                         successReply: "I hope it was delicious! 😋",
                         failReply: "Sushi is great! I'm glad you tried it. 🥢",
                         hints: [
-                            { wrongWord: "I eat", triggerWord: "Did", hint: "The question uses 'Did'. Use the past tense '<b>ate</b>'.<br><span class='hint-jp'>（過去のことについて聞かれているので ate を使いましょう。）</span>" },
-                            { wrongWord: "at first.", triggerWord: "first time", hint: "To say you experienced something for the 1st time ever, use '<b>for the first time</b>'.<br><span class='hint-jp'>（「初めて」経験したことは for the first time と言います。）</span>" }
+                            { wrongWord: "I eat", triggerWord: "Did", hint: "The question uses 'Did'. Use the past tense '<b>ate</b>'." },
+                            { wrongWord: "at first.", triggerWord: "first time", hint: "To say you experienced something for the 1st time ever, use '<b>for the first time</b>'." }
                         ]
                     },
                     {
@@ -1137,7 +1114,7 @@
                         successReply: "Finally! Have a safe trip. 👋",
                         failReply: "That's a relief! Enjoy your ride. 🚂",
                         hints: [
-                            { wrongWord: "At first,", triggerWord: "last", hint: "To say 'finally', use '<b>At last</b>'.<br><span class='hint-jp'>（「ついに」「ようやく」は At last と言います。）</span>" }
+                            { wrongWord: "At first,", triggerWord: "last", hint: "To say 'finally', use '<b>At last</b>'." }
                         ]
                     },
                     {
@@ -1147,8 +1124,8 @@
                         successReply: "You should get some rest! 🛏️",
                         failReply: "That sounds exhausting. Take a break! 🛋️",
                         hints: [
-                            { wrongWord: "I work", triggerWord: "worked", hint: "Your work is finished for the day. Use the past tense '<b>worked</b>'.<br><span class='hint-jp'>（すでに働き終えているので過去形の worked を使いましょう。）</span>" },
-                            { wrongWord: "every day", triggerWord: "all day", hint: "To say 'from morning to night', use '<b>all day</b>'.<br><span class='hint-jp'>（「1日じゅう」は all day と言います。）</span>" }
+                            { wrongWord: "I work", triggerWord: "worked", hint: "Your work is finished for the day. Use the past tense '<b>worked</b>'." },
+                            { wrongWord: "every day", triggerWord: "all day", hint: "To say 'from morning to night', use '<b>all day</b>'." }
                         ]
                     }
                 ]
@@ -1161,35 +1138,35 @@
                         prompt: "What time <b>did</b> he arrive <b>today</b>? ⏰",
                         wordBank: ["He was", "late again", "as usual.", "as always."],
                         validAnswers: ["He was late again as usual."],
-                        hints: [{wrongWord: "as always.", triggerWord: "usual", hint: "To say 'like normal', use the phrase '<b>as usual</b>'.<br><span class='hint-jp'>（「いつもどおりに」は as usual と言います。）</span>"}]
+                        hints: [{wrongWord: "as always.", triggerWord: "usual", hint: "To say 'like normal', use the phrase '<b>as usual</b>'."}]
                     },
                     {
                         vocabEn: "each other",
                         prompt: "Do they get along well? 😠",
                         wordBank: ["The two brothers", "don't like", "each other.", "each others."],
                         validAnswers: ["The two brothers don't like each other."],
-                        hints: [{wrongWord: "each others.", triggerWord: "other", hint: "There is no 's' at the end. Use '<b>each other</b>'.<br><span class='hint-jp'>（each other に s はつきません。）</span>"}]
+                        hints: [{wrongWord: "each others.", triggerWord: "other", hint: "There is no 's' at the end. Use '<b>each other</b>'."}]
                     },
                     {
                         vocabEn: "all the way",
                         prompt: "Why are your legs so tired? 🚶",
                         wordBank: ["I walked", "all the way", "all the ways", "home."],
                         validAnswers: ["I walked all the way home."],
-                        hints: [{wrongWord: "all the ways", triggerWord: "way", hint: "The phrase does not take an 's'. Use '<b>all the way</b>'.<br><span class='hint-jp'>（「はるばる」は all the way と言います。s はつきません。）</span>"}]
+                        hints: [{wrongWord: "all the ways", triggerWord: "way", hint: "The phrase does not take an 's'. Use '<b>all the way</b>'."}]
                     },
                     {
                         vocabEn: "a glass of ~",
                         prompt: "What <b>did</b> she give the kids for breakfast? 🍊",
                         wordBank: ["She poured", "a glass of", "a slice of", "orange juice."],
                         validAnswers: ["She poured a glass of orange juice."],
-                        hints: [{wrongWord: "a slice of", triggerWord: "glass", hint: "Orange juice is a liquid! We use '<b>a glass of</b>'.<br><span class='hint-jp'>（冷たい飲み物「1杯」には a glass of を使います。）</span>"}]
+                        hints: [{wrongWord: "a slice of", triggerWord: "glass", hint: "Orange juice is a liquid! We use '<b>a glass of</b>'."}]
                     },
                     {
                         vocabEn: "a pair of ~",
                         prompt: "What <b>did</b> he get at the clothing store? 👖",
                         wordBank: ["He bought", "a pair of", "a glass of", "jeans."],
                         validAnswers: ["He bought a pair of jeans."],
-                        hints: [{wrongWord: "a glass of", triggerWord: "pair", hint: "Pants and jeans come in twos! We use '<b>a pair of</b>'.<br><span class='hint-jp'>（ジーンズなど「1組」には a pair of を使います。）</span>"}]
+                        hints: [{wrongWord: "a glass of", triggerWord: "pair", hint: "Pants and jeans come in twos! We use '<b>a pair of</b>'."}]
                     }
                 ],
                 questions: [ 
@@ -1200,8 +1177,8 @@
                         successReply: "Sometimes a normal morning is the best! 🍳",
                         failReply: "A regular routine is important. ☕",
                         hints: [
-                            { wrongWord: "I eat", triggerWord: "this morning", hint: "Pay attention to '<b>this morning</b>'. Use the past tense '<b>ate</b>'.<br><span class='hint-jp'>（「今朝」の出来事なので、過去形の ate を使いましょう。）</span>" },
-                            { wrongWord: "as always.", triggerWord: "usual", hint: "To say 'like normal', use the phrase '<b>as usual</b>'.<br><span class='hint-jp'>（「いつもどおりに」は as usual と言います。）</span>" }
+                            { wrongWord: "I eat", triggerWord: "this morning", hint: "Pay attention to '<b>this morning</b>'. Use the past tense '<b>ate</b>'." },
+                            { wrongWord: "as always.", triggerWord: "usual", hint: "To say 'like normal', use the phrase '<b>as usual</b>'." }
                         ]
                     },
                     {
@@ -1211,7 +1188,7 @@
                         successReply: "That's wonderful to hear! 🤝",
                         failReply: "Long friendships are very special. 🌟",
                         hints: [
-                            { wrongWord: "They know", triggerWord: "have known", hint: "The question asks 'How long have...'. Answer with the present perfect '<b>have known</b>'.<br><span class='hint-jp'>（「どれくらい〜していますか」と聞かれているので、現在完了形の have known を使いましょう。）</span>" }
+                            { wrongWord: "They know", triggerWord: "have known", hint: "The question asks 'How long have...'. Answer with the present perfect '<b>have known</b>'." }
                         ]
                     },
                     {
@@ -1221,8 +1198,8 @@
                         successReply: "Wow, that must have taken hours! 🛣️",
                         failReply: "She must be a very good driver. ⛽",
                         hints: [
-                            { wrongWord: "She drives", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense '<b>drove</b>'.<br><span class='hint-jp'>（過去の出来事なので、過去形の drove を使いましょう。）</span>" },
-                            { wrongWord: "all the ways", triggerWord: "way", hint: "The phrase does not take an 's'. Use '<b>all the way</b>'.<br><span class='hint-jp'>（「はるばる」は all the way と言います。s はつきません。）</span>" }
+                            { wrongWord: "She drives", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense '<b>drove</b>'." },
+                            { wrongWord: "all the ways", triggerWord: "way", hint: "The phrase does not take an 's'. Use '<b>all the way</b>'." }
                         ]
                     },
                     {
@@ -1232,7 +1209,7 @@
                         successReply: "Sure! I will pour that for you. 🐄",
                         failReply: "Coming right up! 🧊",
                         hints: [
-                            { wrongWord: "a pair of", triggerWord: "glass", hint: "Milk is a liquid! We use '<b>a glass of</b>'.<br><span class='hint-jp'>（冷たい飲み物「1杯」には a glass of を使います。）</span>" }
+                            { wrongWord: "a pair of", triggerWord: "glass", hint: "Milk is a liquid! We use '<b>a glass of</b>'." }
                         ]
                     },
                     {
@@ -1242,8 +1219,8 @@
                         successReply: "Oh, that is perfect for winter! ❄️",
                         failReply: "That's a very nice gift! 🎈",
                         hints: [
-                            { wrongWord: "I get", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense '<b>got</b>'.<br><span class='hint-jp'>（過去の出来事なので、過去形の got を使いましょう。）</span>" },
-                            { wrongWord: "a slice of", triggerWord: "pair", hint: "Gloves come in twos! We use '<b>a pair of</b>'.<br><span class='hint-jp'>（手袋など「1足、1組」には a pair of を使います。）</span>" }
+                            { wrongWord: "I get", triggerWord: "did", hint: "Pay attention to '<b>did</b>'. Use the past tense '<b>got</b>'." },
+                            { wrongWord: "a slice of", triggerWord: "pair", hint: "Gloves come in twos! We use '<b>a pair of</b>'." }
                         ]
                     }
                 ]
@@ -1261,14 +1238,10 @@
         
         const MAX_ATTEMPTS = 3;
         let isBotTyping = false;
-
-        // Mode States
-        let appMode = 'chat'; // 'chat' or 'learn'
-        let learnPhase = 'ask'; // 'ask' or 'test'
-        let saidYes = false;
+        let appMode = 'chat'; // default
 
         // Load State 
-        let savedState = JSON.parse(localStorage.getItem('chitChatterProgress')) || {};
+        let savedState = JSON.parse(localStorage.getItem('dailyChatProgress_L12')) || {};
         
         if (savedState.day !== todayInt) {
             savedState = { 
@@ -1279,14 +1252,13 @@
             saveProgress();
         }
         
-        // Safety patches for existing users migrating formats
         if (savedState.scrollHintsCompleted === undefined) { 
             savedState.scrollHintsCompleted = false; 
             savedState.scrollDownSeen = false; 
             savedState.scrollUpSeen = false; 
             saveProgress(); 
         }
-        
+
         if (savedState.learnIndex === undefined) {
             savedState.learnIndex = 0; 
             savedState.learnCompleted = false;
@@ -1312,26 +1284,18 @@
             setTimeout(() => {
                 overlay.style.display = 'none';
                 
-                if (appMode === 'learn') {
-                    if (currentLearnArray.length === 0) {
-                        addBubble("No learn practice scheduled for today! 🎉", "sys-bubble");
-                        return;
-                    }
-                    if (savedState.learnCompleted) {
-                        showFinalScoreCard();
-                    } else {
-                        startNextLearnQuestion();
-                    }
+                const targetArray = appMode === 'learn' ? currentLearnArray : currentChallengeArray;
+                const isCompleted = appMode === 'learn' ? savedState.learnCompleted : savedState.completed;
+
+                if (targetArray.length === 0) {
+                    addBubble("No practice scheduled for today! Have a great day! 🎉", "sys-bubble");
+                    return;
+                }
+
+                if (isCompleted) {
+                    showFinalScoreCard();
                 } else {
-                    if (currentChallengeArray.length === 0) {
-                        addBubble("No practice scheduled for today! Have a great day! 🎉", "sys-bubble");
-                        return;
-                    }
-                    if (savedState.completed) {
-                        showFinalScoreCard();
-                    } else {
-                        startNextQuestion();
-                    }
+                    startNextQuestion();
                 }
             }, 300);
         }
@@ -1486,7 +1450,7 @@
 
         // --- CORE GAME FUNCTIONS ---
         function saveProgress() {
-            localStorage.setItem('chitChatterProgress', JSON.stringify(savedState));
+            localStorage.setItem('dailyChatProgress_L12', JSON.stringify(savedState));
             updateProgressUI();
         }
 
@@ -1511,7 +1475,7 @@
 
         function switchToChat() {
             playSound('tap');
-            document.getElementById('chat-window').innerHTML = ''; // Clear the Learn chat
+            document.getElementById('chat-window').innerHTML = '';
             appMode = 'chat';
             updateProgressUI();
             
@@ -1597,10 +1561,14 @@
             }, duration);
         }
 
-        // --- LEARN MODE SPECIFIC ---
-        function startNextLearnQuestion() {
-            if (savedState.learnIndex >= currentLearnArray.length) {
-                savedState.learnCompleted = true;
+        function startNextQuestion() {
+            const isLearn = appMode === 'learn';
+            const targetArray = isLearn ? currentLearnArray : currentChallengeArray;
+            const currentIndex = isLearn ? savedState.learnIndex : savedState.qIndex;
+
+            if (currentIndex >= targetArray.length) {
+                if (isLearn) savedState.learnCompleted = true;
+                else savedState.completed = true;
                 saveProgress();
                 showTypingIndicator(() => {
                     showFinalScoreCard();
@@ -1608,109 +1576,55 @@
                 return;
             }
 
-            const data = currentLearnArray[savedState.learnIndex];
-            learnPhase = 'ask';
-            
+            const data = targetArray[currentIndex];
+
             showTypingIndicator(() => {
-                addBubble(`Do you know the phrase:<br><br><b>${data.vocabEn}</b> ? 🤔`, "bot-bubble");
-                setTimeout(() => {
-                    renderWordBank(["Yes,", "No,", "I", "do.", "don't."]);
-                    document.getElementById('interaction-area').classList.remove('hidden');
-                    document.getElementById('interaction-area').style.display = 'flex';
-                    scrollToBottom();
-                }, 500);
+                presentPrompt(data, isLearn);
             }, 1200);
         }
 
-        function advanceToLearnTest(msg, showPrompt) {
-            hideInteraction();
-            showTypingIndicator(() => {
-                addBubble(msg, "bot-bubble");
-                setTimeout(() => {
-                    showTypingIndicator(() => {
-                        const data = currentLearnArray[savedState.learnIndex];
-                        if (showPrompt) {
-                            addBubble(data.prompt, "bot-bubble");
-                        }
-                        renderWordBank(data.wordBank);
-                        document.getElementById('interaction-area').classList.remove('hidden');
-                        document.getElementById('interaction-area').style.display = 'flex';
-                        scrollToBottom();
-                    }, 1000);
-                }, 1500);
-            }, 1000);
-        }
-
-        function advanceToNextLearnSequence(botReplyText) {
-            hideInteraction();
-            showTypingIndicator(() => {
-                addBubble(botReplyText, "bot-bubble", "correct");
-                
-                savedState.learnIndex++;
-                saveProgress();
-
-                setTimeout(() => { startNextLearnQuestion(); }, 1500);
-            }, 1000);
-        }
-
-
-        // --- CHAT MODE SPECIFIC ---
-        function startNextQuestion() {
-            if (savedState.qIndex >= currentChallengeArray.length) {
-                savedState.completed = true;
-                saveProgress();
-                showTypingIndicator(() => {
-                    showFinalScoreCard();
-                }, 1000);
-                return;
-            }
-
-            const isLastQuestion = (savedState.qIndex === currentChallengeArray.length - 1);
-            const questionData = currentChallengeArray[savedState.qIndex];
-
-            if (isLastQuestion && savedState.attempts === 0) {
-                showTypingIndicator(() => {
-                    addBubble("Okay, last question for today! You've got this! 🔥", "bot-bubble");
-                    setTimeout(() => {
-                        showTypingIndicator(() => { presentPrompt(questionData); }, 1500);
-                    }, 1000);
-                }, 1000);
-            } else {
-                showTypingIndicator(() => { presentPrompt(questionData); }, 1200);
-            }
-        }
-
-        function presentPrompt(questionData) {
-            addBubble(questionData.prompt, "bot-bubble");
+        function presentPrompt(data, isLearn) {
+            let htmlMsg = "";
             
+            if (isLearn) {
+                const v = currentDayData.vocab.find(x => x.en === data.vocabEn) || {en: data.vocabEn, jp: "", explanation: ""};
+                htmlMsg = `Let's practice a new phrase! 📚<br><br><b>${v.en}</b><br>${v.jp}<br><span style='font-size:0.8em; color:#747d8c;'>${v.explanation}</span><br><br>Now, try building an answer to this:<br><br><b>${data.prompt}</b>`;
+            } else {
+                const isLastQuestion = (savedState.qIndex === currentChallengeArray.length - 1);
+                if (isLastQuestion && savedState.attempts === 0) {
+                    addBubble("Okay, last question for today! You've got this! 🔥", "bot-bubble");
+                    // Wait a second, then show the real prompt bubble below
+                    setTimeout(() => {
+                        showTypingIndicator(() => {
+                            addBubble(data.prompt, "bot-bubble");
+                            revealInteraction(data.wordBank);
+                        }, 1000);
+                    }, 500);
+                    return; // exit early, handled async
+                }
+                htmlMsg = data.prompt;
+            }
+
+            addBubble(htmlMsg, "bot-bubble");
+            revealInteraction(data.wordBank);
+        }
+        
+        function revealInteraction(wordBank) {
             if (savedState.attempts < MAX_ATTEMPTS) {
                 setTimeout(() => {
-                    renderWordBank(questionData.wordBank);
+                    renderWordBank(wordBank);
                     document.getElementById('interaction-area').classList.remove('hidden');
                     document.getElementById('interaction-area').style.display = 'flex';
                     scrollToBottom();
                 }, 500);
             } else {
-                const kindFailMessage = `Maybe I'm not quite understanding, but that's okay! Let's move on. 😊<br><br>${questionData.failReply}`;
-                advanceToNextSequence(kindFailMessage);
+                // If they are returning from a previously failed session
+                const currentQ = appMode === 'learn' ? currentLearnArray[savedState.learnIndex] : currentChallengeArray[savedState.qIndex];
+                const failMsg = currentQ.failReply ? `<br><br>${currentQ.failReply}` : "";
+                advanceToNextSequence(`Maybe I'm not quite understanding, but that's okay! Let's move on. 😊${failMsg}`);
             }
         }
 
-        function advanceToNextSequence(botReplyText, soundOverride = null) {
-            hideInteraction();
-            showTypingIndicator(() => {
-                addBubble(botReplyText, "bot-bubble", soundOverride);
-                
-                savedState.qIndex++;
-                savedState.attempts = 0;
-                saveProgress();
-
-                setTimeout(() => { startNextQuestion(); }, 2000);
-            }, 1500);
-        }
-
-
-        // --- COMMON LOGIC ---
         function renderWordBank(words) {
             const bank = document.getElementById('word-bank');
             bank.innerHTML = '';
@@ -1786,6 +1700,58 @@
             setTimeout(() => { area.style.display = 'none'; }, 300); 
         }
 
+        function advanceToNextSequence(botReplyText, soundOverride = null) {
+            hideInteraction();
+            showTypingIndicator(() => {
+                addBubble(botReplyText, "bot-bubble", soundOverride);
+                
+                if (appMode === 'learn') {
+                    savedState.learnIndex++;
+                } else {
+                    savedState.qIndex++;
+                }
+                
+                savedState.attempts = 0;
+                saveProgress();
+
+                setTimeout(() => { startNextQuestion(); }, 2000);
+            }, 1500);
+        }
+
+        function processIncorrectTiles(tiles, currentQ) {
+            let maxMatch = 0;
+            for (let valid of currentQ.validAnswers) {
+                let currentMatch = 0;
+                let builtString = "";
+                for (let i = 0; i < tiles.length; i++) {
+                    builtString += (i > 0 ? " " : "") + tiles[i].innerText;
+                    if (valid === builtString || valid.startsWith(builtString + " ")) {
+                        currentMatch = i + 1;
+                    } else {
+                        break;
+                    }
+                }
+                if (currentMatch > maxMatch) maxMatch = currentMatch;
+            }
+
+            for (let i = 0; i < tiles.length; i++) {
+                let t = tiles[i];
+                let isDistractor = !currentQ.validAnswers.some(ans => ans.includes(t.innerText));
+                
+                if (i >= maxMatch) {
+                    const bank = document.getElementById('word-bank');
+                    t.onclick = () => moveToSentence(t);
+                    t.classList.remove('in-builder'); 
+                    bank.appendChild(t);
+                }
+
+                if (isDistractor) {
+                    t.classList.add('disabled-tile');
+                    t.onclick = null; 
+                }
+            }
+        }
+
         function checkAnswer() {
             const builder = document.getElementById('sentence-builder');
             const tiles = builder.querySelectorAll('.word-tile');
@@ -1794,54 +1760,19 @@
             playSound('send');
             let userSentence = Array.from(tiles).map(t => t.innerText).join(" ");
             
-            // --- LEARN MODE: ASK PHASE OVERRIDE ---
-            if (appMode === 'learn' && learnPhase === 'ask') {
-                addBubble(userSentence, "user-bubble");
-                if (userSentence === "Yes, I do.") {
-                    saidYes = true;
-                    learnPhase = 'test';
-                    savedState.attempts = 0;
-                    saveProgress();
-                    clearSentence(true);
-                    advanceToLearnTest("Great! Let's see if you can answer this. 🧠", true);
-                } else if (userSentence === "No, I don't.") {
-                    saidYes = false;
-                    learnPhase = 'test';
-                    savedState.attempts = 0;
-                    saveProgress();
-                    clearSentence(true);
-                    const learnItem = currentLearnArray[savedState.learnIndex];
-                    let v = currentDayData.vocab.find(x => x.en === learnItem.vocabEn);
-                    let explanationMsg = `No problem! Here is what it means:<br><br><b>${v.en}</b><br>${v.jp}<br><span style='font-size:0.8em; color:#747d8c;'>${v.explanation}</span><br><br>Let's try using it! 💪`;
-                    advanceToLearnTest(explanationMsg, true);
-                } else {
-                    playSound('wrong');
-                    clearSentence(true);
-                    hideInteraction();
-                    showTypingIndicator(() => {
-                        let hintMsg = "Please build 'Yes, I do.' or 'No, I don't.'<br><span class='hint-jp' style='font-size: 0.8em; color: #a4b0be;'>（「はい」か「いいえ」の文を作ってください。）</span>";
-                        addBubble(hintMsg, "bot-bubble");
-                        setTimeout(() => {
-                            document.getElementById('interaction-area').classList.remove('hidden');
-                            document.getElementById('interaction-area').style.display = 'flex';
-                            scrollToBottom();
-                        }, 500);
-                    }, 800);
-                }
-                return;
-            }
-
-            // --- STANDARD CHECKING LOGIC ---
-            const currentQ = appMode === 'learn' ? currentLearnArray[savedState.learnIndex] : currentChallengeArray[savedState.qIndex];
+            const isLearn = appMode === 'learn';
+            const currentQ = isLearn ? currentLearnArray[savedState.learnIndex] : currentChallengeArray[savedState.qIndex];
+            
             addBubble(userSentence, "user-bubble");
+            
             let isCorrect = currentQ.validAnswers.includes(userSentence);
 
             if (isCorrect) {
                 clearSentence(true);
                 hideInteraction();
                 
-                if (appMode === 'learn') {
-                    advanceToNextLearnSequence("Spot on! 🌟");
+                if (isLearn) {
+                    advanceToNextSequence("Spot on! 🌟", 'correct');
                 } else {
                     if (savedState.attempts === 0) savedState.score += 1;
                     else if (savedState.attempts === 1) savedState.score += 0.8;
@@ -1850,27 +1781,27 @@
                 }
             } else {
                 playSound('wrong');
-                
                 savedState.attempts++;
                 saveProgress();
                 
                 let specificHint = null;
-                
-                // Formatting / Structure Check FIRST
-                let firstTileText = tiles[0].innerText;
-                let lastTileText = tiles[tiles.length - 1].innerText;
 
-                if (appMode === 'learn' && saidYes && savedState.attempts === 2) {
-                    let v = currentDayData.vocab.find(x => x.en === currentQ.vocabEn);
-                    specificHint = `Let's review it together! 💡<br><br><b>${v.en}</b><br>${v.jp}<br><span style='font-size:0.8em; color:#747d8c;'>${v.explanation}</span><br><br>Try answering the question again!`;
-                    saidYes = false; // Switch to the "No" track essentially
-                } else if (!/^[A-Z]/.test(firstTileText) && !firstTileText.startsWith('"') && !firstTileText.startsWith("'")) {
-                    specificHint = "A sentence always starts with a capital letter! Look for the uppercase word.<br><span class='hint-jp'>（文の最初は常に大文字で始めます。）</span>";
-                } else if (!/[.?!]$/.test(lastTileText) && !lastTileText.endsWith('"') && !lastTileText.endsWith("'")) {
-                    specificHint = "Don't forget the punctuation (like a period) at the end of the sentence!<br><span class='hint-jp'>（文の最後にはピリオドなどの句読点を忘れずに。）</span>";
-                } 
-                // Then Grammar Hints
-                else if (currentQ.hints) {
+                // Enforce formatting strictly in Chat Mode, but ignore in Learn Mode
+                if (!isLearn) {
+                    let firstTileText = tiles[0].innerText;
+                    let lastTileText = tiles[tiles.length - 1].innerText;
+
+                    if (!/^[A-Z]/.test(firstTileText) && !firstTileText.startsWith('"') && !firstTileText.startsWith("'")) {
+                        specificHint = "A sentence always starts with a capital letter! Look for the uppercase word.";
+                        savedState.attempts--; 
+                    } else if (!/[.?!]$/.test(lastTileText) && !lastTileText.endsWith('"') && !lastTileText.endsWith("'")) {
+                        specificHint = "Don't forget the punctuation (like a period) at the end of the sentence!";
+                        savedState.attempts--;
+                    }
+                }
+                
+                // If no formatting error (or in Learn Mode), check for distractor hints
+                if (!specificHint && currentQ.hints) {
                     for (let h of currentQ.hints) {
                         if (userSentence.includes(h.wrongWord)) {
                             specificHint = h.hint;
@@ -1879,49 +1810,13 @@
                     }
                 }
 
-                // Determine the longest correctly ordered prefix
-                let maxMatch = 0;
-                for (let valid of currentQ.validAnswers) {
-                    let currentMatch = 0;
-                    let builtString = "";
-                    for (let i = 0; i < tiles.length; i++) {
-                        builtString += (i > 0 ? " " : "") + tiles[i].innerText;
-                        if (valid === builtString || valid.startsWith(builtString + " ")) {
-                            currentMatch = i + 1;
-                        } else {
-                            break;
-                        }
-                    }
-                    if (currentMatch > maxMatch) maxMatch = currentMatch;
-                }
+                processIncorrectTiles(tiles, currentQ);
 
-                // Move incorrectly ordered tiles back, and grey out distractors
-                for (let i = 0; i < tiles.length; i++) {
-                    let t = tiles[i];
-                    let isDistractor = !currentQ.validAnswers.some(ans => ans.includes(t.innerText));
-                    
-                    if (i >= maxMatch) {
-                        // move directly to bank without sounds
-                        const bank = document.getElementById('word-bank');
-                        t.onclick = () => moveToSentence(t);
-                        t.classList.remove('in-builder'); 
-                        bank.appendChild(t);
-                    }
-
-                    if (isDistractor) {
-                        t.classList.add('disabled-tile');
-                        t.onclick = null; 
-                    }
-                }
-
-                if (appMode === 'learn') {
-                    // Learn mode allows infinite attempts, just show hint and continue
+                if (isLearn) {
+                    // Learn Mode has infinite attempts
                     hideInteraction();
                     showTypingIndicator(() => {
                         let botMsg = specificHint ? `Hmm... ${specificHint}` : `Hmm, that doesn't sound quite right. Try again!`;
-                        if (specificHint && specificHint.includes("Let's review it together!")) {
-                            botMsg = specificHint;
-                        }
                         addBubble(botMsg, "bot-bubble");
                         setTimeout(() => {
                             document.getElementById('interaction-area').classList.remove('hidden');
@@ -1930,23 +1825,19 @@
                         }, 500);
                     }, 800);
                 } else {
-                    // Chat mode tracks attempts
+                    // Chat Mode tracks max attempts
                     if (savedState.attempts >= MAX_ATTEMPTS) {
                         hideInteraction();
-                        const kindFailMessage = `Maybe I'm not quite understanding, but that's okay! Let's move on. 😊<br><br>${currentQ.failReply}`;
+                        let failText = currentQ.failReply ? `<br><br>${currentQ.failReply}` : "";
+                        const kindFailMessage = `Maybe I'm not quite understanding, but that's okay! Let's move on. 😊${failText}`;
                         advanceToNextSequence(kindFailMessage);
                     } else {
                         hideInteraction();
                         showTypingIndicator(() => {
                             let left = MAX_ATTEMPTS - savedState.attempts;
                             let tryText = `<span style="display:block; margin-top:1vh; font-size: 0.8em; color: #a4b0be; text-align: right;">(${left} tries left)</span>`;
-                            
-                            let botMsg = specificHint 
-                                ? `Hmm... ${specificHint} ${tryText}` 
-                                : `Hmm, that doesn't sound quite right. Let's try again! ${tryText}`;
-                                
+                            let botMsg = specificHint ? `Hmm... ${specificHint} ${tryText}` : `Hmm, that doesn't sound quite right. Let's try again! ${tryText}`;
                             addBubble(botMsg, "bot-bubble");
-                            
                             setTimeout(() => {
                                 document.getElementById('interaction-area').classList.remove('hidden');
                                 document.getElementById('interaction-area').style.display = 'flex';
