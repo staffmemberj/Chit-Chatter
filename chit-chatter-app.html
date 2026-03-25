@@ -1265,13 +1265,12 @@
             saveProgress();
         }
 
-        window.onload = () => {
-            document.getElementById('day-label').innerText = dayNames[todayInt];
-            document.getElementById('start-lesson-title').innerText = lessonTitle;
-            updateProgressUI();
-            renderVocab();
-            checkDevice();
-        };
+        // Apply UI updates immediately to prevent flashing/glitches
+        document.getElementById('day-label').innerText = dayNames[todayInt];
+        document.getElementById('start-lesson-title').innerText = lessonTitle;
+        updateProgressUI();
+        renderVocab();
+        checkDevice();
 
         function startApp(mode) {
             playSound('tap'); 
