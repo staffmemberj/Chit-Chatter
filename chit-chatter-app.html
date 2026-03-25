@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Daily English Chat</title>
+    <title>Chit Chatter</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
 
@@ -134,16 +134,17 @@
 
         .typing-indicator {
             display: flex;
-            gap: 0.5vw;
-            padding: 1vh 2vw;
+            gap: 0.8vw;
+            padding: 1.5vh 4vw;
             align-items: center;
-            height: 2vh;
+            min-height: 2.2vh;
             flex-direction: row;
+            width: fit-content;
         }
 
         .dot {
-            width: 0.8vh;
-            height: 0.8vh;
+            width: 1.2vh;
+            height: 1.2vh;
             background: #a4b0be;
             border-radius: 50%;
             animation: bounce 1.4s infinite ease-in-out both;
@@ -235,7 +236,7 @@
             align-content: flex-start;
             gap: 1.5vh;
             min-height: 8vh;
-            max-height: 30dvh; 
+            max-height: 40vh; /* Expanded for desktop so it rarely scrolls */
             overflow-y: auto;
         }
 
@@ -266,29 +267,59 @@
             pointer-events: none; transform: none !important;
         }
 
+        .quick-review-box {
+            margin: 1.5vh 0; 
+            padding: 1.5vh; 
+            background: white; 
+            border-radius: 12px; 
+            border: 1px solid #dfe4ea; 
+            width: 100%; 
+            box-sizing: border-box; 
+            text-align: center; 
+            max-height: 50vh; /* Allowed to grow large on desktop */
+            overflow-y: auto;
+        }
+
         /* Action Row for Notes Button */
         .action-row {
             display: flex;
             justify-content: center;
+            padding: 0 4vw;
         }
 
         #notes-btn {
             background: #ffa502;
             color: white;
             border: 2px solid #e58e26;
-            padding: 1vh 4vw;
-            font-size: 1.8vh;
+            padding: 1.2vh 6vw;
+            font-size: 2vh;
             border-radius: 15px;
             font-weight: 600;
             cursor: pointer;
             box-shadow: 0 3px 0 #e58e26;
-            transition: transform 0.1s;
+            transition: transform 0.1s, width 0.2s;
             font-family: 'Fredoka', sans-serif;
-            width: fit-content;
+            min-width: 200px;
+            white-space: nowrap;
         }
         #notes-btn:active {
             transform: translateY(3px);
             box-shadow: 0 0 0 #e58e26;
+        }
+
+        /* Flexible Notes Button & Scrollbar Constraints for Mobile */
+        @media (max-width: 768px) {
+            #notes-btn {
+                width: 80%;
+                padding: 1.5vh 4vw;
+                font-size: 2.2vh;
+            }
+            #word-bank {
+                max-height: 28dvh; /* Enforce scroll on mobile */
+            }
+            .quick-review-box {
+                max-height: 30vh; /* Enforce scroll on mobile */
+            }
         }
 
         #desktop-hint { text-align: center; font-size: 1.6vh; color: #a4b0be; display: none; margin-top: -0.5vh;}
@@ -297,6 +328,8 @@
             background: #1e90ff; color: white; border: 2px solid #0984e3; padding: 1vh 4vw;
             border-radius: 10px; font-family: 'Fredoka', sans-serif; font-size: 2vh;
             font-weight: 600; cursor: pointer; box-shadow: 0 3px 0 #0984e3; margin-top: 1vh;
+            white-space: nowrap;
+            box-sizing: border-box;
         }
         .replay-btn:active { transform: translateY(3px); box-shadow: 0 0px 0 #0984e3; }
 
@@ -304,14 +337,14 @@
         #notes-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); 
-            backdrop-filter: blur(2px); z-index: 2000;
+            backdrop-filter: blur(2px); z-index: 10000; /* Float over Start Screen */
             opacity: 0; transition: opacity 0.4s ease;
         }
         #notes-overlay.show { opacity: 1; }
 
         #sidebar-content-container {
             position: fixed; right: -100%; top: 0; width: 90vw; max-width: 500px; height: 100dvh;
-            background: white; z-index: 2001; transition: right 0.4s var(--bounce);
+            background: white; z-index: 10001; transition: right 0.4s var(--bounce);
             border-left: 6px solid var(--main-teal); 
             box-shadow: -10px 0 20px rgba(0,0,0,0.15); 
             display: flex; flex-direction: column;
@@ -361,11 +394,17 @@
             font-weight: bold; color: var(--main-teal); 
             font-size: clamp(16px, 2.2vh, 22px); 
             white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
         }
         .vocab-jp { 
             color: #2f3542; font-weight: 500;
             font-size: clamp(12px, 1.6vh, 18px); 
             white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
         }
 
         .drawer-footer {
@@ -380,6 +419,7 @@
             border-radius: 12px; font-size: 2vh; font-weight: bold; cursor: pointer;
             box-shadow: 0 4px 0 #d81b60; width: 100%; 
             font-family: 'Fredoka', sans-serif; margin: 0; pointer-events: auto; 
+            white-space: nowrap;
         }
         .close-drawer-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #d81b60; }
 
@@ -397,7 +437,7 @@
         .scroll-indicator {
             position: absolute; right: 4vw; background: rgba(255, 71, 87, 0.95); color: white;
             border-radius: 50%; width: 4.5vh; height: 4.5vh; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 2002; pointer-events: none; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10002; pointer-events: none; 
             opacity: 0; transition: opacity 0.3s ease;
         }
         .scroll-indicator svg { width: 2.5vh; height: 2.5vh; }
@@ -420,7 +460,7 @@
         /* --- Custom Word Detail Modal --- */
         #word-modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 3000;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 10005;
             opacity: 0; transition: opacity 0.3s ease;
             align-items: center; justify-content: center; padding: 4vw; box-sizing: border-box;
         }
@@ -474,10 +514,12 @@
             transition: opacity 0.3s ease;
         }
         .start-btn {
-            background: #2ed573; color: white; border: 3px solid #218c53; padding: 2vh 8vw;
+            background: #2ed573; color: white; border: 3px solid #218c53; padding: 2vh 2vw;
             border-radius: 20px; font-size: 3vh; font-weight: 700; cursor: pointer;
             box-shadow: 0 6px 0 #218c53; font-family: 'Fredoka', sans-serif;
             transition: transform 0.1s, box-shadow 0.1s;
+            width: 80%; max-width: 300px;
+            white-space: nowrap; box-sizing: border-box; margin-top: 2vh;
         }
         .start-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #218c53; }
 
@@ -487,14 +529,17 @@
 
     <!-- Start Screen Overlay -->
     <div id="start-overlay">
-        <h1 style="color: var(--main-teal); font-size: 4vh; margin-bottom: 4vh; text-align: center;">Lesson 12 Daily Chat</h1>
-        <button class="start-btn" onclick="startApp()">Start</button>
+        <h1 style="color: var(--main-teal); font-size: 5vh; margin-bottom: 0.5vh; text-align: center;">Chit Chatter</h1>
+        <div id="start-lesson-title" style="color: #747d8c; font-size: 2.5vh; margin-top: 0; margin-bottom: 3vh; text-align: center; font-weight: 600;">Lesson Title</div>
+        <button class="start-btn" style="background: #1e90ff; border-color: #0984e3; box-shadow: 0 6px 0 #0984e3;" onclick="startApp('learn')">👨‍🏫 Learn</button>
+        <button class="start-btn" onclick="startApp('chat')">🤖 Chat</button>
+        <button class="start-btn" style="background: #ffa502; border-color: #e58e26; box-shadow: 0 6px 0 #e58e26; font-size: 2.8vh;" onclick="toggleVocabDrawer('open')">📝 Notes</button>
     </div>
 
     <div id="header">
         <div class="header-title">
             <span id="day-label">Tuesday</span>
-            Chat Practice
+            Chit Chatter
         </div>
         <div class="header-controls">
             <div id="progress-badge">0/0</div>
@@ -600,13 +645,14 @@
         function playSound(type) {
             if (audioObjects[type]) {
                 audioObjects[type].currentTime = 0;
-                audioObjects[type].play().catch(e => console.log("Audio play prevented until user interacts with the page."));
+                audioObjects[type].play().catch(e => console.log("Audio play prevented until user interacts."));
             }
         }
 
         /* ========================================================================
         TEACHER CONFIGURATION AREA - LESSON 12 ONLY
         ======================================================================== */
+        const lessonTitle = "Lesson 12"; 
         
         const lesson12Vocab = [
             { en: "on my way to ~", jp: "~に行く途中で", explanation: "どこかへ向かっている最中であることを表します。「my」の部分は主語に合わせてyour, his, herなどに変えて使います。", examples: ["I met him <span class='highlight-good'>on my way to</span> school."] }, 
@@ -631,6 +677,43 @@
         const weeklyLessonData = {
             2: { // TUESDAY
                 vocab: lesson12Vocab,
+                learn: [
+                    {
+                        vocabEn: "on my way to ~",
+                        prompt: "Did anything happen on your walk? 🐕",
+                        wordBank: ["I saw", "a cute dog", "on my way to", "at my way to", "the park."],
+                        validAnswers: ["I saw a cute dog on my way to the park."],
+                        hints: [{wrongWord: "at my way to", triggerWord: "on", hint: "The correct preposition is '<b>on</b> my way to'.<br><span class='hint-jp'>（「〜へ行く途中で」は on my way to と言います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "both A and B",
+                        prompt: "What instruments can she play? 🎵",
+                        wordBank: ["She can play", "both", "the piano", "and", "the guitar.", "either"],
+                        validAnswers: ["She can play both the piano and the guitar."],
+                        hints: [{wrongWord: "either", triggerWord: "both", hint: "When doing two things together, use '<b>both A and B</b>'.<br><span class='hint-jp'>（「AとBの両方」は both A and B を使います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "not ~ at all",
+                        prompt: "Are you feeling sleepy? 🔋",
+                        wordBank: ["I am not", "I am", "tired", "at all", "very much", "today."],
+                        validAnswers: ["I am not tired at all today."],
+                        hints: [{wrongWord: "I am", triggerWord: "not", hint: "You need the negative 'not' to use 'at all'.<br><span class='hint-jp'>（「まったく〜ない」は not と at all をセットで使います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "so ~ that ...",
+                        prompt: "Why are you so sleepy <b>today</b>? 📖",
+                        wordBank: ["The book was", "so interesting that", "too interesting that", "I read it", "all night."],
+                        validAnswers: ["The book was so interesting that I read it all night."],
+                        hints: [{wrongWord: "too interesting that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'.<br><span class='hint-jp'>（「とても〜なので…だ」は so ~ that ... を使います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "all day",
+                        prompt: "What <b>did</b> you guys do <b>yesterday</b>? 🎮",
+                        wordBank: ["We played", "We play", "video games", "all day.", "all the day."],
+                        validAnswers: ["We played video games all day."],
+                        hints: [{wrongWord: "all the day.", triggerWord: "all day", hint: "The correct phrase is just '<b>all day</b>'.<br><span class='hint-jp'>（「1日じゅう」は all day と言います。）</span>"}]
+                    }
+                ],
                 questions: [ 
                     {
                         prompt: "Why <b>were</b> you late <b>this morning</b>? ⏰",
@@ -690,6 +773,43 @@
             },
             3: { // WEDNESDAY
                 vocab: lesson12Vocab,
+                learn: [
+                    {
+                        vocabEn: "in front of ~",
+                        prompt: "Where should I park my car? 🌳",
+                        wordBank: ["There is", "a large tree", "in front of", "at front of", "my house."],
+                        validAnswers: ["There is a large tree in front of my house."],
+                        hints: [{wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> front of'.<br><span class='hint-jp'>（「〜の前で」は in front of と言います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "for the first time",
+                        prompt: "Has he ever been to Kyoto <b>before</b>? ⛩️",
+                        wordBank: ["He visited", "Kyoto", "for the first time", "at first", "last week."],
+                        validAnswers: ["He visited Kyoto for the first time last week."],
+                        hints: [{wrongWord: "at first", triggerWord: "first time", hint: "To say you experienced something for the 1st time, use '<b>for the first time</b>'.<br><span class='hint-jp'>（「初めて」は for the first time と言います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "at first",
+                        prompt: "How was the math homework? 🧮",
+                        wordBank: ["At first,", "For the first time,", "the math problem", "looked", "very difficult."],
+                        validAnswers: ["At first, the math problem looked very difficult."],
+                        hints: [{wrongWord: "For the first time,", triggerWord: "At first", hint: "To say 'in the beginning', use '<b>At first,</b>'.<br><span class='hint-jp'>（「最初は」と言いたい時は At first を使います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "at last",
+                        prompt: "Is it still raining outside? 🌤️",
+                        wordBank: ["At last,", "At least,", "the rain", "stopped."],
+                        validAnswers: ["At last, the rain stopped."],
+                        hints: [{wrongWord: "At least,", triggerWord: "last", hint: "To say 'finally', use '<b>At last</b>'.<br><span class='hint-jp'>（「ついに」「ようやく」は At last と言います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "as usual",
+                        prompt: "What time <b>did</b> she get to school <b>today</b>? 🏫",
+                        wordBank: ["She arrived", "at school", "at 8:00", "as usual.", "as always."],
+                        validAnswers: ["She arrived at school at 8:00 as usual."],
+                        hints: [{wrongWord: "as always.", triggerWord: "usual", hint: "To say 'like normal', use the phrase '<b>as usual</b>'.<br><span class='hint-jp'>（「いつもどおりに」は as usual と言います。）</span>"}]
+                    }
+                ],
                 questions: [ 
                     {
                         prompt: "Where should we meet <b>tomorrow</b>? 📍",
@@ -748,6 +868,43 @@
             },
             4: { // THURSDAY
                 vocab: lesson12Vocab,
+                learn: [
+                    {
+                        vocabEn: "in the middle of ~",
+                        prompt: "What happened <b>this afternoon</b>? 📱",
+                        wordBank: ["The phone rang", "in the middle of", "at the middle of", "the meeting."],
+                        validAnswers: ["The phone rang in the middle of the meeting."],
+                        hints: [{wrongWord: "at the middle of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> the middle of'.<br><span class='hint-jp'>（「〜の最中に」は in the middle of と言います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "each other",
+                        prompt: "Are they good friends? 🧒",
+                        wordBank: ["They have known", "each other", "each others", "since childhood."],
+                        validAnswers: ["They have known each other since childhood."],
+                        hints: [{wrongWord: "each others", triggerWord: "other", hint: "There is no 's' at the end. Use '<b>each other</b>'.<br><span class='hint-jp'>（each other に s はつきません。）</span>"}]
+                    },
+                    {
+                        vocabEn: "in my opinion",
+                        prompt: "What is your favorite season? ⛄",
+                        wordBank: ["In my opinion,", "At my opinion,", "winter is", "the best season."],
+                        validAnswers: ["In my opinion, winter is the best season."],
+                        hints: [{wrongWord: "At my opinion,", triggerWord: "In", hint: "The correct phrase is '<b>In</b> my opinion'.<br><span class='hint-jp'>（「私の意見では」は In my opinion と言います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "all the way",
+                        prompt: "Why are you breathing so hard? 🏃",
+                        wordBank: ["I ran", "I run", "all the way", "all the ways", "to the station."],
+                        validAnswers: ["I ran all the way to the station."],
+                        hints: [{wrongWord: "all the ways", triggerWord: "way", hint: "The phrase does not take an 's'. Use '<b>all the way</b>'.<br><span class='hint-jp'>（「はるばる」は all the way と言います。s はつきません。）</span>"}]
+                    },
+                    {
+                        vocabEn: "a pair of ~",
+                        prompt: "Why are you going to the store? 👓",
+                        wordBank: ["I need", "a new", "pair of", "glass of", "glasses."],
+                        validAnswers: ["I need a new pair of glasses."],
+                        hints: [{wrongWord: "glass of", triggerWord: "pair", hint: "Glasses come in twos! We use '<b>pair of</b>'.<br><span class='hint-jp'>（メガネなど「1組」には a pair of を使います。）</span>"}]
+                    }
+                ],
                 questions: [ 
                     {
                         prompt: "Did you hear the phone ring <b>last night</b>? 📞",
@@ -807,6 +964,43 @@
             },
             5: { // FRIDAY
                 vocab: lesson12Vocab,
+                learn: [
+                    {
+                        vocabEn: "a glass of ~",
+                        prompt: "What does he usually have with breakfast? 🥛",
+                        wordBank: ["He drinks", "a glass of", "a slice of", "milk", "every morning."],
+                        validAnswers: ["He drinks a glass of milk every morning."],
+                        hints: [{wrongWord: "a slice of", triggerWord: "glass", hint: "Milk is a liquid! We use '<b>a glass of</b>'.<br><span class='hint-jp'>（冷たい飲み物「1杯」には a glass of を使います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "a slice of ~",
+                        prompt: "What would you like to eat? 🍕",
+                        wordBank: ["Can I have", "a slice of", "a pair of", "pizza?"],
+                        validAnswers: ["Can I have a slice of pizza?"],
+                        hints: [{wrongWord: "a pair of", triggerWord: "slice", hint: "For pizza or bread, we use '<b>a slice of</b>'.<br><span class='hint-jp'>（ピザやパンの「1切れ」には a slice of を使います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "so ~ that ...",
+                        prompt: "Why are you so hungry? 🥪",
+                        wordBank: ["I was", "so busy that", "too busy that", "I couldn't", "eat lunch."],
+                        validAnswers: ["I was so busy that I couldn't eat lunch."],
+                        hints: [{wrongWord: "too busy that", triggerWord: "so", hint: "The idiom is '<b>so</b> ~ <b>that</b> ...'.<br><span class='hint-jp'>（「とても〜なので…だ」は so ~ that ... を使います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "on my way to ~",
+                        prompt: "Why are you looking around the street? 🔑",
+                        wordBank: ["I dropped", "my keys", "on my way to", "at my way to", "the store."],
+                        validAnswers: ["I dropped my keys on my way to the store."],
+                        hints: [{wrongWord: "at my way to", triggerWord: "on", hint: "The correct preposition is '<b>on</b> my way to'.<br><span class='hint-jp'>（「〜へ行く途中で」は on my way to と言います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "not ~ at all",
+                        prompt: "Is he fluent in English? 🗣️",
+                        wordBank: ["He doesn't speak", "He speaks", "English", "at all.", "very much."],
+                        validAnswers: ["He doesn't speak English at all."],
+                        hints: [{wrongWord: "very much.", triggerWord: "at all", hint: "To emphasize 'not' strongly, use '<b>at all</b>'.<br><span class='hint-jp'>（not ~ at all で「まったく〜ない」という意味になります。）</span>"}]
+                    }
+                ],
                 questions: [ 
                     {
                         prompt: "Can I get you something to drink? 💧",
@@ -866,6 +1060,43 @@
             },
             6: { // SATURDAY
                 vocab: lesson12Vocab,
+                learn: [
+                    {
+                        vocabEn: "both A and B",
+                        prompt: "What do I need to bake this cake? 🥚",
+                        wordBank: ["You need", "both eggs", "and milk.", "either eggs"],
+                        validAnswers: ["You need both eggs and milk."],
+                        hints: [{wrongWord: "either eggs", triggerWord: "both", hint: "When you need two things together, use '<b>both A and B</b>'.<br><span class='hint-jp'>（「AとBの両方」と言いたい時は both A and B を使います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "in front of ~",
+                        prompt: "Where should I meet you? 🚪",
+                        wordBank: ["Please wait", "in front of", "at front of", "the gate."],
+                        validAnswers: ["Please wait in front of the gate."],
+                        hints: [{wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase is '<b>in</b> front of'.<br><span class='hint-jp'>（「〜の前で」は in front of と言います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "for the first time",
+                        prompt: "Did she like her trip to Hokkaido? ❄️",
+                        wordBank: ["She saw", "snow", "for the first time.", "at first."],
+                        validAnswers: ["She saw snow for the first time."],
+                        hints: [{wrongWord: "at first.", triggerWord: "first time", hint: "To say you experienced something for the 1st time ever, use '<b>for the first time</b>'.<br><span class='hint-jp'>（「初めて」は for the first time と言います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "at last",
+                        prompt: "Are you still working on the assignment? 📋",
+                        wordBank: ["At last,", "At first,", "we finished", "the project."],
+                        validAnswers: ["At last, we finished the project."],
+                        hints: [{wrongWord: "At first,", triggerWord: "last", hint: "To say 'finally', use '<b>At last</b>'.<br><span class='hint-jp'>（「ついに」「ようやく」は At last と言います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "all day",
+                        prompt: "What <b>did</b> your puppy do <b>today</b>? 🐕",
+                        wordBank: ["My dog", "slept", "all day.", "every day."],
+                        validAnswers: ["My dog slept all day."],
+                        hints: [{wrongWord: "every day.", triggerWord: "all day", hint: "To say 'from morning to night', use '<b>all day</b>'.<br><span class='hint-jp'>（「1日じゅう」は all day と言います。）</span>"}]
+                    }
+                ],
                 questions: [ 
                     {
                         prompt: "What sports do you play? 🏀",
@@ -924,6 +1155,43 @@
             },
             0: { // SUNDAY
                 vocab: lesson12Vocab,
+                learn: [
+                    {
+                        vocabEn: "as usual",
+                        prompt: "What time <b>did</b> he arrive <b>today</b>? ⏰",
+                        wordBank: ["He was", "late again", "as usual.", "as always."],
+                        validAnswers: ["He was late again as usual."],
+                        hints: [{wrongWord: "as always.", triggerWord: "usual", hint: "To say 'like normal', use the phrase '<b>as usual</b>'.<br><span class='hint-jp'>（「いつもどおりに」は as usual と言います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "each other",
+                        prompt: "Do they get along well? 😠",
+                        wordBank: ["The two brothers", "don't like", "each other.", "each others."],
+                        validAnswers: ["The two brothers don't like each other."],
+                        hints: [{wrongWord: "each others.", triggerWord: "other", hint: "There is no 's' at the end. Use '<b>each other</b>'.<br><span class='hint-jp'>（each other に s はつきません。）</span>"}]
+                    },
+                    {
+                        vocabEn: "all the way",
+                        prompt: "Why are your legs so tired? 🚶",
+                        wordBank: ["I walked", "all the way", "all the ways", "home."],
+                        validAnswers: ["I walked all the way home."],
+                        hints: [{wrongWord: "all the ways", triggerWord: "way", hint: "The phrase does not take an 's'. Use '<b>all the way</b>'.<br><span class='hint-jp'>（「はるばる」は all the way と言います。s はつきません。）</span>"}]
+                    },
+                    {
+                        vocabEn: "a glass of ~",
+                        prompt: "What <b>did</b> she give the kids for breakfast? 🍊",
+                        wordBank: ["She poured", "a glass of", "a slice of", "orange juice."],
+                        validAnswers: ["She poured a glass of orange juice."],
+                        hints: [{wrongWord: "a slice of", triggerWord: "glass", hint: "Orange juice is a liquid! We use '<b>a glass of</b>'.<br><span class='hint-jp'>（冷たい飲み物「1杯」には a glass of を使います。）</span>"}]
+                    },
+                    {
+                        vocabEn: "a pair of ~",
+                        prompt: "What <b>did</b> he get at the clothing store? 👖",
+                        wordBank: ["He bought", "a pair of", "a glass of", "jeans."],
+                        validAnswers: ["He bought a pair of jeans."],
+                        hints: [{wrongWord: "a glass of", triggerWord: "pair", hint: "Pants and jeans come in twos! We use '<b>a pair of</b>'.<br><span class='hint-jp'>（ジーンズなど「1組」には a pair of を使います。）</span>"}]
+                    }
+                ],
                 questions: [ 
                     {
                         prompt: "<b>Did</b> you do anything special <b>this morning</b>? 🌅",
@@ -982,39 +1250,61 @@
             }
         };
 
-        const emptyDayFallback = { vocab: [], questions: [] }; 
+        const emptyDayFallback = { vocab: [], questions: [], learn: [] }; 
 
         // --- APP LOGIC ---
         const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         const todayInt = new Date().getDay();
         const currentDayData = weeklyLessonData[todayInt] || emptyDayFallback;
         const currentChallengeArray = currentDayData.questions || [];
+        const currentLearnArray = currentDayData.learn || [];
         
         const MAX_ATTEMPTS = 3;
         let isBotTyping = false;
 
+        // Mode States
+        let appMode = 'chat'; // 'chat' or 'learn'
+        let learnPhase = 'ask'; // 'ask' or 'test'
+        let saidYes = false;
+
         // Load State 
-        let savedState = JSON.parse(localStorage.getItem('dailyChatProgress_L12')) || {};
+        let savedState = JSON.parse(localStorage.getItem('chitChatterProgress')) || {};
         
         if (savedState.day !== todayInt) {
             savedState = { 
                 day: todayInt, qIndex: 0, completed: false, attempts: 0, score: 0, 
+                learnIndex: 0, learnCompleted: false,
                 scrollDownSeen: false, scrollUpSeen: false, scrollHintsCompleted: false 
             };
             saveProgress();
         }
         
-        if (savedState.scrollHintsCompleted === undefined) { savedState.scrollHintsCompleted = false; savedState.scrollDownSeen = false; savedState.scrollUpSeen = false; saveProgress(); }
+        // Safety patches for existing users migrating formats
+        if (savedState.scrollHintsCompleted === undefined) { 
+            savedState.scrollHintsCompleted = false; 
+            savedState.scrollDownSeen = false; 
+            savedState.scrollUpSeen = false; 
+            saveProgress(); 
+        }
+        
+        if (savedState.learnIndex === undefined) {
+            savedState.learnIndex = 0; 
+            savedState.learnCompleted = false;
+            saveProgress();
+        }
 
         window.onload = () => {
             document.getElementById('day-label').innerText = dayNames[todayInt];
+            document.getElementById('start-lesson-title').innerText = lessonTitle;
             updateProgressUI();
             renderVocab();
             checkDevice();
         };
 
-        function startApp() {
+        function startApp(mode) {
             playSound('tap'); 
+            appMode = mode;
+            updateProgressUI();
             
             const overlay = document.getElementById('start-overlay');
             overlay.style.opacity = '0';
@@ -1022,15 +1312,26 @@
             setTimeout(() => {
                 overlay.style.display = 'none';
                 
-                if (currentChallengeArray.length === 0) {
-                    addBubble("No practice scheduled for today! Have a great day! 🎉", "sys-bubble");
-                    return;
-                }
-
-                if (savedState.completed) {
-                    showFinalScoreCard();
+                if (appMode === 'learn') {
+                    if (currentLearnArray.length === 0) {
+                        addBubble("No learn practice scheduled for today! 🎉", "sys-bubble");
+                        return;
+                    }
+                    if (savedState.learnCompleted) {
+                        showFinalScoreCard();
+                    } else {
+                        startNextLearnQuestion();
+                    }
                 } else {
-                    startNextQuestion();
+                    if (currentChallengeArray.length === 0) {
+                        addBubble("No practice scheduled for today! Have a great day! 🎉", "sys-bubble");
+                        return;
+                    }
+                    if (savedState.completed) {
+                        showFinalScoreCard();
+                    } else {
+                        startNextQuestion();
+                    }
                 }
             }, 300);
         }
@@ -1100,7 +1401,6 @@
             }
         }
 
-        // --- WORD DETAIL MODAL LOGIC ---
         function openWordModal(wordObj) {
             document.getElementById('wm-title').innerText = wordObj.en;
             document.getElementById('wm-jp').innerText = wordObj.jp;
@@ -1143,7 +1443,6 @@
             }
         }
 
-        // --- DYNAMIC SCROLL HINTS LOGIC ---
         function checkVocabScroll() {
             if (savedState.scrollHintsCompleted) return;
 
@@ -1187,37 +1486,94 @@
 
         // --- CORE GAME FUNCTIONS ---
         function saveProgress() {
-            localStorage.setItem('dailyChatProgress_L12', JSON.stringify(savedState));
+            localStorage.setItem('chitChatterProgress', JSON.stringify(savedState));
             updateProgressUI();
         }
 
         function updateProgressUI() {
-            const total = currentChallengeArray.length;
-            const current = savedState.completed ? total : savedState.qIndex;
-            document.getElementById('progress-badge').innerText = `${current}/${total}`;
+            let total, current, icon;
+            if (appMode === 'learn') {
+                total = currentLearnArray.length;
+                current = savedState.learnCompleted ? total : savedState.learnIndex;
+                icon = '📖';
+            } else {
+                total = currentChallengeArray.length;
+                current = savedState.completed ? total : savedState.qIndex;
+                icon = '💬';
+            }
+            document.getElementById('progress-badge').innerText = `${icon} ${current}/${total}`;
         }
 
-        function resetDay() {
+        function returnToMenu() {
             playSound('tap');
-            savedState = { day: todayInt, qIndex: 0, completed: false, attempts: 0, score: 0, scrollDownSeen: false, scrollUpSeen: false, scrollHintsCompleted: false };
-            saveProgress();
-            location.reload(); 
+            location.reload();
+        }
+
+        function switchToChat() {
+            playSound('tap');
+            document.getElementById('chat-window').innerHTML = ''; // Clear the Learn chat
+            appMode = 'chat';
+            updateProgressUI();
+            
+            if (currentChallengeArray.length === 0) {
+                addBubble("No practice scheduled for today! Have a great day! 🎉", "sys-bubble");
+                return;
+            }
+
+            if (savedState.completed) {
+                showFinalScoreCard();
+            } else {
+                startNextQuestion();
+            }
         }
 
         function showFinalScoreCard() {
             playSound('tada');
-            const totalPossible = currentChallengeArray.length;
-            let finalScore = (savedState.score || 0).toFixed(1);
-            if (finalScore.endsWith('.0')) finalScore = parseInt(finalScore);
-
             const chat = document.getElementById('chat-window');
             const bubble = document.createElement('div');
             bubble.className = `bubble sys-bubble`;
-            bubble.innerHTML = `
-                🎉 All done for today! <br>
-                <b>Rating: ${finalScore} / ${totalPossible}</b>
-                <button class="replay-btn" onclick="resetDay()">🔄 Try Again</button>
-            `;
+            
+            if (appMode === 'learn') {
+                let vocabReviewHtml = '';
+                if (currentLearnArray && currentLearnArray.length > 0) {
+                    vocabReviewHtml = `<div class="quick-review-box">
+                        <h4 style="margin: 0 0 1vh 0; color: #747d8c; font-size: 1.6vh; text-transform: uppercase;">Quick Review</h4>`;
+                    currentLearnArray.forEach(item => {
+                        const v = currentDayData.vocab.find(x => x.en === item.vocabEn);
+                        if (v) {
+                            vocabReviewHtml += `<div style="margin-bottom: 1vh; padding-bottom: 1vh; border-bottom: 1px solid #f1f2f6; display: flex; flex-direction: column; align-items: center; gap: 0.5vh;">
+                                <span style="font-weight: bold; color: var(--main-teal); font-size: 2vh;">${v.en}</span>
+                                <span style="color: #2f3542; font-weight: 500; font-size: 1.6vh;">${v.jp}</span>
+                            </div>`;
+                        }
+                    });
+                    vocabReviewHtml += `</div>`;
+                }
+
+                bubble.innerHTML = `
+                    🎉 You've completed Learn Mode! <br>
+                    Great job reviewing the vocabulary.
+                    ${vocabReviewHtml}
+                    <div style="display:flex; flex-direction: column; gap: 1vh; width: 100%;">
+                        <button class="replay-btn" style="background: #2ed573; border-color: #218c53; box-shadow: 0 3px 0 #218c53; margin: 0; width: 100%; box-sizing: border-box;" onclick="returnToMenu()">🏠 Main Menu</button>
+                        <button class="replay-btn" style="margin: 0; width: 100%; box-sizing: border-box;" onclick="switchToChat()">🤖 Chat</button>
+                        <button class="replay-btn" style="background: #ffa502; border-color: #e58e26; box-shadow: 0 3px 0 #e58e26; margin: 0; width: 100%; box-sizing: border-box;" onclick="toggleVocabDrawer('open')">📝 Notes</button>
+                    </div>
+                `;
+            } else {
+                const totalPossible = currentChallengeArray.length;
+                let finalScore = (savedState.score || 0).toFixed(1);
+                if (finalScore.endsWith('.0')) finalScore = parseInt(finalScore);
+                
+                bubble.innerHTML = `
+                    🎉 All done for today! <br>
+                    <b>Rating: ${finalScore} / ${totalPossible}</b>
+                    <div style="display:flex; flex-direction: column; gap: 1vh; margin-top: 1.5vh; width: 100%;">
+                        <button class="replay-btn" style="margin: 0; width: 100%; box-sizing: border-box;" onclick="returnToMenu()">🏠 Main Menu</button>
+                        <button class="replay-btn" style="background: #ffa502; border-color: #e58e26; box-shadow: 0 3px 0 #e58e26; margin: 0; width: 100%; box-sizing: border-box;" onclick="toggleVocabDrawer('open')">📝 Notes</button>
+                    </div>
+                `;
+            }
             chat.appendChild(bubble);
             scrollToBottom();
         }
@@ -1241,6 +1597,64 @@
             }, duration);
         }
 
+        // --- LEARN MODE SPECIFIC ---
+        function startNextLearnQuestion() {
+            if (savedState.learnIndex >= currentLearnArray.length) {
+                savedState.learnCompleted = true;
+                saveProgress();
+                showTypingIndicator(() => {
+                    showFinalScoreCard();
+                }, 1000);
+                return;
+            }
+
+            const data = currentLearnArray[savedState.learnIndex];
+            learnPhase = 'ask';
+            
+            showTypingIndicator(() => {
+                addBubble(`Do you know the phrase:<br><br><b>${data.vocabEn}</b> ? 🤔`, "bot-bubble");
+                setTimeout(() => {
+                    renderWordBank(["Yes,", "No,", "I", "do.", "don't."]);
+                    document.getElementById('interaction-area').classList.remove('hidden');
+                    document.getElementById('interaction-area').style.display = 'flex';
+                    scrollToBottom();
+                }, 500);
+            }, 1200);
+        }
+
+        function advanceToLearnTest(msg, showPrompt) {
+            hideInteraction();
+            showTypingIndicator(() => {
+                addBubble(msg, "bot-bubble");
+                setTimeout(() => {
+                    showTypingIndicator(() => {
+                        const data = currentLearnArray[savedState.learnIndex];
+                        if (showPrompt) {
+                            addBubble(data.prompt, "bot-bubble");
+                        }
+                        renderWordBank(data.wordBank);
+                        document.getElementById('interaction-area').classList.remove('hidden');
+                        document.getElementById('interaction-area').style.display = 'flex';
+                        scrollToBottom();
+                    }, 1000);
+                }, 1500);
+            }, 1000);
+        }
+
+        function advanceToNextLearnSequence(botReplyText) {
+            hideInteraction();
+            showTypingIndicator(() => {
+                addBubble(botReplyText, "bot-bubble", "correct");
+                
+                savedState.learnIndex++;
+                saveProgress();
+
+                setTimeout(() => { startNextLearnQuestion(); }, 1500);
+            }, 1000);
+        }
+
+
+        // --- CHAT MODE SPECIFIC ---
         function startNextQuestion() {
             if (savedState.qIndex >= currentChallengeArray.length) {
                 savedState.completed = true;
@@ -1277,10 +1691,26 @@
                     scrollToBottom();
                 }, 500);
             } else {
-                advanceToNextSequence(questionData.failReply);
+                const kindFailMessage = `Maybe I'm not quite understanding, but that's okay! Let's move on. 😊<br><br>${questionData.failReply}`;
+                advanceToNextSequence(kindFailMessage);
             }
         }
 
+        function advanceToNextSequence(botReplyText, soundOverride = null) {
+            hideInteraction();
+            showTypingIndicator(() => {
+                addBubble(botReplyText, "bot-bubble", soundOverride);
+                
+                savedState.qIndex++;
+                savedState.attempts = 0;
+                saveProgress();
+
+                setTimeout(() => { startNextQuestion(); }, 2000);
+            }, 1500);
+        }
+
+
+        // --- COMMON LOGIC ---
         function renderWordBank(words) {
             const bank = document.getElementById('word-bank');
             bank.innerHTML = '';
@@ -1356,61 +1786,91 @@
             setTimeout(() => { area.style.display = 'none'; }, 300); 
         }
 
-        function advanceToNextSequence(botReplyText, soundOverride = null) {
-            hideInteraction();
-            showTypingIndicator(() => {
-                addBubble(botReplyText, "bot-bubble", soundOverride);
-                
-                savedState.qIndex++;
-                savedState.attempts = 0;
-                saveProgress();
-
-                setTimeout(() => { startNextQuestion(); }, 2000);
-            }, 1500);
-        }
-
-        function greyOutDistractor(currentQ) {
-            const bank = document.getElementById('word-bank');
-            const tiles = Array.from(bank.querySelectorAll('.word-tile:not(.disabled-tile)'));
-            
-            const distractors = tiles.filter(t => {
-                return !currentQ.validAnswers.some(ans => ans.includes(t.innerText));
-            });
-
-            if (distractors.length > 0) {
-                const targetTile = distractors[Math.floor(Math.random() * distractors.length)];
-                targetTile.classList.add('disabled-tile');
-                targetTile.onclick = null; 
-            }
-        }
-
         function checkAnswer() {
             const builder = document.getElementById('sentence-builder');
             const tiles = builder.querySelectorAll('.word-tile');
             if (tiles.length === 0) return;
 
             playSound('send');
-
             let userSentence = Array.from(tiles).map(t => t.innerText).join(" ");
-            const currentQ = currentChallengeArray[savedState.qIndex];
-
-            addBubble(userSentence, "user-bubble");
             
+            // --- LEARN MODE: ASK PHASE OVERRIDE ---
+            if (appMode === 'learn' && learnPhase === 'ask') {
+                addBubble(userSentence, "user-bubble");
+                if (userSentence === "Yes, I do.") {
+                    saidYes = true;
+                    learnPhase = 'test';
+                    savedState.attempts = 0;
+                    saveProgress();
+                    clearSentence(true);
+                    advanceToLearnTest("Great! Let's see if you can answer this. 🧠", true);
+                } else if (userSentence === "No, I don't.") {
+                    saidYes = false;
+                    learnPhase = 'test';
+                    savedState.attempts = 0;
+                    saveProgress();
+                    clearSentence(true);
+                    const learnItem = currentLearnArray[savedState.learnIndex];
+                    let v = currentDayData.vocab.find(x => x.en === learnItem.vocabEn);
+                    let explanationMsg = `No problem! Here is what it means:<br><br><b>${v.en}</b><br>${v.jp}<br><span style='font-size:0.8em; color:#747d8c;'>${v.explanation}</span><br><br>Let's try using it! 💪`;
+                    advanceToLearnTest(explanationMsg, true);
+                } else {
+                    playSound('wrong');
+                    clearSentence(true);
+                    hideInteraction();
+                    showTypingIndicator(() => {
+                        let hintMsg = "Please build 'Yes, I do.' or 'No, I don't.'<br><span class='hint-jp' style='font-size: 0.8em; color: #a4b0be;'>（「はい」か「いいえ」の文を作ってください。）</span>";
+                        addBubble(hintMsg, "bot-bubble");
+                        setTimeout(() => {
+                            document.getElementById('interaction-area').classList.remove('hidden');
+                            document.getElementById('interaction-area').style.display = 'flex';
+                            scrollToBottom();
+                        }, 500);
+                    }, 800);
+                }
+                return;
+            }
+
+            // --- STANDARD CHECKING LOGIC ---
+            const currentQ = appMode === 'learn' ? currentLearnArray[savedState.learnIndex] : currentChallengeArray[savedState.qIndex];
+            addBubble(userSentence, "user-bubble");
             let isCorrect = currentQ.validAnswers.includes(userSentence);
 
             if (isCorrect) {
                 clearSentence(true);
                 hideInteraction();
                 
-                if (savedState.attempts === 0) savedState.score += 1;
-                else if (savedState.attempts === 1) savedState.score += 0.8;
-                else if (savedState.attempts === 2) savedState.score += 0.5;
-                
-                advanceToNextSequence(currentQ.successReply || "Oh, I see! That's great! 🌟", 'correct');
+                if (appMode === 'learn') {
+                    advanceToNextLearnSequence("Spot on! 🌟");
+                } else {
+                    if (savedState.attempts === 0) savedState.score += 1;
+                    else if (savedState.attempts === 1) savedState.score += 0.8;
+                    else if (savedState.attempts === 2) savedState.score += 0.5;
+                    advanceToNextSequence(currentQ.successReply || "Oh, I see! That's great! 🌟", 'correct');
+                }
             } else {
                 playSound('wrong');
+                
+                savedState.attempts++;
+                saveProgress();
+                
                 let specificHint = null;
-                if (currentQ.hints) {
+                
+                // Formatting / Structure Check FIRST
+                let firstTileText = tiles[0].innerText;
+                let lastTileText = tiles[tiles.length - 1].innerText;
+
+                if (appMode === 'learn' && saidYes && savedState.attempts === 2) {
+                    let v = currentDayData.vocab.find(x => x.en === currentQ.vocabEn);
+                    specificHint = `Let's review it together! 💡<br><br><b>${v.en}</b><br>${v.jp}<br><span style='font-size:0.8em; color:#747d8c;'>${v.explanation}</span><br><br>Try answering the question again!`;
+                    saidYes = false; // Switch to the "No" track essentially
+                } else if (!/^[A-Z]/.test(firstTileText) && !firstTileText.startsWith('"') && !firstTileText.startsWith("'")) {
+                    specificHint = "A sentence always starts with a capital letter! Look for the uppercase word.<br><span class='hint-jp'>（文の最初は常に大文字で始めます。）</span>";
+                } else if (!/[.?!]$/.test(lastTileText) && !lastTileText.endsWith('"') && !lastTileText.endsWith("'")) {
+                    specificHint = "Don't forget the punctuation (like a period) at the end of the sentence!<br><span class='hint-jp'>（文の最後にはピリオドなどの句読点を忘れずに。）</span>";
+                } 
+                // Then Grammar Hints
+                else if (currentQ.hints) {
                     for (let h of currentQ.hints) {
                         if (userSentence.includes(h.wrongWord)) {
                             specificHint = h.hint;
@@ -1454,30 +1914,46 @@
                     }
                 }
 
-                savedState.attempts++;
-                saveProgress();
-
-                if (savedState.attempts >= MAX_ATTEMPTS) {
-                    hideInteraction();
-                    advanceToNextSequence(currentQ.failReply);
-                } else {
+                if (appMode === 'learn') {
+                    // Learn mode allows infinite attempts, just show hint and continue
                     hideInteraction();
                     showTypingIndicator(() => {
-                        let left = MAX_ATTEMPTS - savedState.attempts;
-                        let tryText = `<span style="display:block; margin-top:1vh; font-size: 0.8em; color: #a4b0be; text-align: right;">(${left} tries left)</span>`;
-                        
-                        let botMsg = specificHint 
-                            ? `Hmm... ${specificHint} ${tryText}` 
-                            : `Hmm, that doesn't sound quite right. Let's try again! ${tryText}`;
-                            
+                        let botMsg = specificHint ? `Hmm... ${specificHint}` : `Hmm, that doesn't sound quite right. Try again!`;
+                        if (specificHint && specificHint.includes("Let's review it together!")) {
+                            botMsg = specificHint;
+                        }
                         addBubble(botMsg, "bot-bubble");
-                        
                         setTimeout(() => {
                             document.getElementById('interaction-area').classList.remove('hidden');
                             document.getElementById('interaction-area').style.display = 'flex';
                             scrollToBottom();
                         }, 500);
                     }, 800);
+                } else {
+                    // Chat mode tracks attempts
+                    if (savedState.attempts >= MAX_ATTEMPTS) {
+                        hideInteraction();
+                        const kindFailMessage = `Maybe I'm not quite understanding, but that's okay! Let's move on. 😊<br><br>${currentQ.failReply}`;
+                        advanceToNextSequence(kindFailMessage);
+                    } else {
+                        hideInteraction();
+                        showTypingIndicator(() => {
+                            let left = MAX_ATTEMPTS - savedState.attempts;
+                            let tryText = `<span style="display:block; margin-top:1vh; font-size: 0.8em; color: #a4b0be; text-align: right;">(${left} tries left)</span>`;
+                            
+                            let botMsg = specificHint 
+                                ? `Hmm... ${specificHint} ${tryText}` 
+                                : `Hmm, that doesn't sound quite right. Let's try again! ${tryText}`;
+                                
+                            addBubble(botMsg, "bot-bubble");
+                            
+                            setTimeout(() => {
+                                document.getElementById('interaction-area').classList.remove('hidden');
+                                document.getElementById('interaction-area').style.display = 'flex';
+                                scrollToBottom();
+                            }, 500);
+                        }, 800);
+                    }
                 }
             }
         }
