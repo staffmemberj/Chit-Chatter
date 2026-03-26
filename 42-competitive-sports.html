@@ -1,0 +1,1921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Daily English Chat</title>
+    <!-- Added html2canvas for saving results -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg-color: #e0f7fa;
+            --main-teal: #00838F;
+            --bot-bg: #ffffff;
+            --user-bg: #1e90ff;
+            --bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh; 
+            height: 100dvh; 
+            color: #2f3542;
+            overflow: hidden;
+        }
+
+        /* Top Header */
+        #header {
+            background: var(--main-teal);
+            color: white;
+            padding: 1.5vh 5vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 10;
+            flex-shrink: 0; 
+        }
+
+        .header-title {
+            font-size: 2.5vh;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        
+        .header-title:active {
+            transform: scale(0.95);
+        }
+
+        #day-label {
+            font-size: 1.5vh;
+            color: #b2ebf2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 2vw;
+        }
+
+        #progress-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5vh 3vw;
+            border-radius: 20px;
+            font-size: 1.8vh;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* Chat Area */
+        #chat-window {
+            flex: 1 1 0; 
+            min-height: 15vh; 
+            padding: 3vh 4vw;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2vh;
+            scroll-behavior: smooth;
+        }
+
+        .bubble {
+            max-width: 80%;
+            padding: 1.5vh 4vw;
+            border-radius: 20px;
+            font-size: 2.2vh;
+            line-height: 1.4;
+            animation: popIn 0.4s var(--bounce) forwards;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.05);
+            opacity: 0;
+            transform: scale(0.8) translateY(10px);
+        }
+
+        .bubble b {
+            color: #ff4757;
+            font-weight: 700;
+            background: #ffeaa7;
+            padding: 0 0.5vw;
+            border-radius: 4px;
+        }
+
+        .bot-bubble {
+            background: var(--bot-bg);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            border: 2px solid #dfe4ea;
+        }
+
+        .user-bubble {
+            background: var(--user-bg);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+            border: 2px solid #0984e3;
+        }
+
+        .sys-bubble {
+            background: #f1f2f6;
+            color: #747d8c;
+            align-self: center;
+            font-size: 1.8vh;
+            border: 2px dashed #ced6e0;
+            box-shadow: none;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1vh;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 0.8vw;
+            padding: 1.5vh 4vw;
+            align-items: center;
+            min-height: 2.2vh;
+            flex-direction: row;
+            width: fit-content;
+        }
+
+        .dot {
+            width: 1.2vh;
+            height: 1.2vh;
+            background: #a4b0be;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        @keyframes popIn {
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        /* Interaction Area */
+        #interaction-area {
+            background: #f1f2f6;
+            border-top: 2px solid #dfe4ea;
+            padding: 2vh 4vw calc(3vh + env(safe-area-inset-bottom)) 4vw;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5vh;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            flex-shrink: 0; 
+        }
+
+        #interaction-area.hidden {
+            transform: translateY(100%);
+            display: none;
+        }
+
+        /* Text Input Box Container */
+        #input-row {
+            background: #ffffff;
+            border: 2px solid #ced6e0;
+            border-radius: 30px;
+            min-height: 5.5vh;
+            display: flex;
+            align-items: center;
+            padding: 0.5vh 1vw 0.5vh 3vw;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            flex-shrink: 0;
+        }
+
+        #sentence-builder {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8vh;
+            align-items: center;
+            min-height: 4vh;
+            padding: 0.5vh 0;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 2.2vh;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.1s;
+        }
+
+        .clear-btn { color: #a4b0be; padding: 1vh 2vw; }
+        .clear-btn:active { transform: scale(0.8); }
+
+        .send-btn {
+            background: #2ed573;
+            color: white;
+            border-radius: 50%;
+            width: 5vh;
+            height: 5vh;
+            box-shadow: 0 3px 0 #218c53;
+            margin-left: 0.5vw;
+        }
+        .send-btn:active { transform: translateY(3px); box-shadow: 0 0px 0 #218c53; }
+        .send-btn svg { width: 2.2vh; height: 2.2vh; margin-right: 0.2vw; margin-top: 0.2vh; }
+
+        /* Word Bank */
+        #word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: flex-start;
+            gap: 1.5vh;
+            min-height: 8vh;
+            max-height: 40vh; 
+            overflow-y: auto;
+            padding-bottom: 1vh;
+        }
+
+        .word-tile {
+            background: #ffffff;
+            color: #2f3542;
+            padding: 1vh 3vw;
+            border-radius: 12px;
+            font-size: 2.2vh;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #ced6e0;
+            border: 1px solid #dfe4ea;
+            user-select: none;
+            transition: all 0.1s;
+        }
+        .word-tile:active { transform: translateY(3px); box-shadow: 0 0px 0 #ced6e0; }
+
+        .word-tile.in-builder {
+            background: #1e90ff; color: white; box-shadow: 0 2px 0 #0984e3;
+            border: 1px solid #0984e3; padding: 0.8vh 2.5vw; border-radius: 8px;
+        }
+        .word-tile.in-builder:active { transform: translateY(2px); box-shadow: 0 0px 0 #0984e3; }
+
+        .word-tile.disabled-tile {
+            background: #f1f2f6 !important; color: #a4b0be !important;
+            border: 1px solid #dfe4ea !important; box-shadow: none !important;
+            pointer-events: none; transform: none !important;
+        }
+
+        .quick-review-box {
+            margin: 1.5vh 0; 
+            padding: 1.5vh; 
+            background: white; 
+            border-radius: 12px; 
+            border: 1px solid #dfe4ea; 
+            width: 100%; 
+            box-sizing: border-box; 
+            text-align: center; 
+            max-height: 50vh; 
+            overflow-y: auto;
+        }
+
+        /* Action Row for Notes Button */
+        .action-row {
+            display: flex;
+            justify-content: center;
+        }
+
+        #notes-btn {
+            background: #ffa502;
+            color: white;
+            border: 2px solid #e58e26;
+            padding: 1.2vh 6vw;
+            font-size: 2vh;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #e58e26;
+            transition: transform 0.1s, width 0.2s;
+            font-family: 'Fredoka', sans-serif;
+            min-width: 200px;
+            white-space: nowrap;
+        }
+        #notes-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 0 0 #e58e26;
+        }
+
+        /* Flexible Notes Button & Scrollbar Constraints for Mobile */
+        @media (max-width: 768px) {
+            #notes-btn {
+                width: 80%;
+                padding: 1.5vh 4vw;
+                font-size: 2.2vh;
+            }
+            #word-bank {
+                max-height: 35dvh; 
+                margin-bottom: 1vh;
+            }
+            .quick-review-box {
+                max-height: 30vh; 
+            }
+            .sys-bubble {
+                max-width: 92%;
+                width: 92%;
+            }
+            .replay-btn {
+                font-size: 2.4vh;
+                padding: 1.5vh 2vw;
+            }
+        }
+
+        #desktop-hint { text-align: center; font-size: 1.6vh; color: #a4b0be; display: none; margin-top: -0.5vh;}
+        
+        .replay-btn {
+            background: #1e90ff; color: white; border: 2px solid #0984e3; padding: 1vh 4vw;
+            border-radius: 10px; font-family: 'Fredoka', sans-serif; font-size: 2vh;
+            font-weight: 600; cursor: pointer; box-shadow: 0 3px 0 #0984e3; margin-top: 1vh;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+        .replay-btn:active { transform: translateY(3px); box-shadow: 0 0px 0 #0984e3; }
+
+        /* --- Vocab Drawer CSS --- */
+        #notes-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); 
+            backdrop-filter: blur(2px); z-index: 10000;
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        #notes-overlay.show { opacity: 1; }
+
+        #sidebar-content-container {
+            position: fixed; right: -100%; top: 0; width: 95vw; max-width: 600px; height: 100dvh;
+            background: white; z-index: 10001; transition: right 0.4s var(--bounce);
+            border-left: 6px solid var(--main-teal); 
+            box-shadow: -10px 0 20px rgba(0,0,0,0.15); 
+            display: flex; flex-direction: column;
+        }
+        #sidebar-content-container.open { right: 0; }
+
+        .drawer-header {
+            padding: 3vh 5vw 1vh 5vw;
+            flex-shrink: 0;
+            text-align: center;
+        }
+        .drawer-title { 
+            color: var(--main-teal); font-size: 2.5vh; text-transform: uppercase; 
+            margin: 0; 
+        }
+        .drawer-subtitle {
+            font-size: 1.5vh; color: #747d8c; margin-top: 0.5vh;
+        }
+
+        #vocab-container { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 1vh 5vw; 
+            position: relative;
+        }
+
+        .vocab-bottom-spacer { height: 12vh; width: 100%; }
+
+        .vocab-group-list { 
+            margin: 0; padding: 0; list-style-type: none; 
+            display: flex; flex-direction: column; gap: 1.2vh; 
+            width: 100%;
+        }
+        
+        .vocab-group-list li { 
+            background: #f1f2f6; padding: 1.5vh 3vw; border-radius: 12px; 
+            display: flex; flex-direction: column; align-items: center; gap: 0.5vh;
+            border: 2px solid #dfe4ea; cursor: pointer; text-align: center;
+            transition: transform 0.1s, border-color 0.1s;
+            width: 100%; box-sizing: border-box;
+        }
+        .vocab-group-list li:active {
+            transform: scale(0.98); background: #e0f7fa; border-color: var(--main-teal);
+        }
+        .vocab-en { 
+            font-weight: bold; color: var(--main-teal); 
+            font-size: clamp(15px, 2.2vh, 22px); 
+            width: 100%;
+            text-align: center;
+        }
+        .vocab-jp { 
+            color: #2f3542; font-weight: 500;
+            font-size: clamp(13px, 1.6vh, 18px); 
+            width: 100%;
+            text-align: center;
+        }
+
+        .drawer-footer {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 2vh 5vw calc(2vh + env(safe-area-inset-bottom)) 5vw;
+            box-sizing: border-box; background: linear-gradient(transparent, white 25%);
+            pointer-events: none; 
+        }
+
+        .close-drawer-btn {
+            background: #ff4757; color: white; border: 2px solid #d81b60; padding: 1.2vh;
+            border-radius: 12px; font-size: 2vh; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 0 #d81b60; width: 100%; 
+            font-family: 'Fredoka', sans-serif; margin: 0; pointer-events: auto; 
+            white-space: nowrap;
+        }
+        .close-drawer-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #d81b60; }
+
+        /* Bubbly Scroll Indicators */
+        .scroll-indicator {
+            position: absolute; right: 4vw; background: rgba(255, 71, 87, 0.95); color: white;
+            border-radius: 50%; width: 4.5vh; height: 4.5vh; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10002; pointer-events: none; 
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .scroll-indicator svg { width: 2.5vh; height: 2.5vh; }
+        .scroll-indicator.visible { opacity: 1; }
+
+        .indicator-down { bottom: calc(10vh + env(safe-area-inset-bottom)); animation: bounceDownSide 1.5s infinite var(--bounce); }
+        .indicator-up { top: 8vh; animation: bounceUpSide 1.5s infinite var(--bounce); }
+
+        @keyframes bounceDownSide {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
+        }
+        @keyframes bounceUpSide {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(8px); }
+            60% { transform: translateY(4px); }
+        }
+
+        /* --- Custom Word Detail Modal --- */
+        #word-modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 10005;
+            opacity: 0; transition: opacity 0.3s ease;
+            align-items: center; justify-content: center; padding: 4vw; box-sizing: border-box;
+        }
+        #word-modal-overlay.show { opacity: 1; }
+
+        .word-modal-card {
+            background: white; border-radius: 20px; width: 100%; max-width: 650px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden;
+            transform: scale(0.9) translateY(20px); transition: transform 0.3s var(--bounce);
+        }
+        #word-modal-overlay.show .word-modal-card { transform: scale(1) translateY(0); }
+
+        .wm-header {
+            background: var(--main-teal); color: white; padding: 2.5vh 5vw;
+            text-align: center; position: relative;
+        }
+        .wm-title { font-size: 3.5vh; font-weight: 700; margin: 0; letter-spacing: 1px;}
+        .wm-jp { font-size: 1.8vh; color: #e0f7fa; margin-top: 0.5vh; font-weight: 600;}
+
+        .wm-body { padding: 3vh 5vw; color: #2f3542; }
+        
+        .wm-section-title {
+            font-size: 1.8vh; color: #747d8c; text-transform: uppercase; font-weight: 700;
+            margin: 0 0 1vh 0; letter-spacing: 1px; border-bottom: 2px solid #f1f2f6; padding-bottom: 0.5vh;
+        }
+
+        .wm-explanation { font-size: 2vh; line-height: 1.5; margin-bottom: 2.5vh; }
+        
+        .wm-examples { list-style: none; padding: 0; margin: 0 0 2.5vh 0; }
+        .wm-examples li {
+            background: #f8f9fa; border-left: 4px solid #1e90ff; padding: 1.5vh 3vw;
+            margin-bottom: 1vh; border-radius: 0 8px 8px 0; font-size: 1.8vh; line-height: 1.4;
+        }
+
+        .wm-footer { padding: 0 5vw 3vh 5vw; }
+        .wm-close-btn {
+            background: #f1f2f6; color: #2f3542; border: 2px solid #dfe4ea; padding: 1.5vh;
+            border-radius: 12px; font-size: 2vh; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 0 #dfe4ea; width: 100%; font-family: 'Fredoka', sans-serif;
+        }
+        .wm-close-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #dfe4ea; }
+
+        .highlight-warn { color: #ff4757; font-weight: bold; }
+        .highlight-good { color: #2ed573; font-weight: bold; }
+
+        /* --- Start Overlay --- */
+        #start-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.3s ease;
+        }
+        
+        .start-btn {
+            position: relative;
+            background: #2ed573; color: white; border: 3px solid #218c53; padding: 2vh 2vw;
+            border-radius: 20px; font-size: 3vh; font-weight: 700; cursor: pointer;
+            box-shadow: 0 6px 0 #218c53; font-family: 'Fredoka', sans-serif;
+            transition: transform 0.1s, box-shadow 0.1s;
+            width: 80%; max-width: 300px;
+            white-space: nowrap; box-sizing: border-box; margin-top: 2vh;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .start-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #218c53; }
+
+        /* Checklist Squares */
+        .mode-check {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2.5vh;
+            height: 2.5vh;
+            background: rgba(0,0,0,0.1);
+            border: 3px solid rgba(255,255,255,0.6);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .mode-check.done {
+            background: white;
+            border-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .mode-check.done::after {
+            content: '✔';
+            color: #2f3542;
+            font-size: 2.2vh;
+            font-weight: 900;
+        }
+
+        /* Congrats Modal */
+        #congrats-modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 10005;
+            opacity: 0; transition: opacity 0.3s ease;
+            align-items: center; justify-content: center; padding: 4vw; box-sizing: border-box;
+        }
+        #congrats-modal-overlay.show { opacity: 1; }
+
+        .congrats-card {
+            background: white; border-radius: 30px; width: 100%; max-width: 450px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2); padding: 4vh 5vw;
+            transform: scale(0.9) translateY(20px); transition: transform 0.3s var(--bounce);
+            text-align: center; border: 6px solid #ffffff;
+        }
+        #congrats-modal-overlay.show .congrats-card { transform: scale(1) translateY(0); }
+
+    </style>
+</head>
+<body>
+
+    <!-- Start Screen Overlay -->
+    <div id="start-overlay">
+        <h1 style="color: var(--main-teal); font-size: 5vh; margin-bottom: 0.5vh; text-align: center;">Chit Chatter</h1>
+        <div id="start-lesson-title" style="color: #747d8c; font-size: 2.5vh; margin-top: 0; margin-bottom: 3vh; text-align: center; font-weight: 600;"></div>
+        
+        <button class="start-btn" style="background: #1e90ff; border-color: #0984e3; box-shadow: 0 6px 0 #0984e3;" onclick="startApp('learn')">
+            <div class="mode-check" id="check-learn"></div>
+            👨‍🏫 Learn
+        </button>
+        <button class="start-btn" onclick="startApp('chat')">
+            <div class="mode-check" id="check-chat"></div>
+            🤖 Chat
+        </button>
+        <button class="start-btn" style="background: #ffa502; border-color: #e58e26; box-shadow: 0 6px 0 #e58e26; font-size: 2.8vh;" onclick="toggleVocabDrawer('open')">
+            <div class="mode-check" id="check-notes"></div>
+            📝 Notes
+        </button>
+        <button class="start-btn" id="results-btn" style="background: #a29bfe; border-color: #6c5ce7; box-shadow: 0 6px 0 #6c5ce7; font-size: 2.8vh; display: none;" onclick="showCongratsModal()">
+            🏆 Results
+        </button>
+    </div>
+
+    <div id="header">
+        <div class="header-title" onclick="returnToMenu()">
+            <span id="day-label">Tuesday</span>
+            Chit Chatter
+        </div>
+        <div class="header-controls">
+            <div id="progress-badge">0/0</div>
+        </div>
+    </div>
+
+    <div id="chat-window">
+        <!-- Chat bubbles inject here -->
+    </div>
+
+    <div id="interaction-area" class="hidden">
+        <div id="input-row">
+            <div id="sentence-builder"></div>
+            <button class="icon-btn clear-btn" onclick="clearSentence()">✖</button>
+            <button class="icon-btn send-btn" onclick="checkAnswer()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+        
+        <div id="word-bank"></div>
+        
+        <div class="action-row">
+            <button id="notes-btn" onclick="toggleVocabDrawer('open')">📝 Notes</button>
+        </div>
+
+        <div id="desktop-hint">Press <b>Enter</b> to send &nbsp;|&nbsp; <b>Backspace</b> to delete</div>
+    </div>
+
+    <!-- Vocab Drawer & Overlay -->
+    <div id="notes-overlay" onclick="toggleVocabDrawer('close')"></div>
+    <div id="sidebar-content-container">
+        
+        <div class="drawer-header">
+            <h3 class="drawer-title">📚 Vocabulary</h3>
+            <div class="drawer-subtitle">Click a word for details!</div>
+        </div>
+        
+        <!-- Scroll Indicators (Side) -->
+        <div id="scroll-up-indicator" class="scroll-indicator indicator-up">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </div>
+        
+        <div id="vocab-container" onscroll="checkVocabScroll()">
+            <ul class="vocab-group-list" id="vocab-list-ul">
+                <!-- Injected via JS -->
+            </ul>
+            <div class="vocab-bottom-spacer"></div>
+        </div>
+        
+        <div id="scroll-down-indicator" class="scroll-indicator indicator-down">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+
+        <div class="drawer-footer">
+            <button class="close-drawer-btn" onclick="toggleVocabDrawer('close')">✖️ Close Drawer</button>
+        </div>
+    </div>
+
+    <!-- Word Detail Modal -->
+    <div id="word-modal-overlay" onclick="handleModalOverlayClick(event)">
+        <div class="word-modal-card">
+            <div class="wm-header">
+                <h2 class="wm-title" id="wm-title">Word</h2>
+                <div class="wm-jp" id="wm-jp">~日本語~</div>
+            </div>
+            <div class="wm-body">
+                <h4 class="wm-section-title">📝 Explanation</h4>
+                <div class="wm-explanation" id="wm-explanation">Explanation text goes here.</div>
+                
+                <h4 class="wm-section-title">💡 Examples</h4>
+                <ul class="wm-examples" id="wm-examples">
+                    <!-- Injected via JS -->
+                </ul>
+            </div>
+            <div class="wm-footer">
+                <button class="wm-close-btn" onclick="closeWordModal()">Got it!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Congratulations Modal -->
+    <div id="congrats-modal-overlay">
+        <div class="congrats-card" id="congrats-card">
+            <h2 style="color: #2ed573; font-size: clamp(22px, 4vh, 40px); margin: 0 0 1vh 0; text-transform: uppercase; white-space: nowrap;">🎉 All Done! 🎉</h2>
+            <div style="font-size: 2vh; color: #747d8c; margin-bottom: 2.5vh; font-weight: 600;">You finished today's lesson!</div>
+
+            <div style="display: flex; justify-content: center; gap: 2vw; margin: 2.5vh 0; width: 100%;">
+                <div style="background: white; border: 4px solid #f1f2f6; border-radius: 15px; padding: 2vh; width: 60%; border-color: #ffa502;">
+                    <div style="font-size: 1.8vh; color: #ffa502; font-weight: bold; text-transform: uppercase; margin-bottom: 0.5vh;">Final Score</div>
+                    <div id="congrats-score" style="font-size: 5vh; color: #ffa502; font-weight: bold; line-height: 1;">0</div>
+                </div>
+            </div>
+
+            <p style="font-size: 2.2vh; font-weight: bold; color: #2f3542; margin: 2.5vh 0;">Great job! Come back tomorrow for more practice. 🌟</p>
+
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 1.5vh; margin-top: 3vh;">
+                <button class="start-btn" id="save-results-btn" style="margin: 0; width: 80%; max-width: 250px; font-size: 2.2vh; padding: 1.5vh; background: #1e90ff; border-color: #0984e3; box-shadow: 0 4px 0 #0984e3;" onclick="downloadScreenshot()">💾 Save Results</button>
+                <button class="start-btn" id="close-congrats-btn" style="margin: 0; width: 80%; max-width: 250px; font-size: 2.2vh; padding: 1.5vh; background: #f1f2f6; color: #2f3542; border-color: #dfe4ea; box-shadow: 0 4px 0 #dfe4ea;" onclick="closeCongratsModal()">✖️ Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ========================================================================
+        AUDIO CONFIGURATION
+        ======================================================================== */
+        const soundMap = {
+            tap: 'sound/typing.mp3',
+            pop: 'sound/chat.mp3',
+            correct: 'sound/victory.mp3',
+            wrong: 'sound/wrong.mp3',
+            slide: 'sound/slide.mp3',
+            tada: 'sound/victory.mp3',
+            send: 'sound/send.mp3'
+        };
+
+        const audioObjects = {};
+        for (let key in soundMap) {
+            audioObjects[key] = new Audio(soundMap[key]);
+        }
+
+        function playSound(type) {
+            if (audioObjects[type]) {
+                audioObjects[type].currentTime = 0;
+                audioObjects[type].play().catch(e => console.log("Audio play prevented until user interacts."));
+            }
+        }
+
+/* ========================================================================
+        TEACHER CONFIGURATION AREA - LESSON 42 ONLY
+        ======================================================================== */
+        const lessonTitle = "42 Competitive sport"; 
+        const MAX_ATTEMPTS = 3;
+        
+        const lesson42Vocab = [
+            { en: "win", jp: "勝つ", explanation: "試合や大会で勝利する時に使います。過去形はwonです。", examples: ["He <span class='highlight-good'>won</span> the game."] },
+            { en: "beat", jp: "～を打ち負かす", explanation: "相手チームや対戦相手に直接勝つ時に使います。過去形もbeatです。", examples: ["We <span class='highlight-good'>beat</span> the other team 2-0."] },
+            { en: "lose", jp: "負ける", explanation: "試合に負けたりする時に使います。過去形はlostです。", examples: ["They <span class='highlight-good'>lost</span> the match to Spain."] },
+            { en: "draw", jp: "引き分け", explanation: "両チームが同じ得点で試合が終わることを表します。", examples: ["The game ended in a <span class='highlight-good'>draw</span>."] },
+            { en: "score", jp: "得点", explanation: "試合の点数や結果を表します。", examples: ["The final <span class='highlight-good'>score</span> was 3-1."] },
+            { en: "competition", jp: "競技会・大会", explanation: "人々が一番を競う組織的なイベントのことです。", examples: ["She took part in a tennis <span class='highlight-good'>competition</span>."] },
+            { en: "tournament", jp: "トーナメント", explanation: "勝ち抜き戦の大会のことです。", examples: ["He entered a golf <span class='highlight-good'>tournament</span>."] },
+            { en: "league", jp: "リーグ", explanation: "複数のチームが総当たりで対戦する形式の大会です。", examples: ["Our team plays in the local football <span class='highlight-good'>league</span>."] },
+            { en: "final", jp: "決勝戦", explanation: "トーナメントの最後に行われる試合のことです。", examples: ["They will play against each other in the <span class='highlight-good'>final</span>."] },
+            { en: "champion", jp: "優勝者・チャンピオン", explanation: "大会で最終的に勝った人やチームのことです。", examples: ["Germany became the World Cup <span class='highlight-good'>champion</span>."] },
+            { en: "captain", jp: "キャプテン・主将", explanation: "チームをまとめるリーダーのことです。", examples: ["He is the <span class='highlight-good'>captain</span> of the football team."] },
+            { en: "victory", jp: "勝利", explanation: "試合や競争での大きな勝利を表す名詞です。", examples: ["It was a great <span class='highlight-good'>victory</span> for our team."] },
+            { en: "break a world record", jp: "世界記録を破る", explanation: "これまでの世界最高記録を更新した時に使います。", examples: ["He <span class='highlight-good'>broke a world record</span> in the race."] },
+            { en: "lead", jp: "リードする", explanation: "試合中などで相手より点数が上回っている状態を表します。", examples: ["Our team is <span class='highlight-good'>leading</span> 2-0 at half-time."] },
+            { en: "take part in", jp: "～に参加する", explanation: "大会やイベントに加わる時に使います。", examples: ["I will <span class='highlight-good'>take part in</span> the race tomorrow."] },
+            { en: "outstanding", jp: "傑出した・極めて優れた", explanation: "非常に素晴らしい選手やプレーを褒める時に使います。", examples: ["He is an <span class='highlight-good'>outstanding</span> football player."] },
+            { en: "incredible", jp: "信じられないほどの・素晴らしい", explanation: "とても驚くような素晴らしい結果や試合を表します。", examples: ["It was an <span class='highlight-good'>incredible</span> race."] },
+            { en: "give up", jp: "辞める・諦める", explanation: "続けていたスポーツや習慣を辞める時に使います。", examples: ["She <span class='highlight-good'>gave up</span> tennis two years ago."] }
+        ];
+
+        const weeklyLessonData = {
+            2: { // TUESDAY
+                vocab: lesson42Vocab,
+                learn: [
+                    {
+                        vocabEn: "win",
+                        prompt: "Did your team do well yesterday? 🏅",
+                        wordBank: ["We", "won", "win", "the game."],
+                        validAnswers: ["We won the game."],
+                        hints: [{wrongWord: "win", triggerWord: "yesterday", hint: "The game was yesterday, so use the past tense '<b>won</b>'."}]
+                    },
+                    {
+                        vocabEn: "beat",
+                        prompt: "What was the result of the match against Brazil? 🇧🇷",
+                        wordBank: ["We", "beat", "won", "them 2-0."],
+                        validAnswers: ["We beat them 2-0."],
+                        hints: [{wrongWord: "won", triggerWord: "them", hint: "When talking about defeating an opponent directly, use '<b>beat</b>'."}]
+                    },
+                    {
+                        vocabEn: "lose",
+                        prompt: "Did Poland win the match? ⚽",
+                        wordBank: ["No, they", "lost", "losed", "the match."],
+                        validAnswers: ["No, they lost the match."],
+                        hints: [{wrongWord: "losed", triggerWord: "lost", hint: "The past tense of lose is irregular: '<b>lost</b>'."}]
+                    }
+                ],
+                questions: [ 
+                    {
+                        prompt: "How did the basketball game go last night? 🏀",
+                        wordBank: ["My team", "won", "win", "the game."],
+                        validAnswers: ["My team won the game."],
+                        successReply: "Congratulations! That is awesome news! 🎉",
+                        failReply: "Well, winning or losing, the important thing is having fun! 😊",
+                        hints: [
+                            { wrongWord: "win", triggerWord: "last", hint: "The game is over, so we need the past tense '<b>won</b>'." }
+                        ]
+                    },
+                    {
+                        prompt: "I heard you played against the champions! How did you do? 🏆",
+                        wordBank: ["We", "beat", "won", "the champions!"],
+                        validAnswers: ["We beat the champions!"],
+                        successReply: "Wow! You defeated the best team! 🌟",
+                        failReply: "That must have been a very tough game! 😅",
+                        hints: [
+                            { wrongWord: "won", triggerWord: "champions", hint: "You 'win' a game, but you '<b>beat</b>' a team or a person." }
+                        ]
+                    },
+                    {
+                        prompt: "How was the tennis match against Nadal? 🎾",
+                        wordBank: ["Sadly,", "I", "lost", "loose", "to him."],
+                        validAnswers: ["Sadly, I lost to him."],
+                        successReply: "Don't worry, Nadal is a professional! Better luck next time. 👏",
+                        failReply: "Tennis can be really difficult! Keep practicing. 🎾",
+                        hints: [
+                            { wrongWord: "loose", triggerWord: "lost", hint: "'Loose' means not tight. The past tense of lose is '<b>lost</b>'." }
+                        ]
+                    }
+                ]
+            },
+            3: { // WEDNESDAY
+                vocab: lesson42Vocab,
+                learn: [
+                    {
+                        vocabEn: "draw",
+                        prompt: "Who won the game between Spain and Italy? 🇪🇸🇮🇹",
+                        wordBank: ["It ended in", "a draw.", "a score."],
+                        validAnswers: ["It ended in a draw."],
+                        hints: [{wrongWord: "a score.", triggerWord: "ended", hint: "When both teams have the same points, it is '<b>a draw</b>'."}]
+                    },
+                    {
+                        vocabEn: "score",
+                        prompt: "What was the result at the end of the game? ⏱️",
+                        wordBank: ["The final", "score", "scores", "was 2-0."],
+                        validAnswers: ["The final score was 2-0."],
+                        hints: [{wrongWord: "scores", triggerWord: "score", hint: "We use the singular '<b>score</b>' for the total result of a match."}]
+                    },
+                    {
+                        vocabEn: "competition",
+                        prompt: "What kind of event did she enter? 🏃‍♀️",
+                        wordBank: ["She entered", "a running", "competition.", "competitions."],
+                        validAnswers: ["She entered a running competition."],
+                        hints: [{wrongWord: "competitions.", triggerWord: "competition", hint: "She entered one event, so use the singular '<b>competition</b>'."}]
+                    }
+                ],
+                questions: [ 
+                    {
+                        prompt: "What was the result of your soccer match today? ⚽",
+                        wordBank: ["It", "was", "a draw.", "a tieing."],
+                        validAnswers: ["It was a draw."],
+                        successReply: "A draw! At least you didn't lose! 🤝",
+                        failReply: "Soccer matches can be so close! ⚽",
+                        hints: [
+                            { wrongWord: "a tieing.", triggerWord: "draw", hint: "We usually say it was '<b>a draw</b>' or 'a tie'." }
+                        ]
+                    },
+                    {
+                        prompt: "Did you watch the baseball game? What happened? ⚾",
+                        wordBank: ["The final", "score", "point", "was 5-4."],
+                        validAnswers: ["The final score was 5-4."],
+                        successReply: "That sounds like a very close game! 🏟️",
+                        failReply: "Baseball results are always exciting to follow. 🧢",
+                        hints: [
+                            { wrongWord: "point", triggerWord: "score", hint: "For games like baseball or soccer, the overall result is the '<b>score</b>'." }
+                        ]
+                    },
+                    {
+                        prompt: "Are you ready for the sports festival tomorrow? 🎊",
+                        wordBank: ["Yes, I", "am in", "a competition.", "a compete."],
+                        validAnswers: ["Yes, I am in a competition."],
+                        successReply: "Good luck! Do your best! 🥇",
+                        failReply: "Make sure you stretch before playing! 🧘‍♂️",
+                        hints: [
+                            { wrongWord: "a compete.", triggerWord: "competition", hint: "'Compete' is a verb. We need the noun '<b>competition</b>'." }
+                        ]
+                    }
+                ]
+            },
+            4: { // THURSDAY
+                vocab: lesson42Vocab,
+                learn: [
+                    {
+                        vocabEn: "tournament",
+                        prompt: "Is he playing in the French Open? 🎾",
+                        wordBank: ["Yes, he", "entered", "the tournament.", "the tournaments."],
+                        validAnswers: ["Yes, he entered the tournament."],
+                        hints: [{wrongWord: "the tournaments.", triggerWord: "tournament", hint: "The French Open is a single event, so use the singular '<b>tournament</b>'."}]
+                    },
+                    {
+                        vocabEn: "league",
+                        prompt: "Who do they play against every week? 🥅",
+                        wordBank: ["Teams in", "their league.", "their leagues."],
+                        validAnswers: ["Teams in their league."],
+                        hints: [{wrongWord: "their leagues.", triggerWord: "league", hint: "They play in one group, so use the singular '<b>league</b>'."}]
+                    },
+                    {
+                        vocabEn: "final",
+                        prompt: "When do the last two teams play each other? 📅",
+                        wordBank: ["They play", "in the final.", "at the final."],
+                        validAnswers: ["They play in the final."],
+                        hints: [{wrongWord: "at the final.", triggerWord: "in", hint: "We usually use the preposition 'in' -> '<b>in the final</b>'."}]
+                    }
+                ],
+                questions: [ 
+                    {
+                        prompt: "What are you doing this weekend? ⛳",
+                        wordBank: ["I am", "playing in", "a golf tournament.", "a tournament golf."],
+                        validAnswers: ["I am playing in a golf tournament."],
+                        successReply: "Have fun on the course! 🏌️",
+                        failReply: "Golfing sounds like a nice weekend plan! ☀️",
+                        hints: [
+                            { wrongWord: "a tournament golf.", triggerWord: "golf", hint: "The noun comes last, so it should be '<b>a golf tournament</b>'." }
+                        ]
+                    },
+                    {
+                        prompt: "Does your hockey team travel a lot? 🏒",
+                        wordBank: ["Yes, we", "play in", "a national league.", "a league national."],
+                        validAnswers: ["Yes, we play in a national league."],
+                        successReply: "That means you get to see many different cities! 🚌",
+                        failReply: "It must be fun to play ice hockey! ⛸️",
+                        hints: [
+                            { wrongWord: "a league national.", triggerWord: "national", hint: "The adjective comes first: '<b>national league</b>'." }
+                        ]
+                    },
+                    {
+                        prompt: "Did your favorite team win the cup? 🏆",
+                        wordBank: ["No, they", "lost", "in the final.", "at the final."],
+                        validAnswers: ["No, they lost in the final."],
+                        successReply: "Oh no! Getting second place is still great though. 🥈",
+                        failReply: "At least they made it to the last match! 🏟️",
+                        hints: [
+                            { wrongWord: "at the final.", triggerWord: "in", hint: "Use the preposition 'in' to say '<b>in the final</b>'." }
+                        ]
+                    }
+                ]
+            },
+            5: { // FRIDAY
+                vocab: lesson42Vocab,
+                learn: [
+                    {
+                        vocabEn: "champion",
+                        prompt: "Who won the World Cup in 2014? 🇩🇪",
+                        wordBank: ["Germany", "became", "the champion.", "the win."],
+                        validAnswers: ["Germany became the champion."],
+                        hints: [{wrongWord: "the win.", triggerWord: "champion", hint: "The overall winner of a tournament is the '<b>champion</b>'."}]
+                    },
+                    {
+                        vocabEn: "captain",
+                        prompt: "Who received the cup for the winning team? 🧑‍✈️",
+                        wordBank: ["The team", "captain", "leadering", "received it."],
+                        validAnswers: ["The team captain received it."],
+                        hints: [{wrongWord: "leadering", triggerWord: "captain", hint: "The player who leads the team is the '<b>captain</b>'."}]
+                    },
+                    {
+                        vocabEn: "victory",
+                        prompt: "Was it a good win for the team? 🥳",
+                        wordBank: ["Yes, it was", "a great victory.", "a great wining."],
+                        validAnswers: ["Yes, it was a great victory."],
+                        hints: [{wrongWord: "a great wining.", triggerWord: "victory", hint: "Use the noun '<b>victory</b>' for a great win."}]
+                    }
+                ],
+                questions: [ 
+                    {
+                        prompt: "Your team won every match this year! 🥇",
+                        wordBank: ["Yes, we", "are", "the champions!", "the champ."],
+                        validAnswers: ["Yes, we are the champions!"],
+                        successReply: "You should celebrate! 🎉",
+                        failReply: "Amazing teamwork! 🙌",
+                        hints: [
+                            { wrongWord: "the champ.", triggerWord: "champions", hint: "Since 'we' is plural, use the full word '<b>the champions</b>'." }
+                        ]
+                    },
+                    {
+                        prompt: "Wow, you lead the whole football team? ⚽",
+                        wordBank: ["Yes, I", "am", "the captain.", "the capitan."],
+                        validAnswers: ["Yes, I am the captain."],
+                        successReply: "That is a big responsibility! 👏",
+                        failReply: "A team needs a good leader! 🧑‍🤝‍🧑",
+                        hints: [
+                            { wrongWord: "the capitan.", triggerWord: "captain", hint: "Check your spelling! It is '<b>captain</b>'." }
+                        ]
+                    },
+                    {
+                        prompt: "How did you feel after beating the best team? 🎉",
+                        wordBank: ["It", "was", "a huge victory.", "a huge victoring."],
+                        validAnswers: ["It was a huge victory."],
+                        successReply: "I bet you were all so happy! 🥳",
+                        failReply: "Winning big matches is a great feeling. ✨",
+                        hints: [
+                            { wrongWord: "a huge victoring.", triggerWord: "victory", hint: "The correct noun is '<b>victory</b>'." }
+                        ]
+                    }
+                ]
+            },
+            6: { // SATURDAY
+                vocab: lesson42Vocab,
+                learn: [
+                    {
+                        vocabEn: "break a world record",
+                        prompt: "Did Usain Bolt run faster than anyone in history? 🏃🏿‍♂️",
+                        wordBank: ["Yes, he", "broke a", "world record.", "world records."],
+                        validAnswers: ["Yes, he broke a world record."],
+                        hints: [{wrongWord: "world records.", triggerWord: "record", hint: "He broke one specific time, so use singular '<b>world record</b>'."}]
+                    },
+                    {
+                        vocabEn: "lead",
+                        prompt: "Who is winning the match right now? 📈",
+                        wordBank: ["Milan", "are leading", "are lead", "1-0."],
+                        validAnswers: ["Milan are leading 1-0."],
+                        hints: [{wrongWord: "are lead", triggerWord: "leading", hint: "To say they are currently winning, use the continuous form '<b>leading</b>'."}]
+                    },
+                    {
+                        vocabEn: "take part in",
+                        prompt: "Did he join the bicycle race? 🚴‍♂️",
+                        wordBank: ["He", "took part in", "took part", "the race."],
+                        validAnswers: ["He took part in the race."],
+                        hints: [{wrongWord: "took part", triggerWord: "in", hint: "Don't forget the preposition! It is 'took part <b>in</b>'."}]
+                    }
+                ],
+                questions: [ 
+                    {
+                        prompt: "I heard the swimmer was incredibly fast today! 🏊‍♀️",
+                        wordBank: ["She", "broke a world record", "break a world record", "today."],
+                        validAnswers: ["She broke a world record today."],
+                        successReply: "That is making history! 🥇",
+                        failReply: "Swimming is such a tough sport! 💧",
+                        hints: [
+                            { wrongWord: "break a world record", triggerWord: "broke", hint: "It happened today, so use the past tense '<b>broke</b>'." }
+                        ]
+                    },
+                    {
+                        prompt: "How is your team doing at half-time? ⏱️",
+                        wordBank: ["We", "are leading", "are leadering", "the game."],
+                        validAnswers: ["We are leading the game."],
+                        successReply: "Keep it up for the second half! ⚽",
+                        failReply: "There is still time left, keep playing hard! ⏳",
+                        hints: [
+                            { wrongWord: "are leadering", triggerWord: "leading", hint: "The continuous verb form is '<b>leading</b>'." }
+                        ]
+                    },
+                    {
+                        prompt: "Are you joining the marathon next week? 🏃",
+                        wordBank: ["Yes, I", "will", "take part in", "take parts in", "it."],
+                        validAnswers: ["Yes, I will take part in it."],
+                        successReply: "I will cheer for you! 🙌",
+                        failReply: "Running a marathon takes lots of practice! 👟",
+                        hints: [
+                            { wrongWord: "take parts in", triggerWord: "part", hint: "The phrase is '<b>take part in</b>' without an 's'." }
+                        ]
+                    }
+                ]
+            },
+            0: { // SUNDAY
+                vocab: lesson42Vocab,
+                learn: [
+                    {
+                        vocabEn: "outstanding",
+                        prompt: "Was Usain Bolt's time good? ⏱️",
+                        wordBank: ["He ran", "an outstanding", "a outstanding", "time."],
+                        validAnswers: ["He ran an outstanding time."],
+                        hints: [{wrongWord: "a outstanding", triggerWord: "an", hint: "Because 'outstanding' starts with a vowel sound, use '<b>an</b>'."}]
+                    },
+                    {
+                        vocabEn: "incredible",
+                        prompt: "How was the 100 metres final? 🥇",
+                        wordBank: ["It was", "an incredible", "an incredibly", "race."],
+                        validAnswers: ["It was an incredible race."],
+                        hints: [{wrongWord: "an incredibly", triggerWord: "incredible", hint: "You need the adjective '<b>incredible</b>' to describe the noun 'race'."}]
+                    },
+                    {
+                        vocabEn: "give up",
+                        prompt: "Did Kim Clijsters stop playing tennis? 🎾",
+                        wordBank: ["She", "gave up", "give up", "tennis in 2007."],
+                        validAnswers: ["She gave up tennis in 2007."],
+                        hints: [{wrongWord: "give up", triggerWord: "gave", hint: "It happened in the past (2007), so use the past tense '<b>gave up</b>'."}]
+                    }
+                ],
+                questions: [ 
+                    {
+                        prompt: "What did you think of the goalkeeper's performance? 🧤",
+                        wordBank: ["He was", "an outstanding", "a outstanding", "player."],
+                        validAnswers: ["He was an outstanding player."],
+                        successReply: "I agree, he saved so many goals! 🥅",
+                        failReply: "Goalies have a very important job! ⚽",
+                        hints: [
+                            { wrongWord: "a outstanding", triggerWord: "an", hint: "Use '<b>an</b>' before a vowel sound." }
+                        ]
+                    },
+                    {
+                        prompt: "Can you believe they won the championship? 🏆",
+                        wordBank: ["No, it", "is", "an incredible", "a incredible", "story."],
+                        validAnswers: ["No, it is an incredible story."],
+                        successReply: "It really is like a movie! 🎬",
+                        failReply: "Sports always have great stories! 📖",
+                        hints: [
+                            { wrongWord: "a incredible", triggerWord: "an", hint: "Because 'incredible' starts with a vowel sound, use '<b>an</b>'." }
+                        ]
+                    },
+                    {
+                        prompt: "Why aren't you playing golf anymore? 🏌️‍♂️",
+                        wordBank: ["I", "gave up", "give up", "golf last year."],
+                        validAnswers: ["I gave up golf last year."],
+                        successReply: "Oh, that's a shame! Did you pick up a new hobby? 🎨",
+                        failReply: "Golf can be frustrating sometimes! 😅",
+                        hints: [
+                            { wrongWord: "give up", triggerWord: "gave", hint: "It happened last year, so use the past tense '<b>gave up</b>'." }
+                        ]
+                    }
+                ]
+            }
+        };
+        const emptyDayFallback = { vocab: [], questions: [], learn: [] }; 
+
+        // --- APP LOGIC ---
+        const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const todayInt = new Date().getDay();
+        const currentDayData = weeklyLessonData[todayInt] || emptyDayFallback;
+        const currentChallengeArray = currentDayData.questions || [];
+        const currentLearnArray = currentDayData.learn || [];
+        // Mode States
+        let appMode = 'chat'; // default
+
+        // Dynamic storage key based on lesson title to reset state automatically for new lessons
+        const storageKey = 'dailyChatProgress_' + lessonTitle.replace(/\s+/g, '');
+        let savedState = JSON.parse(sessionStorage.getItem(storageKey)) || {};
+        
+        if (savedState.day !== todayInt) {
+            savedState = { 
+                day: todayInt, qIndex: 0, completed: false, attempts: 0, score: 0, 
+                learnIndex: 0, learnCompleted: false,
+                scrollDownSeen: false, scrollUpSeen: false, scrollHintsCompleted: false,
+                learnPhase: 'ask_knowledge', knewVocab: false, notesOpened: false,
+                congratsShown: false
+            };
+            saveProgress();
+        }
+
+        // Catch missing defaults for existing session storage logic
+        if (savedState.learnPhase === undefined) savedState.learnPhase = 'ask_knowledge';
+        if (savedState.knewVocab === undefined) savedState.knewVocab = false;
+        if (savedState.notesOpened === undefined) savedState.notesOpened = false;
+        if (savedState.congratsShown === undefined) savedState.congratsShown = false;
+        
+        if (savedState.scrollHintsCompleted === undefined) { 
+            savedState.scrollHintsCompleted = false; 
+            savedState.scrollDownSeen = false; 
+            savedState.scrollUpSeen = false; 
+            saveProgress(); 
+        }
+
+        if (savedState.learnIndex === undefined) {
+            savedState.learnIndex = 0; 
+            savedState.learnCompleted = false;
+            saveProgress();
+        }
+
+        // Apply UI updates immediately to prevent flashing/glitches
+        document.getElementById('day-label').innerText = dayNames[todayInt];
+        document.getElementById('start-lesson-title').innerText = lessonTitle;
+        updateProgressUI();
+        renderVocab();
+        checkDevice();
+
+        function startApp(mode) {
+            playSound('tap'); 
+            appMode = mode;
+            updateProgressUI();
+            
+            const overlay = document.getElementById('start-overlay');
+            overlay.style.opacity = '0';
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                
+                const targetArray = appMode === 'learn' ? currentLearnArray : currentChallengeArray;
+                const isCompleted = appMode === 'learn' ? savedState.learnCompleted : savedState.completed;
+
+                if (targetArray.length === 0) {
+                    addBubble("No practice scheduled for today! Have a great day! 🎉", "sys-bubble");
+                    return;
+                }
+
+                if (isCompleted) {
+                    showFinalScoreCard();
+                } else {
+                    startNextQuestion();
+                }
+            }, 300);
+        }
+
+        window.addEventListener('resize', scrollToBottom);
+
+        function checkDevice() {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if (!isMobile) {
+                document.getElementById('desktop-hint').style.display = 'block';
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (document.getElementById('interaction-area').classList.contains('hidden')) return;
+
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                checkAnswer();
+            } else if (event.key === 'Backspace') {
+                event.preventDefault();
+                const builder = document.getElementById('sentence-builder');
+                if (builder.lastChild) {
+                    moveToBank(builder.lastChild); 
+                }
+            }
+        });
+
+        // --- VOCAB DRAWER LOGIC ---
+        function renderVocab() {
+            const ul = document.getElementById('vocab-list-ul');
+            ul.innerHTML = '';
+            
+            if(!currentDayData.vocab) return;
+
+            currentDayData.vocab.forEach(v => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="vocab-en">${v.en}</span><span class="vocab-jp">${v.jp}</span>`;
+                
+                li.onclick = () => {
+                    playSound('tap');
+                    openWordModal(v);
+                };
+                ul.appendChild(li);
+            });
+        }
+
+        function toggleVocabDrawer(action) {
+            const drawer = document.getElementById('sidebar-content-container');
+            const overlay = document.getElementById('notes-overlay');
+            const isOpen = drawer.classList.contains('open');
+            let shouldOpen = action === 'open' ? true : (action === 'close' ? false : !isOpen);
+
+            if (shouldOpen) {
+                if (!savedState.notesOpened) {
+                    savedState.notesOpened = true;
+                    saveProgress();
+                }
+                playSound('slide');
+                drawer.classList.add('open');
+                overlay.style.display = 'block';
+                setTimeout(() => {
+                    overlay.classList.add('show');
+                    checkVocabScroll(); 
+                }, 300);
+            } else {
+                playSound('tap');
+                drawer.classList.remove('open');
+                overlay.classList.remove('show');
+                setTimeout(() => overlay.style.display = 'none', 400);
+            }
+        }
+
+        function openWordModal(wordObj) {
+            document.getElementById('wm-title').innerText = wordObj.en;
+            document.getElementById('wm-jp').innerText = wordObj.jp;
+            document.getElementById('wm-explanation').innerHTML = wordObj.explanation || "No details available.";
+            
+            const exUl = document.getElementById('wm-examples');
+            exUl.innerHTML = '';
+            
+            if (wordObj.examples && wordObj.examples.length > 0) {
+                wordObj.examples.forEach(ex => {
+                    let li = document.createElement('li');
+                    li.innerHTML = ex;
+                    exUl.appendChild(li);
+                });
+            } else {
+                let li = document.createElement('li');
+                li.innerText = "No examples provided.";
+                exUl.appendChild(li);
+            }
+
+            const modalOverlay = document.getElementById('word-modal-overlay');
+            modalOverlay.style.display = 'flex';
+            setTimeout(() => {
+                modalOverlay.classList.add('show');
+            }, 10);
+        }
+
+        function closeWordModal() {
+            playSound('tap');
+            const modalOverlay = document.getElementById('word-modal-overlay');
+            modalOverlay.classList.remove('show');
+            setTimeout(() => {
+                modalOverlay.style.display = 'none';
+            }, 300);
+        }
+
+        function handleModalOverlayClick(e) {
+            if (e.target.id === 'word-modal-overlay') {
+                closeWordModal();
+            }
+        }
+
+        function checkVocabScroll() {
+            if (savedState.scrollHintsCompleted) return;
+
+            const container = document.getElementById('vocab-container');
+            const downInd = document.getElementById('scroll-down-indicator');
+            const upInd = document.getElementById('scroll-up-indicator');
+
+            if (container.scrollHeight <= container.clientHeight + 5) {
+                savedState.scrollHintsCompleted = true;
+                saveProgress();
+                downInd.classList.remove('visible');
+                upInd.classList.remove('visible');
+                return;
+            }
+
+            const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 15;
+            const isAtTop = container.scrollTop <= 15;
+
+            if (isAtBottom && !savedState.scrollDownSeen) {
+                savedState.scrollDownSeen = true;
+                saveProgress();
+            }
+
+            if (savedState.scrollDownSeen && isAtTop && !savedState.scrollUpSeen) {
+                savedState.scrollUpSeen = true;
+                savedState.scrollHintsCompleted = true; 
+                saveProgress();
+            }
+
+            if (!savedState.scrollDownSeen) {
+                downInd.classList.add('visible');
+                upInd.classList.remove('visible');
+            } else if (!savedState.scrollUpSeen) {
+                downInd.classList.remove('visible');
+                upInd.classList.add('visible');
+            } else {
+                downInd.classList.remove('visible');
+                upInd.classList.remove('visible');
+            }
+        }
+
+        // --- CORE GAME FUNCTIONS ---
+        function saveProgress() {
+            sessionStorage.setItem(storageKey, JSON.stringify(savedState));
+            updateProgressUI();
+        }
+
+        function updateProgressUI() {
+            let total, current, icon;
+            if (appMode === 'learn') {
+                total = currentLearnArray.length;
+                current = savedState.learnCompleted ? total : savedState.learnIndex;
+                icon = '📖';
+            } else {
+                total = currentChallengeArray.length;
+                current = savedState.completed ? total : savedState.qIndex;
+                icon = '💬';
+            }
+            document.getElementById('progress-badge').innerText = `${icon} ${current}/${total}`;
+
+            // Update Start Menu Checkmarks
+            const learnCheck = document.getElementById('check-learn');
+            if (learnCheck) {
+                if (savedState.learnCompleted) learnCheck.classList.add('done');
+                else learnCheck.classList.remove('done');
+            }
+            
+            const chatCheck = document.getElementById('check-chat');
+            if (chatCheck) {
+                if (savedState.completed) chatCheck.classList.add('done');
+                else chatCheck.classList.remove('done');
+            }
+            
+            const notesCheck = document.getElementById('check-notes');
+            if (notesCheck) {
+                if (savedState.notesOpened) notesCheck.classList.add('done');
+                else notesCheck.classList.remove('done');
+            }
+
+            const isAllDone = savedState.learnCompleted && savedState.completed && savedState.notesOpened;
+            const resultsBtn = document.getElementById('results-btn');
+            
+            if (resultsBtn) {
+                resultsBtn.style.display = isAllDone ? 'flex' : 'none';
+            }
+
+            // Trigger Congratulations Modal if all are ticked
+            if (!isAllDone) {
+                // If a state becomes unticked (e.g. they hit "Start Over"), reset the congrats flag silently
+                if (savedState.congratsShown) {
+                    savedState.congratsShown = false;
+                    sessionStorage.setItem(storageKey, JSON.stringify(savedState)); 
+                }
+            } else if (!savedState.congratsShown) {
+                // They just finished the last requirement! Trigger the modal
+                savedState.congratsShown = true;
+                sessionStorage.setItem(storageKey, JSON.stringify(savedState)); 
+                
+                setTimeout(() => {
+                    showCongratsModal();
+                }, 800);
+            }
+        }
+
+        // --- CONGRATS MODAL LOGIC ---
+        function showCongratsModal() {
+            playSound('tada');
+            const modal = document.getElementById('congrats-modal-overlay');
+            const scoreDisplay = document.getElementById('congrats-score');
+
+            // Format score
+            const totalPossible = currentChallengeArray.length;
+            let finalScore = (savedState.score || 0).toFixed(1);
+            if (finalScore.endsWith('.0')) finalScore = parseInt(finalScore);
+
+            scoreDisplay.innerText = `${finalScore} / ${totalPossible}`;
+
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeCongratsModal() {
+            playSound('tap');
+            const modal = document.getElementById('congrats-modal-overlay');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        function downloadScreenshot() {
+            playSound('tap');
+            const card = document.getElementById('congrats-card');
+            const saveBtn = document.getElementById('save-results-btn');
+            const closeBtn = document.getElementById('close-congrats-btn');
+            
+            // Temporarily hide buttons for a clean snapshot
+            saveBtn.style.display = 'none';
+            closeBtn.style.display = 'none';
+
+            html2canvas(card, {
+                backgroundColor: '#ffffff',
+                scale: 2,
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `ChitChatter-${lessonTitle.replace(/\s+/g, '')}-Results.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.9);
+                link.click();
+                // Restore buttons
+                saveBtn.style.display = 'block';
+                closeBtn.style.display = 'block';
+            });
+        }
+
+        function returnToMenu() {
+            playSound('tap');
+            location.reload();
+        }
+
+        function switchToChat() {
+            playSound('tap');
+            document.getElementById('chat-window').innerHTML = '';
+            appMode = 'chat';
+            updateProgressUI();
+            
+            if (currentChallengeArray.length === 0) {
+                addBubble("No practice scheduled for today! Have a great day! 🎉", "sys-bubble");
+                return;
+            }
+
+            if (savedState.completed) {
+                showFinalScoreCard();
+            } else {
+                startNextQuestion();
+            }
+        }
+        
+        function restartLearnMode() {
+            playSound('tap');
+            document.getElementById('chat-window').innerHTML = '';
+            appMode = 'learn';
+            savedState.learnIndex = 0;
+            savedState.learnCompleted = false;
+            savedState.learnPhase = 'ask_knowledge';
+            savedState.knewVocab = false;
+            saveProgress();
+            
+            if (currentLearnArray.length === 0) {
+                addBubble("No practice scheduled for today! Have a great day! 🎉", "sys-bubble");
+                return;
+            }
+            startNextQuestion();
+        }
+
+        function showFinalScoreCard() {
+            playSound('tada');
+            const chat = document.getElementById('chat-window');
+            const bubble = document.createElement('div');
+            bubble.className = `bubble sys-bubble`;
+            
+            if (appMode === 'learn') {
+                let vocabReviewHtml = '';
+                if (currentLearnArray && currentLearnArray.length > 0) {
+                    vocabReviewHtml = `<div class="quick-review-box">
+                        <h4 style="margin: 0 0 1vh 0; color: #747d8c; font-size: 1.6vh; text-transform: uppercase;">Quick Review</h4>`;
+                    currentLearnArray.forEach(item => {
+                        const v = currentDayData.vocab.find(x => x.en === item.vocabEn);
+                        if (v) {
+                            vocabReviewHtml += `<div style="margin-bottom: 1vh; padding-bottom: 1vh; border-bottom: 1px solid #f1f2f6; display: flex; flex-direction: column; align-items: center; gap: 0.5vh;">
+                                <span style="font-weight: bold; color: var(--main-teal); font-size: 2vh;">${v.en}</span>
+                                <span style="color: #2f3542; font-weight: 500; font-size: 1.6vh;">${v.jp}</span>
+                            </div>`;
+                        }
+                    });
+                    vocabReviewHtml += `</div>`;
+                }
+
+                bubble.innerHTML = `
+                    🎉 You've completed Learn Mode! <br>
+                    Great job reviewing the vocabulary.
+                    ${vocabReviewHtml}
+                    <div style="display:flex; flex-direction: column; gap: 1vh; width: 100%;">
+                        <button class="replay-btn" style="background: #a29bfe; border-color: #6c5ce7; box-shadow: 0 3px 0 #6c5ce7; margin: 0; width: 100%; box-sizing: border-box;" onclick="restartLearnMode()">🔄 Start Over</button>
+                        <button class="replay-btn" style="background: #2ed573; border-color: #218c53; box-shadow: 0 3px 0 #218c53; margin: 0; width: 100%; box-sizing: border-box;" onclick="returnToMenu()">🏠 Main Menu</button>
+                        <button class="replay-btn" style="margin: 0; width: 100%; box-sizing: border-box;" onclick="switchToChat()">🤖 Chat</button>
+                        <button class="replay-btn" style="background: #ffa502; border-color: #e58e26; box-shadow: 0 3px 0 #e58e26; margin: 0; width: 100%; box-sizing: border-box;" onclick="toggleVocabDrawer('open')">📝 Notes</button>
+                    </div>
+                `;
+            } else {
+                const totalPossible = currentChallengeArray.length;
+                let finalScore = (savedState.score || 0).toFixed(1);
+                if (finalScore.endsWith('.0')) finalScore = parseInt(finalScore);
+                
+                bubble.innerHTML = `
+                    🎉 All done for today! <br>
+                    <b>Rating: ${finalScore} / ${totalPossible}</b>
+                    <div style="display:flex; flex-direction: column; gap: 1vh; margin-top: 1.5vh; width: 100%;">
+                        <button class="replay-btn" style="margin: 0; width: 100%; box-sizing: border-box;" onclick="returnToMenu()">🏠 Main Menu</button>
+                        <button class="replay-btn" style="background: #ffa502; border-color: #e58e26; box-shadow: 0 3px 0 #e58e26; margin: 0; width: 100%; box-sizing: border-box;" onclick="toggleVocabDrawer('open')">📝 Notes</button>
+                    </div>
+                `;
+            }
+            chat.appendChild(bubble);
+            scrollToBottom();
+        }
+
+        function showTypingIndicator(callback, duration = 1200) {
+            isBotTyping = true;
+            const chat = document.getElementById('chat-window');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'bubble bot-bubble typing-indicator';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+            
+            chat.appendChild(typingDiv);
+            scrollToBottom();
+
+            setTimeout(() => {
+                const indicator = document.getElementById('typing-indicator');
+                if (indicator) indicator.remove();
+                isBotTyping = false;
+                callback();
+            }, duration);
+        }
+
+        function startNextQuestion() {
+            const isLearn = appMode === 'learn';
+            const targetArray = isLearn ? currentLearnArray : currentChallengeArray;
+            const currentIndex = isLearn ? savedState.learnIndex : savedState.qIndex;
+
+            if (currentIndex >= targetArray.length) {
+                if (isLearn) savedState.learnCompleted = true;
+                else savedState.completed = true;
+                saveProgress();
+                showTypingIndicator(() => {
+                    showFinalScoreCard();
+                }, 1000);
+                return;
+            }
+
+            const data = targetArray[currentIndex];
+
+            showTypingIndicator(() => {
+                presentPrompt(data, isLearn);
+            }, 1200);
+        }
+
+        function presentPrompt(data, isLearn) {
+            let htmlMsg = "";
+            let currentWordBank = [];
+            
+            if (isLearn) {
+                if (savedState.learnPhase === 'ask_knowledge') {
+                    htmlMsg = `Do you know the phrase: <br><br><b>${data.vocabEn}</b>? 🤔`;
+                    currentWordBank = ["Yes,", "No,", "I", "do.", "don't."];
+                } else if (savedState.learnPhase === 'test_knowledge') {
+                    const v = currentDayData.vocab.find(x => x.en === data.vocabEn) || {en: data.vocabEn, jp: "", explanation: ""};
+
+                    if (!savedState.knewVocab) {
+                        htmlMsg = `<b>${v.en}</b><br>${v.jp}<br><span style='font-size:0.8em; color:#747d8c;'>${v.explanation}</span><br><br>Now, try building an answer to this:<br><br><b>${data.prompt}</b>`;
+                    } else {
+                        htmlMsg = `Let's see if you can use it!<br><br><b>${data.prompt}</b>`;
+                    }
+                    currentWordBank = data.wordBank;
+                }
+            } else {
+                const isLastQuestion = (savedState.qIndex === currentChallengeArray.length - 1);
+                if (isLastQuestion && savedState.attempts === 0) {
+                    addBubble("Okay, last question for today! You've got this! 🔥", "bot-bubble");
+                    // Wait a second, then show the real prompt bubble below
+                    setTimeout(() => {
+                        showTypingIndicator(() => {
+                            addBubble(data.prompt, "bot-bubble");
+                            revealInteraction(data.wordBank);
+                        }, 1000);
+                    }, 500);
+                    return; // exit early, handled async
+                }
+                htmlMsg = data.prompt;
+                currentWordBank = data.wordBank;
+            }
+
+            addBubble(htmlMsg, "bot-bubble");
+            revealInteraction(currentWordBank);
+        }
+        
+        function revealInteraction(wordBank) {
+            // Learn mode shouldn't block the user from trying unless max attempts strictly enforce a jump in Chat mode.
+            if (appMode === 'learn' || savedState.attempts < MAX_ATTEMPTS) {
+                setTimeout(() => {
+                    renderWordBank(wordBank);
+                    document.getElementById('interaction-area').classList.remove('hidden');
+                    document.getElementById('interaction-area').style.display = 'flex';
+                    scrollToBottom();
+                }, 500);
+            } else {
+                // If they are returning from a previously failed session in chat mode
+                const currentQ = currentChallengeArray[savedState.qIndex];
+                const failMsg = currentQ.failReply ? `<br><br>${currentQ.failReply}` : "";
+                advanceToNextSequence(`Maybe I'm not quite understanding, but that's okay! Let's move on. 😊${failMsg}`);
+            }
+        }
+
+        function renderWordBank(words) {
+            const bank = document.getElementById('word-bank');
+            bank.innerHTML = '';
+            
+            let shuffled = [...words].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(word => {
+                let tile = document.createElement('div');
+                tile.className = 'word-tile';
+                tile.innerText = word;
+                tile.onclick = () => moveToSentence(tile);
+                bank.appendChild(tile);
+            });
+            clearSentence(true);
+        }
+
+        function moveToSentence(tile) {
+            if (tile.classList.contains('disabled-tile')) return;
+            playSound('tap');
+            const builder = document.getElementById('sentence-builder');
+            tile.onclick = () => moveToBank(tile);
+            tile.classList.add('in-builder'); 
+            builder.appendChild(tile);
+            scrollToBottom(); 
+        }
+
+        function moveToBank(tile) {
+            if (tile.classList.contains('disabled-tile')) return;
+            playSound('tap');
+            const bank = document.getElementById('word-bank');
+            tile.onclick = () => moveToSentence(tile);
+            tile.classList.remove('in-builder'); 
+            bank.appendChild(tile);
+            scrollToBottom(); 
+        }
+
+        function clearSentence(silent = false) {
+            if(!silent) playSound('tap');
+            const builder = document.getElementById('sentence-builder');
+            while (builder.firstChild) {
+                const tile = builder.firstChild;
+                const bank = document.getElementById('word-bank');
+                tile.onclick = () => moveToSentence(tile);
+                tile.classList.remove('in-builder'); 
+                bank.appendChild(tile);
+            }
+        }
+
+        function addBubble(text, className, soundOverride = null) {
+            const chat = document.getElementById('chat-window');
+            const bubble = document.createElement('div');
+            bubble.className = `bubble ${className}`;
+            bubble.innerHTML = text; 
+            chat.appendChild(bubble);
+            
+            if(className !== 'user-bubble') {
+                playSound(soundOverride ? soundOverride : 'pop');
+            }
+            
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            const chat = document.getElementById('chat-window');
+            setTimeout(() => { 
+                chat.scrollTop = chat.scrollHeight; 
+            }, 100);
+        }
+
+        function hideInteraction() {
+            const area = document.getElementById('interaction-area');
+            area.classList.add('hidden');
+            setTimeout(() => { area.style.display = 'none'; }, 300); 
+        }
+
+        function advanceToNextSequence(botReplyText, soundOverride = null, advanceIndex = true) {
+            hideInteraction();
+            showTypingIndicator(() => {
+                addBubble(botReplyText, "bot-bubble", soundOverride);
+                
+                if (advanceIndex) {
+                    if (appMode === 'learn') {
+                        savedState.learnIndex++;
+                        savedState.learnPhase = 'ask_knowledge'; // Reset for next word
+                    } else {
+                        savedState.qIndex++;
+                    }
+                }
+                
+                savedState.attempts = 0;
+                saveProgress();
+
+                setTimeout(() => { startNextQuestion(); }, 2000);
+            }, 1500);
+        }
+
+        function processIncorrectTiles(tiles, currentQ) {
+            let maxMatch = 0;
+            for (let valid of currentQ.validAnswers) {
+                let currentMatch = 0;
+                let builtString = "";
+                for (let i = 0; i < tiles.length; i++) {
+                    builtString += (i > 0 ? " " : "") + tiles[i].innerText;
+                    if (valid === builtString || valid.startsWith(builtString + " ")) {
+                        currentMatch = i + 1;
+                    } else {
+                        break;
+                    }
+                }
+                if (currentMatch > maxMatch) maxMatch = currentMatch;
+            }
+
+            for (let i = 0; i < tiles.length; i++) {
+                let t = tiles[i];
+                let isDistractor = !currentQ.validAnswers.some(ans => ans.includes(t.innerText));
+                
+                if (i >= maxMatch) {
+                    const bank = document.getElementById('word-bank');
+                    t.onclick = () => moveToSentence(t);
+                    t.classList.remove('in-builder'); 
+                    bank.appendChild(t);
+                }
+
+                if (isDistractor) {
+                    t.classList.add('disabled-tile');
+                    t.onclick = null; 
+                }
+            }
+        }
+
+        function checkAnswer() {
+            const builder = document.getElementById('sentence-builder');
+            const tiles = builder.querySelectorAll('.word-tile');
+            if (tiles.length === 0) return;
+
+            playSound('send');
+            let userSentence = Array.from(tiles).map(t => t.innerText).join(" ");
+            
+            const isLearn = appMode === 'learn';
+            const currentQ = isLearn ? currentLearnArray[savedState.learnIndex] : currentChallengeArray[savedState.qIndex];
+            
+            addBubble(userSentence, "user-bubble");
+
+            // --- LEARN PHASE 1: Yes/No Evaluation ---
+            if (isLearn && savedState.learnPhase === 'ask_knowledge') {
+                if (userSentence === "Yes, I do.") {
+                    clearSentence(true);
+                    savedState.learnPhase = 'test_knowledge';
+                    savedState.knewVocab = true;
+                    saveProgress();
+                    advanceToNextSequence("Great! Let's test it out. 🌟", 'tada', false);
+                } else if (userSentence === "No, I don't.") {
+                    clearSentence(true);
+                    savedState.learnPhase = 'test_knowledge';
+                    savedState.knewVocab = false;
+                    saveProgress();
+                    advanceToNextSequence("No worries! Here is what it means. 📚", 'slide', false);
+                } else {
+                    playSound('wrong');
+                    processIncorrectTiles(tiles, {validAnswers: ["Yes, I do.", "No, I don't."]});
+                    hideInteraction();
+                    showTypingIndicator(() => {
+                        addBubble("Please answer with 'Yes, I do.' or 'No, I don't.'", "bot-bubble");
+                        setTimeout(() => {
+                            document.getElementById('interaction-area').classList.remove('hidden');
+                            document.getElementById('interaction-area').style.display = 'flex';
+                            scrollToBottom();
+                        }, 500);
+                    }, 800);
+                }
+                return; // Early exit for ask phase
+            }
+            
+            // --- EVALUATION OF ACTUAL SENTENCE ---
+            let isCorrect = currentQ.validAnswers.includes(userSentence);
+
+            if (isCorrect) {
+                clearSentence(true);
+                hideInteraction();
+                
+                if (isLearn) {
+                    advanceToNextSequence("Spot on! 🌟", 'correct', true);
+                } else {
+                    if (savedState.attempts === 0) savedState.score += 1;
+                    else if (savedState.attempts === 1) savedState.score += 0.8;
+                    else if (savedState.attempts === 2) savedState.score += 0.5;
+                    advanceToNextSequence(currentQ.successReply || "Oh, I see! That's great! 🌟", 'correct', true);
+                }
+            } else {
+                playSound('wrong');
+                savedState.attempts++;
+                saveProgress();
+                
+                let specificHint = null;
+
+                // Enforce formatting strictly in Chat Mode, but ignore in Learn Mode
+                if (!isLearn) {
+                    let firstTileText = tiles[0].innerText;
+                    let lastTileText = tiles[tiles.length - 1].innerText;
+
+                    if (!/^[A-Z]/.test(firstTileText) && !firstTileText.startsWith('"') && !firstTileText.startsWith("'")) {
+                        specificHint = "A sentence always starts with a capital letter! Look for the uppercase word.";
+                        savedState.attempts--; 
+                    } else if (!/[.?!]$/.test(lastTileText) && !lastTileText.endsWith('"') && !lastTileText.endsWith("'")) {
+                        specificHint = "Don't forget the punctuation (like a period) at the end of the sentence!";
+                        savedState.attempts--;
+                    }
+                }
+                
+                // If no formatting error (or in Learn Mode), check for distractor hints
+                if (!specificHint && currentQ.hints) {
+                    for (let h of currentQ.hints) {
+                        if (userSentence.includes(h.wrongWord)) {
+                            specificHint = h.hint;
+                            break; 
+                        }
+                    }
+                }
+
+                processIncorrectTiles(tiles, currentQ);
+
+                if (isLearn) {
+                    // Learn Mode has infinite attempts
+                    hideInteraction();
+                    showTypingIndicator(() => {
+                        if (savedState.knewVocab) {
+                            // User thought they knew it, but missed it. Show them the explanation.
+                            clearSentence(true);
+                            savedState.knewVocab = false; 
+                            saveProgress();
+                            addBubble("Not quite! Let's review the meaning first.", "bot-bubble");
+                            setTimeout(() => { startNextQuestion(); }, 1500);
+                        } else {
+                            // Normal retry
+                            let botMsg = specificHint ? `Hmm... ${specificHint}` : `Hmm, that doesn't sound quite right. Try again!`;
+                            addBubble(botMsg, "bot-bubble");
+                            setTimeout(() => {
+                                document.getElementById('interaction-area').classList.remove('hidden');
+                                document.getElementById('interaction-area').style.display = 'flex';
+                                scrollToBottom();
+                            }, 500);
+                        }
+                    }, 800);
+                } else {
+                    // Chat Mode tracks max attempts
+                    if (savedState.attempts >= MAX_ATTEMPTS) {
+                        hideInteraction();
+                        let failText = currentQ.failReply ? `<br><br>${currentQ.failReply}` : "";
+                        const kindFailMessage = `Maybe I'm not quite understanding, but that's okay! Let's move on. 😊${failText}`;
+                        advanceToNextSequence(kindFailMessage, null, true);
+                    } else {
+                        hideInteraction();
+                        showTypingIndicator(() => {
+                            let left = MAX_ATTEMPTS - savedState.attempts;
+                            let tryText = `<span style="display:block; margin-top:1vh; font-size: 0.8em; color: #a4b0be; text-align: right;">(${left} tries left)</span>`;
+                            let botMsg = specificHint ? `Hmm... ${specificHint} ${tryText}` : `Hmm, that doesn't sound quite right. Let's try again! ${tryText}`;
+                            addBubble(botMsg, "bot-bubble");
+                            setTimeout(() => {
+                                document.getElementById('interaction-area').classList.remove('hidden');
+                                document.getElementById('interaction-area').style.display = 'flex';
+                                scrollToBottom();
+                            }, 500);
+                        }, 800);
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
