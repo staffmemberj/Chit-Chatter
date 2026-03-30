@@ -594,7 +594,6 @@
             🤖 Chat
         </button>
         <button class="start-btn" style="background: #ffa502; border-color: #e58e26; box-shadow: 0 6px 0 #e58e26; font-size: 2.8vh;" onclick="toggleVocabDrawer('open')">
-            <div class="mode-check" id="check-notes"></div>
             📝 Notes
         </button>
         <button class="start-btn" id="results-btn" style="background: #a29bfe; border-color: #6c5ce7; box-shadow: 0 6px 0 #6c5ce7; font-size: 2.8vh; display: none;" onclick="showCongratsModal()">
@@ -737,369 +736,256 @@
             }
         }
 
-/* ========================================================================
-        TEACHER CONFIGURATION AREA - LESSON 12 ONLY
+        /* ========================================================================
+        TEACHER CONFIGURATION AREA - LESSON 13 ONLY
         ======================================================================== */
-        const lessonTitle = "Lesson 12"; 
+        const lessonTitle = "Lesson 13"; 
         const MAX_ATTEMPTS = 3;
-        
-        const lesson12Vocab = [
-            { en: "on my way to ~", jp: "~に行く途中で", explanation: "どこかへ向かっている最中であることを表します。「my」の部分は主語に合わせてyour, his, herなどに変えて使います。", examples: ["I met him <span class='highlight-good'>on my way to</span> school."] },
-            { en: "both A and B", jp: "AとBの両方", explanation: "AとBの二つのものが両方とも〜だ、と言いたいときに使います。", examples: ["I like <span class='highlight-good'>both</span> dogs <span class='highlight-good'>and</span> cats."] },
-            { en: "not ~ at all", jp: "まったく〜ない", explanation: "否定を強く強調する表現です。「not」と一緒に使って「全然〜ない」となります。", examples: ["She did <span class='highlight-warn'>not</span> study math <span class='highlight-warn'>at all</span>."] },
-            { en: "so ~ that ...", jp: "とても〜なので", explanation: "原因（とても〜だ）と結果（だから...だ）をつなぐ超重要表現です！", examples: ["He was <span class='highlight-good'>so</span> tired <span class='highlight-good'>that</span> he fell asleep on the sofa."] },
-            { en: "all day", jp: "1日じゅう", explanation: "朝から晩まで、その日ずっと続いていたことを表します。", examples: ["It rained <span class='highlight-good'>all day</span> yesterday."] },
-            { en: "in front of ~", jp: "~の前で", explanation: "場所や位置関係を表す表現です。「〜の後ろ」はbehindです。", examples: ["Let's meet <span class='highlight-good'>in front of</span> the library."] },
-            { en: "for the first time", jp: "初めて", explanation: "これまでに経験がなく、1回目であることを表します。", examples: ["I met Taro's sister <span class='highlight-good'>for the first time</span> yesterday."] },
-            { en: "at first", jp: "最初は", explanation: "あとで状況が変わったことと対比して、「最初は（違った）」と使うことが多いです。", examples: ["<span class='highlight-good'>At first</span>, I didn't like him."] },
-            { en: "at last", jp: "ついに", explanation: "長く待ったり苦労した結果、ようやく何かが起きたときに使います。", examples: ["<span class='highlight-good'>At last</span>, the train arrived."] },
-            { en: "as usual", jp: "いつもどおりに", explanation: "普段と変わらない様子、いつもの習慣通りであることを表します。", examples: ["He got up early <span class='highlight-good'>as usual</span>."] },
-            { en: "in the middle of ~", jp: "~の最中に", explanation: "場所の真ん中や、行動の最中を表します。", examples: ["I woke up <span class='highlight-good'>in the middle of</span> the night."] },
-            { en: "each other", jp: "お互い", explanation: "2人またはそれ以上の人たちが、互いに何かをするときに使います。", examples: ["We always help <span class='highlight-good'>each other</span>."] },
-            { en: "in my opinion", jp: "私の意見では", explanation: "自分の考えを主張する前に付け加える、便利な前置きフレーズです。", examples: ["<span class='highlight-good'>In my opinion</span>, this book is great."] },
-            { en: "all the way", jp: "はるばる", explanation: "遠くから来たことや、ずっと続く道のりを強調します。", examples: ["He came <span class='highlight-good'>all the way</span> from Africa."] },
-            { en: "a pair of ~", jp: "1組の~/1足の~", explanation: "靴や手袋など、2つで1セットのものに使います。", examples: ["I bought <span class='highlight-good'>a pair of</span> shoes."] },
-            { en: "a glass of ~", jp: "1杯の~", explanation: "水や牛乳など、冷たい飲み物を数えるときに使います。", examples: ["I would like <span class='highlight-good'>a glass of</span> water."] },
-            { en: "a slice of ~", jp: "1切れの~", explanation: "パンやピザなど、薄く切ったものを数えるときに使います。", examples: ["She ate <span class='highlight-good'>a slice of</span> toast."] }
+
+        const lesson13Vocab = [
+            { en: "taller than ~", jp: "〜よりも背が高い", explanation: "「than」を使って2つのものを比べます。", examples: ["Tom is <span class='highlight-good'>taller than</span> Ken."] },
+            { en: "the tallest", jp: "一番背が高い", explanation: "3つ以上のものから「一番〜だ」と言うときは「the」と「-est」をつけます。", examples: ["Tom is <span class='highlight-good'>the tallest</span> of the three."] },
+            { en: "as big as ~", jp: "〜と同じくらい大きい", explanation: "「as 〜 as」で「同じくらい〜だ」という意味になります。", examples: ["My dog is <span class='highlight-good'>as big as</span> yours."] },
+            { en: "more difficult than ~", jp: "〜よりも難しい", explanation: "長い単語を比べるときは「-er」の代わりに「more」をつけます。", examples: ["Math is <span class='highlight-good'>more difficult than</span> English."] },
+            { en: "the most difficult", jp: "一番難しい", explanation: "長い単語で「一番〜だ」と言うときは「the most」をつけます。", examples: ["Math is <span class='highlight-good'>the most difficult</span> subject."] },
+            { en: "better than ~", jp: "〜よりも良い", explanation: "「good」や「well」の比較級は「better」という特別な形になります。", examples: ["I feel <span class='highlight-good'>better than</span> yesterday."] },
+            { en: "the best", jp: "一番良い", explanation: "「good」や「well」の最上級は「best」になります。忘れずに「the」をつけましょう。", examples: ["I like spring <span class='highlight-good'>the best</span>."] },
+            { en: "Which do you like better", jp: "どちらが好きですか", explanation: "2つのものから好きな方を聞くときの定番フレーズです。", examples: ["<span class='highlight-good'>Which do you like better</span>, math or English?"] },
+            { en: "like ~ the best", jp: "〜が一番好きです", explanation: "3つ以上のものから一番好きなものを答えるときに使います。", examples: ["I <span class='highlight-good'>like</span> math <span class='highlight-good'>the best</span>."] },
+            { en: "one of the highest", jp: "最も高い〜の一つ", explanation: "「one of the + 最上級 + 複数形」で「最も〜なものの1つ」という意味になります。", examples: ["This is <span class='highlight-good'>one of the highest</span> mountains."] },
+            { en: "that I have ever seen", jp: "私が今までに見た中で", explanation: "「that I have ever + 過去分詞」をつけて「今までに〜した中で一番」と強調します。", examples: ["This is the oldest book <span class='highlight-good'>that I have ever seen</span>."] },
+            { en: "more popular than ~", jp: "〜よりも人気がある", explanation: "人気があるという単語も長いので、moreを使って比較します。", examples: ["Soccer is <span class='highlight-good'>more popular than</span> tennis."] }
         ];
 
         const weeklyLessonData = {
             2: { // TUESDAY
-                vocab: lesson12Vocab,
+                vocab: lesson13Vocab,
                 learn: [
                     {
-                        vocabEn: "on my way to ~",
-                        prompt: "Did you run into anyone this morning? 🚶",
-                        wordBank: ["I met him", "on my way to", "at my way to", "school."],
-                        validAnswers: ["I met him on my way to school."],
-                        hints: [{wrongWord: "at my way to", triggerWord: "on", hint: "The correct preposition is '<b>on</b> my way to'."}]
+                        vocabEn: "taller than ~",
+                        prompt: "Who is taller, Ken or Tom? 📏",
+                        wordBank: ["Tom is", "taller than", "more tall than", "Ken.", "tall than"],
+                        validAnswers: ["Tom is taller than Ken."],
+                        hints: [
+                            {wrongWord: "more tall than", triggerWord: "tall", hint: "The word 'tall' is short, so just add <b>-er</b> instead of using 'more'."},
+                            {wrongWord: "tall than", triggerWord: "than", hint: "Don't forget the <b>-er</b> ending!"}
+                        ]
                     },
                     {
-                        vocabEn: "both A and B",
-                        prompt: "Which animals are your favorite? 🐾",
-                        wordBank: ["I like", "both", "dogs", "and", "cats.", "either"],
-                        validAnswers: ["I like both dogs and cats.", "I like both cats and dogs."],
-                        hints: [{wrongWord: "either", triggerWord: "both", hint: "When talking about two things together, use '<b>both</b> A and B'."}]
-                    },
-                    {
-                        vocabEn: "not ~ at all",
-                        prompt: "Did she review her notes for the test? 📚",
-                        wordBank: ["She did", "not study", "math", "at all.", "very much."],
-                        validAnswers: ["She did not study math at all."],
-                        hints: [{wrongWord: "very much.", triggerWord: "at all", hint: "To strongly emphasize a negative, use '<b>at all</b>'."}]
+                        vocabEn: "the tallest",
+                        prompt: "Who is the tallest student in your class? 🏫",
+                        wordBank: ["Tom is", "the tallest", "tallest", "of the three."],
+                        validAnswers: ["Tom is the tallest of the three."],
+                        hints: [{wrongWord: "tallest", triggerWord: "of", hint: "Don't forget <b>the</b> before the superlative 'tallest'."}]
                     }
                 ],
-                questions: [ 
+                questions: [
                     {
-                        prompt: "Why were you late to class? ⏰",
-                        wordBank: ["I met", "my teacher", "on my way to", "at my way to", "school."],
-                        validAnswers: ["I met my teacher on my way to school."],
-                        successReply: "Ah, that explains it! 🏫",
-                        failReply: "No worries, at least you made it safely! 😊",
-                        hints: [
-                            { wrongWord: "at my way to", triggerWord: "on", hint: "The correct phrase uses '<b>on</b> my way to'." }
-                        ]
+                        prompt: "Is your brother taller than you? 👦",
+                        wordBank: ["Yes,", "he is", "taller than", "tallest than", "me."],
+                        validAnswers: ["Yes, he is taller than me."],
+                        successReply: "Wow, he must be very tall! 🦒",
+                        failReply: "Good to know! Family heights are interesting. 😊",
+                        hints: [{wrongWord: "tallest than", triggerWord: "than", hint: "Use the comparative <b>taller</b> when comparing two people."}]
                     },
                     {
-                        prompt: "What kind of pets do you want to have? 🐕",
-                        wordBank: ["I want", "both", "dogs", "and", "cats.", "either"],
-                        validAnswers: ["I want both dogs and cats.", "I want both cats and dogs."],
-                        successReply: "That sounds like a fun and busy house! 🐾",
-                        failReply: "Animals are wonderful companions! 🐱",
-                        hints: [
-                            { wrongWord: "either", triggerWord: "both", hint: "If you want the two of them together, use '<b>both A and B</b>'." }
-                        ]
-                    },
-                    {
-                        prompt: "Did you enjoy the spicy food yesterday? 🌶️",
-                        wordBank: ["I did", "not like it", "at all.", "very much."],
-                        validAnswers: ["I did not like it at all."],
-                        successReply: "Oh no! Next time we can get something mild. 🍜",
-                        failReply: "I see! Spicy food isn't for everyone. 😅",
-                        hints: [
-                            { wrongWord: "very much.", triggerWord: "at all", hint: "To emphasize strongly that you didn't like it, use '<b>at all</b>'." }
-                        ]
+                        prompt: "Who is the tallest person in your family? 👨‍👩‍👧‍👦",
+                        wordBank: ["My father", "is", "the tallest", "tallest", "person."],
+                        validAnswers: ["My father is the tallest person."],
+                        successReply: "Fathers usually are! 👨",
+                        failReply: "I see! That makes sense. 👍",
+                        hints: [{wrongWord: "tallest", triggerWord: "person", hint: "Superlatives need <b>the</b> before them."}]
                     }
                 ]
             },
             3: { // WEDNESDAY
-                vocab: lesson12Vocab,
+                vocab: lesson13Vocab,
                 learn: [
                     {
-                        vocabEn: "so ~ that ...",
-                        prompt: "Why did he go to bed so early? 🥱",
-                        wordBank: ["He was", "so tired that", "too tired that", "he fell asleep."],
-                        validAnswers: ["He was so tired that he fell asleep."],
-                        hints: [{wrongWord: "too tired that", triggerWord: "so", hint: "The correct idiom is '<b>so</b> ~ <b>that</b> ...'."}]
+                        vocabEn: "as big as ~",
+                        prompt: "Is your dog big? 🐕",
+                        wordBank: ["My dog", "is", "as big as", "as bigger as", "yours."],
+                        validAnswers: ["My dog is as big as yours."],
+                        hints: [{wrongWord: "as bigger as", triggerWord: "as", hint: "Between <b>as ... as</b>, use the normal word, not the -er form."}]
                     },
                     {
-                        vocabEn: "all day",
-                        prompt: "How was the weather yesterday? 🌧️",
-                        wordBank: ["It rained", "all day", "all the day", "yesterday."],
-                        validAnswers: ["It rained all day yesterday."],
-                        hints: [{wrongWord: "all the day", triggerWord: "all day", hint: "The phrase does not need 'the'. Use '<b>all day</b>'."}]
-                    },
-                    {
-                        vocabEn: "in front of ~",
-                        prompt: "Where should we meet tomorrow? 📍",
-                        wordBank: ["Let's meet", "in front of", "at front of", "the library."],
-                        validAnswers: ["Let's meet in front of the library."],
-                        hints: [{wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase starts with '<b>in</b> front of'."}]
+                        vocabEn: "better than ~",
+                        prompt: "Which team is stronger? ⚾",
+                        wordBank: ["This team", "is", "better than", "gooder than", "that team."],
+                        validAnswers: ["This team is better than that team."],
+                        hints: [{wrongWord: "gooder than", triggerWord: "than", hint: "The comparative form of 'good' is <b>better</b>."}]
                     }
                 ],
-                questions: [ 
+                questions: [
                     {
-                        prompt: "Why did she miss the end of the movie? 🎬",
-                        wordBank: ["She was", "so sleepy that", "too sleepy that", "she fell asleep."],
-                        validAnswers: ["She was so sleepy that she fell asleep."],
-                        successReply: "It happens to the best of us! 😴",
-                        failReply: "Well, hopefully she can watch the ending later! 📺",
-                        hints: [
-                            { wrongWord: "too sleepy that", triggerWord: "so", hint: "The correct idiom is '<b>so</b> ~ <b>that</b> ...'." }
-                        ]
+                        prompt: "Is your house big? 🏠",
+                        wordBank: ["It is", "as big as", "so big as", "your house."],
+                        validAnswers: ["It is as big as your house."],
+                        successReply: "That's a nice size! 🛋️",
+                        failReply: "Houses come in all shapes and sizes. 🏡",
+                        hints: [{wrongWord: "so big as", triggerWord: "big", hint: "The phrase for 'same size' is <b>as</b> big <b>as</b>."}]
                     },
                     {
-                        prompt: "What did you do on your day off? 🎮",
-                        wordBank: ["I played", "video games", "all day.", "all the day."],
-                        validAnswers: ["I played video games all day."],
-                        successReply: "That sounds like a relaxing day! 🛋️",
-                        failReply: "It's good to take a break sometimes! 🌟",
-                        hints: [
-                            { wrongWord: "all the day.", triggerWord: "all day", hint: "The phrase is just '<b>all day</b>'." }
-                        ]
-                    },
-                    {
-                        prompt: "Where did you park your bicycle? 🚲",
-                        wordBank: ["I parked it", "in front of", "at front of", "the store."],
-                        validAnswers: ["I parked it in front of the store."],
-                        successReply: "Ah, I see it! Thanks. 🏪",
-                        failReply: "Make sure you lock it up safely! 🔒",
-                        hints: [
-                            { wrongWord: "at front of", triggerWord: "in", hint: "The correct phrase starts with '<b>in</b> front of'." }
-                        ]
+                        prompt: "Do you feel better today? 🤒",
+                        wordBank: ["I feel", "better than", "gooder than", "yesterday."],
+                        validAnswers: ["I feel better than yesterday."],
+                        successReply: "I'm so glad to hear that! 😊",
+                        failReply: "I hope you are fully recovered soon! 🌟",
+                        hints: [{wrongWord: "gooder than", triggerWord: "yesterday", hint: "Use <b>better</b> to say 'more good'."}]
                     }
                 ]
             },
             4: { // THURSDAY
-                vocab: lesson12Vocab,
+                vocab: lesson13Vocab,
                 learn: [
                     {
-                        vocabEn: "for the first time",
-                        prompt: "Did you enjoy your trip to Tokyo? 🍣",
-                        wordBank: ["I ate sushi", "for the first time.", "at first."],
-                        validAnswers: ["I ate sushi for the first time."],
-                        hints: [{wrongWord: "at first.", triggerWord: "first time", hint: "When doing an action you have never done before, use '<b>for the first time</b>'."}]
+                        vocabEn: "more difficult than ~",
+                        prompt: "Is math hard? 🧮",
+                        wordBank: ["Math is", "more difficult than", "difficulter than", "English."],
+                        validAnswers: ["Math is more difficult than English."],
+                        hints: [{wrongWord: "difficulter than", triggerWord: "than", hint: "Long words use <b>more</b> instead of adding -er."}]
                     },
                     {
-                        vocabEn: "at first",
-                        prompt: "What were your thoughts on the new teacher? 👨‍🏫",
-                        wordBank: ["At first,", "For the first time,", "I didn't like him."],
-                        validAnswers: ["At first, I didn't like him."],
-                        hints: [{wrongWord: "For the first time,", triggerWord: "At first", hint: "To describe an initial situation that later changed, use '<b>At first,</b>'."}]
-                    },
-                    {
-                        vocabEn: "at last",
-                        prompt: "Did the bus finally come? 🚌",
-                        wordBank: ["At last,", "At least,", "the train arrived.", "the bus arrived."],
-                        validAnswers: ["At last, the bus arrived."],
-                        hints: [
-                            {wrongWord: "At least,", triggerWord: "last", hint: "To express that something finally happened, use '<b>At last,</b>'."},
-                            {wrongWord: "the train arrived.", triggerWord: "bus", hint: "Make sure you match the vehicle from the prompt!"}
-                        ]
+                        vocabEn: "the most difficult",
+                        prompt: "What is the hardest subject? 📚",
+                        wordBank: ["Math is", "the most difficult", "most difficult", "subject."],
+                        validAnswers: ["Math is the most difficult subject."],
+                        hints: [{wrongWord: "most difficult", triggerWord: "subject", hint: "Always use <b>the</b> before the word 'most'."}]
                     }
                 ],
-                questions: [ 
+                questions: [
                     {
-                        prompt: "Did you like snowboarding? 🏂",
-                        wordBank: ["I tried it", "for the first time", "at first", "yesterday."],
-                        validAnswers: ["I tried it for the first time yesterday."],
-                        successReply: "That is so cool! Was it difficult? ❄️",
-                        failReply: "Snowboarding is a great winter sport! 🏔️",
-                        hints: [
-                            { wrongWord: "at first", triggerWord: "first time", hint: "If it was a brand new experience, use '<b>for the first time</b>'." }
-                        ]
+                        prompt: "Which test was harder? 📝",
+                        wordBank: ["The math test", "was", "more difficult than", "the most difficult than", "the science test."],
+                        validAnswers: ["The math test was more difficult than the science test."],
+                        successReply: "Math can be very tough! 📐",
+                        failReply: "I agree, tests are stressful! 😅",
+                        hints: [{wrongWord: "the most difficult than", triggerWord: "than", hint: "Use <b>more</b> when comparing two things with 'than'."}]
                     },
                     {
-                        prompt: "Is your new part-time job difficult? 💼",
-                        wordBank: ["At first,", "For the first time,", "it was", "very hard."],
-                        validAnswers: ["At first, it was very hard."],
-                        successReply: "I'm glad it's getting easier for you now! 📈",
-                        failReply: "Starting a new job always takes some time! 🌟",
-                        hints: [
-                            { wrongWord: "For the first time,", triggerWord: "At first", hint: "To mean 'In the beginning', use '<b>At first,</b>'." }
-                        ]
-                    },
-                    {
-                        prompt: "Are you still waiting for your food? 🍽️",
-                        wordBank: ["At last,", "At least,", "my meal", "is here."],
-                        validAnswers: ["At last, my meal is here."],
-                        successReply: "Finally! Enjoy your lunch! 😋",
-                        failReply: "Bon appétit! 🍕",
-                        hints: [
-                            { wrongWord: "At least,", triggerWord: "last", hint: "To say 'finally', use '<b>At last,</b>'." }
-                        ]
+                        prompt: "What is the hardest game you have played? 🎮",
+                        wordBank: ["That game", "is", "the most difficult", "most difficult", "game."],
+                        validAnswers: ["That game is the most difficult game."],
+                        successReply: "I bet it took a long time to beat! 🏆",
+                        failReply: "Sounds very challenging! 🧩",
+                        hints: [{wrongWord: "most difficult", triggerWord: "game", hint: "Don't forget <b>the</b> before superlatives!"}]
                     }
                 ]
             },
             5: { // FRIDAY
-                vocab: lesson12Vocab,
+                vocab: lesson13Vocab,
                 learn: [
                     {
-                        vocabEn: "as usual",
-                        prompt: "What time does he start his day? 🌅",
-                        wordBank: ["He got up", "early", "as usual.", "as always."],
-                        validAnswers: ["He got up early as usual."],
-                        hints: [{wrongWord: "as always.", triggerWord: "usual", hint: "The common set phrase here is '<b>as usual</b>'."}]
+                        vocabEn: "more popular than ~",
+                        prompt: "Is soccer popular? ⚽",
+                        wordBank: ["Soccer is", "more popular than", "popularer than", "tennis."],
+                        validAnswers: ["Soccer is more popular than tennis."],
+                        hints: [{wrongWord: "popularer than", triggerWord: "than", hint: "Long words like 'popular' use <b>more</b>."}]
                     },
                     {
-                        vocabEn: "in the middle of ~",
-                        prompt: "Why did you wake up so suddenly? 🌙",
-                        wordBank: ["I woke up", "in the middle of", "at the middle of", "the night."],
-                        validAnswers: ["I woke up in the middle of the night."],
-                        hints: [{wrongWord: "at the middle of", triggerWord: "in", hint: "The correct phrase uses '<b>in</b> the middle of'."}]
-                    },
-                    {
-                        vocabEn: "each other",
-                        prompt: "How do you and your sister get along? 👧",
-                        wordBank: ["We always", "help", "each other.", "each others."],
-                        validAnswers: ["We always help each other."],
-                        hints: [{wrongWord: "each others.", triggerWord: "other", hint: "There is no 's' at the end. Use '<b>each other</b>'."}]
+                        vocabEn: "the best",
+                        prompt: "Who is a great tennis player? 🎾",
+                        wordBank: ["He is", "the best", "best", "tennis player."],
+                        validAnswers: ["He is the best tennis player."],
+                        hints: [{wrongWord: "best", triggerWord: "player", hint: "Always use <b>the</b> with 'best'."}]
                     }
                 ],
-                questions: [ 
+                questions: [
                     {
-                        prompt: "Did she take the train today? 🚌",
-                        wordBank: ["She took", "the bus", "as usual.", "as always."],
-                        validAnswers: ["She took the bus as usual."],
-                        successReply: "Ah, she is very consistent! 🚍",
-                        failReply: "Good to know her routine! 📋",
-                        hints: [
-                            { wrongWord: "as always.", triggerWord: "usual", hint: "The set phrase is '<b>as usual</b>'." }
-                        ]
+                        prompt: "Do many people like this song? 🎵",
+                        wordBank: ["This song", "is", "more popular than", "the most popular than", "the old one."],
+                        validAnswers: ["This song is more popular than the old one."],
+                        successReply: "Yes, I hear it everywhere! 🎧",
+                        failReply: "It's a very catchy tune! 🎶",
+                        hints: [{wrongWord: "the most popular than", triggerWord: "than", hint: "Use <b>more</b> when comparing two things with 'than'."}]
                     },
                     {
-                        prompt: "Why did the phone ring? 📱",
-                        wordBank: ["It rang", "in the middle of", "at the middle of", "the meeting."],
-                        validAnswers: ["It rang in the middle of the meeting."],
-                        successReply: "Oh no! That is bad timing. 😅",
-                        failReply: "I hope it wasn't an emergency! 📞",
-                        hints: [
-                            { wrongWord: "at the middle of", triggerWord: "in", hint: "The phrase starts with '<b>in</b> the middle of'." }
-                        ]
-                    },
-                    {
-                        prompt: "Are they good friends? 🤝",
-                        wordBank: ["They always", "talk to", "each other.", "each others."],
-                        validAnswers: ["They always talk to each other."],
-                        successReply: "That's wonderful! Communication is key. 🗣️",
-                        failReply: "Having a good friend is really special. 🌟",
-                        hints: [
-                            { wrongWord: "each others.", triggerWord: "other", hint: "Do not add an 's'. Use '<b>each other</b>'." }
-                        ]
+                        prompt: "What is your favorite season? 🌸",
+                        wordBank: ["I like", "spring", "the best.", "the better."],
+                        validAnswers: ["I like spring the best.", "I like spring best."],
+                        successReply: "Spring is beautiful with the cherry blossoms! 🍡",
+                        failReply: "Nice choice! Every season is special. 🍂",
+                        hints: [{wrongWord: "the better.", triggerWord: "spring", hint: "To say 'number one', use <b>the best</b>."}]
                     }
                 ]
             },
             6: { // SATURDAY
-                vocab: lesson12Vocab,
+                vocab: lesson13Vocab,
                 learn: [
                     {
-                        vocabEn: "in my opinion",
-                        prompt: "What do you think of this novel? 📖",
-                        wordBank: ["In my opinion,", "At my opinion,", "this book", "is great."],
-                        validAnswers: ["In my opinion, this book is great."],
-                        hints: [{wrongWord: "At my opinion,", triggerWord: "In", hint: "To state your view, start with '<b>In</b> my opinion'."}]
+                        vocabEn: "Which do you like better",
+                        prompt: "Do you want coffee or tea? ☕",
+                        wordBank: ["Which do you like better,", "Which do you like best,", "coffee or tea?"],
+                        validAnswers: ["Which do you like better, coffee or tea?"],
+                        hints: [{wrongWord: "Which do you like best,", triggerWord: "or", hint: "When choosing between exactly two things, use <b>better</b>."}]
                     },
                     {
-                        vocabEn: "all the way",
-                        prompt: "Wow, did he travel far? ✈️",
-                        wordBank: ["He came", "all the way", "all the ways", "from Africa."],
-                        validAnswers: ["He came all the way from Africa."],
-                        hints: [{wrongWord: "all the ways", triggerWord: "way", hint: "The idiom does not take an 's'. Use '<b>all the way</b>'."}]
-                    },
-                    {
-                        vocabEn: "a pair of ~",
-                        prompt: "What did you buy at the mall? 👟",
-                        wordBank: ["I bought", "a pair of", "a glass of", "shoes."],
-                        validAnswers: ["I bought a pair of shoes."],
-                        hints: [{wrongWord: "a glass of", triggerWord: "pair", hint: "For items that come in twos, use '<b>a pair of</b>'."}]
+                        vocabEn: "like ~ the best",
+                        prompt: "What is your favorite subject? 📐",
+                        wordBank: ["I like", "math", "the best.", "the better."],
+                        validAnswers: ["I like math the best.", "I like math best."],
+                        hints: [{wrongWord: "the better.", triggerWord: "like", hint: "When it's your absolute favorite out of many, use <b>the best</b>."}]
                     }
                 ],
-                questions: [ 
+                questions: [
                     {
-                        prompt: "What do you think of the new movie? 🎬",
-                        wordBank: ["In my opinion,", "At my opinion,", "it is", "boring."],
-                        validAnswers: ["In my opinion, it is boring."],
-                        successReply: "Really? I guess I won't watch it then! 🍿",
-                        failReply: "Everyone has different tastes in movies! 🎥",
-                        hints: [
-                            { wrongWord: "At my opinion,", triggerWord: "In", hint: "To state your view, start with '<b>In</b> my opinion'." }
-                        ]
+                        prompt: "Dogs or cats? 🐾",
+                        wordBank: ["Which do you like better,", "Who do you like better,", "dogs or cats?"],
+                        validAnswers: ["Which do you like better, dogs or cats?"],
+                        successReply: "I love dogs! 🐕",
+                        failReply: "That's a tough question! 🐱",
+                        hints: [{wrongWord: "Who do you like better,", triggerWord: "dogs", hint: "Use <b>Which</b> for animals or things."}]
                     },
                     {
-                        prompt: "Why are you so tired? 🏃",
-                        wordBank: ["I walked", "all the way", "all the ways", "home."],
-                        validAnswers: ["I walked all the way home."],
-                        successReply: "Wow, you should get some rest! 🛏️",
-                        failReply: "Make sure you drink some water! 💧",
-                        hints: [
-                            { wrongWord: "all the ways", triggerWord: "way", hint: "The idiom is singular. Use '<b>all the way</b>'." }
-                        ]
-                    },
-                    {
-                        prompt: "What do you need for the cold weather? ❄️",
-                        wordBank: ["I need", "a pair of", "a slice of", "gloves."],
-                        validAnswers: ["I need a pair of gloves."],
-                        successReply: "Definitely! Keep those hands warm. 🧤",
-                        failReply: "Winter clothing is very important! 🧥",
-                        hints: [
-                            { wrongWord: "a slice of", triggerWord: "pair", hint: "Gloves come in sets of two. Use '<b>a pair of</b>'." }
-                        ]
+                        prompt: "What is your favorite food? 🍔",
+                        wordBank: ["I like", "pizza", "the best.", "the most."],
+                        validAnswers: ["I like pizza the best.", "I like pizza best."],
+                        successReply: "Pizza is delicious! 🍕",
+                        failReply: "Great choice! 😋",
+                        hints: [{wrongWord: "the most.", triggerWord: "like", hint: "With 'like', we usually say 'like it <b>the best</b>'."}]
                     }
                 ]
             },
             0: { // SUNDAY
-                vocab: lesson12Vocab,
+                vocab: lesson13Vocab,
                 learn: [
                     {
-                        vocabEn: "a glass of ~",
-                        prompt: "What can I get you to drink? 🚰",
-                        wordBank: ["I would like", "a glass of", "a slice of", "water."],
-                        validAnswers: ["I would like a glass of water."],
-                        hints: [{wrongWord: "a slice of", triggerWord: "glass", hint: "Water is a liquid! Use '<b>a glass of</b>'."}]
+                        vocabEn: "one of the highest",
+                        prompt: "Is Mt. Fuji tall? ⛰️",
+                        wordBank: ["This is", "one of the highest", "one of the higher", "mountains."],
+                        validAnswers: ["This is one of the highest mountains."],
+                        hints: [{wrongWord: "one of the higher", triggerWord: "one of the", hint: "Use the superlative <b>highest</b> after 'one of the'."}]
                     },
                     {
-                        vocabEn: "a slice of ~",
-                        prompt: "What did she have for breakfast? 🍞",
-                        wordBank: ["She ate", "a slice of", "a pair of", "toast."],
-                        validAnswers: ["She ate a slice of toast."],
-                        hints: [{wrongWord: "a pair of", triggerWord: "slice", hint: "For pieces of bread or pizza, use '<b>a slice of</b>'."}]
+                        vocabEn: "that I have ever seen",
+                        prompt: "Have you read this book? 📖",
+                        wordBank: ["This is the oldest book", "that I have ever seen.", "that I have never seen."],
+                        validAnswers: ["This is the oldest book that I have ever seen."],
+                        hints: [{wrongWord: "that I have never seen.", triggerWord: "that I have", hint: "Use <b>ever</b> (今までに) instead of 'never' for this expression."}]
                     }
                 ],
-                questions: [ 
+                questions: [
                     {
-                        prompt: "Are you thirsty? 🥛",
-                        wordBank: ["Can I have", "a glass of", "a pair of", "milk?"],
-                        validAnswers: ["Can I have a glass of milk?"],
-                        successReply: "Sure! Coming right up. 🐄",
-                        failReply: "Okay, I will grab that for you! 🧊",
-                        hints: [
-                            { wrongWord: "a pair of", triggerWord: "glass", hint: "For cold drinks, use '<b>a glass of</b>'." }
-                        ]
+                        prompt: "Is that building famous? 🏙️",
+                        wordBank: ["Yes, it is", "one of the highest", "buildings", "building", "in the city."],
+                        validAnswers: ["Yes, it is one of the highest buildings in the city."],
+                        successReply: "Wow, the view must be amazing! 🔭",
+                        failReply: "It looks huge! 🏗️",
+                        hints: [{wrongWord: "building", triggerWord: "highest", hint: "After 'one of the', the noun must be plural (<b>buildings</b>)."}]
                     },
                     {
-                        prompt: "Are you hungry? 🍕",
-                        wordBank: ["I want", "a slice of", "a glass of", "pizza."],
-                        validAnswers: ["I want a slice of pizza."],
-                        successReply: "Me too! Let's order some. 😋",
-                        failReply: "Pizza sounds great right now! 🍽️",
-                        hints: [
-                            { wrongWord: "a glass of", triggerWord: "slice", hint: "Pizza is cut into pieces. Use '<b>a slice of</b>'." }
-                        ]
+                        prompt: "Did you like the movie? 🎥",
+                        wordBank: ["It was the best movie", "that I have ever seen.", "that I ever see."],
+                        validAnswers: ["It was the best movie that I have ever seen."],
+                        successReply: "I need to watch it then! 🍿",
+                        failReply: "High praise! I will check it out. 🎫",
+                        hints: [{wrongWord: "that I ever see.", triggerWord: "best", hint: "Use the present perfect: <b>have ever seen</b>."}]
                     }
                 ]
             }
         };
-        const emptyDayFallback = { vocab: [], questions: [], learn: [] }; 
+
+        const emptyDayFallback = { vocab: lesson13Vocab, questions: [], learn: [] }; 
 
         // --- APP LOGIC ---
         const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -1119,7 +1005,7 @@
                 day: todayInt, qIndex: 0, completed: false, attempts: 0, score: 0, 
                 learnIndex: 0, learnCompleted: false,
                 scrollDownSeen: false, scrollUpSeen: false, scrollHintsCompleted: false,
-                learnPhase: 'ask_knowledge', knewVocab: false, notesOpened: false,
+                learnPhase: 'ask_knowledge', knewVocab: false,
                 congratsShown: false
             };
             saveProgress();
@@ -1128,7 +1014,6 @@
         // Catch missing defaults for existing session storage logic
         if (savedState.learnPhase === undefined) savedState.learnPhase = 'ask_knowledge';
         if (savedState.knewVocab === undefined) savedState.knewVocab = false;
-        if (savedState.notesOpened === undefined) savedState.notesOpened = false;
         if (savedState.congratsShown === undefined) savedState.congratsShown = false;
         
         if (savedState.scrollHintsCompleted === undefined) { 
@@ -1228,10 +1113,6 @@
             let shouldOpen = action === 'open' ? true : (action === 'close' ? false : !isOpen);
 
             if (shouldOpen) {
-                if (!savedState.notesOpened) {
-                    savedState.notesOpened = true;
-                    saveProgress();
-                }
                 playSound('slide');
                 drawer.classList.add('open');
                 overlay.style.display = 'block';
@@ -1361,14 +1242,8 @@
                 if (savedState.completed) chatCheck.classList.add('done');
                 else chatCheck.classList.remove('done');
             }
-            
-            const notesCheck = document.getElementById('check-notes');
-            if (notesCheck) {
-                if (savedState.notesOpened) notesCheck.classList.add('done');
-                else notesCheck.classList.remove('done');
-            }
 
-            const isAllDone = savedState.learnCompleted && savedState.completed && savedState.notesOpened;
+            const isAllDone = savedState.learnCompleted && savedState.completed;
             const resultsBtn = document.getElementById('results-btn');
             
             if (resultsBtn) {
